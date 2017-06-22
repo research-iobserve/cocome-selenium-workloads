@@ -13,68 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.tasks;
+package org.iobserve.selenium.workloads.config;
 
 import java.util.concurrent.TimeUnit;
 
+import org.iobserve.selenium.workloads.WorkloadPlan;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
- * Represents a single or complex task for user roles of a opposite.
+ * Contains basic informations for a {@link WorkloadPlan}.
  *
- * @author Christoph Dornieden
  * @author Marc Adolf
  *
  */
-public abstract class AbstractUserTask {
-    private final int numberOfRuns;
-    private PhantomJSDriver driver;
+public class WorkloadConfiguration {
+
     private final String baseUrl;
-    private final String pathDriver;
+    private final int numberOfRuns;
+    private final String pathWebDriver;
+    private PhantomJSDriver driver;
 
     /**
-     * @param baseUrl
-     *            Base URL of the visited website.
-     * @param numberOfRuns
-     *            Number of repetitions of the defined task(s).
-     * @param pathDriver
-     *            The webdriver used to execute the Selenium task(s)
      *
+     * @param baseUrl
+     *            The base URL of the used webservice.
+     * @param numberOfRuns
+     *            The number of repetitions of the {@link WorkloadPlan}.
+     * @param pathWebDriver
+     *            Path to the PhantomJS binaries
      */
-    public AbstractUserTask(final String baseUrl, final int numberOfRuns, final String pathDriver) {
+    public WorkloadConfiguration(final String baseUrl, final int numberOfRuns, final String pathWebDriver) {
         this.baseUrl = baseUrl;
         this.numberOfRuns = numberOfRuns;
-        this.pathDriver = pathDriver;
+        this.pathWebDriver = pathWebDriver;
         this.createNewDriver();
 
     }
-
-    /**
-     * Executes the defined user task(s) and therefore generates the workload.
-     */
-    public final void generateUserBehavior() {
-        for (int i = 0; i < this.numberOfRuns; i++) {
-            this.executeWorkload();
-            // clean existing sessions and create new one
-            this.driver.quit();
-            this.createNewDriver();
-        }
-    }
-
-    /**
-     * Defines the behavior and therefore the workload of a specific {@link AbstractUserTask
-     * UserTask}. May vary from task to task.
-     */
-    protected abstract void executeWorkload();
 
     private void createNewDriver() {
         final DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setJavascriptEnabled(true);
         capabilities.setCapability("takesScreenshot", true);
-        capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, this.pathDriver);
+        capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, this.pathWebDriver);
         capabilities.setCapability("acceptSslCerts", true);
         capabilities.setCapability("webSecurityEnabled", false);
         final String[] phantomJsArgs = { "--web-security=no", "--ignore-ssl-errors=yes" };
@@ -86,12 +69,23 @@ public abstract class AbstractUserTask {
         this.driver.manage().window().setSize(new Dimension(800, 600));
     }
 
-    protected PhantomJSDriver getDriver() {
-        return this.driver;
+    /**
+     * Delete old driver and create a new one therefore creating a new session.
+     */
+    public final void newSession() {
+        this.createNewDriver();
     }
 
-    protected String getBaseUrl() {
+    public final String getBaseUrl() {
         return this.baseUrl;
+    }
+
+    public final int getNumberOfRuns() {
+        return this.numberOfRuns;
+    }
+
+    public final PhantomJSDriver getDriver() {
+        return this.driver;
     }
 
 }

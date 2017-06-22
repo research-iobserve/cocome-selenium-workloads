@@ -15,12 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.workloadgeneration;
 
-import java.util.List;
-
 import org.iobserve.selenium.common.CommandlineArguments;
-import org.iobserve.selenium.tasks.AbstractUserTask;
-import org.iobserve.selenium.workloads.AbstractWorkloadPlan;
-import org.iobserve.selenium.workloads.TestWorkloadPlan;
 
 import com.beust.jcommander.JCommander;
 
@@ -44,15 +39,11 @@ public class WorkloadGeneration {
         // TODO better way to choose different workloads.
         // TODO using the same session for multiple tasks
 
-        final AbstractWorkloadPlan workload = new TestWorkloadPlan(CommandlineArguments.getBaseUrl(),
-                CommandlineArguments.getNumberOfRuns(), arguments.getPathPhantomjs());
-        final List<AbstractUserTask> workloadPlan = workload.generateWorkflow();
+        // final AbstractWorkloadPlan workload = new
+        // TestWorkloadPlan(CommandlineArguments.getBaseUrl(),
+        // CommandlineArguments.getNumberOfRuns(), arguments.getPathPhantomjs());
+        // workload.executeWorkloadPlan();
 
-        // // execute workload plan
-        workloadPlan.stream().forEach(task -> {
-            System.out.println(task.getClass().toString());
-            task.generateUserBehavior();
-        });
         System.out.println("Finished");
 
     }

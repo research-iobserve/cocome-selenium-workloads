@@ -1,6 +1,5 @@
-
-// Apply the java-library plugin to add support for Java Library
-apply plugin: 'java-library'
+apply plugin: 'java'
+apply plugin: 'checkstyle'
 
 
 buildscript {
@@ -22,7 +21,7 @@ repositories {
 dependencies {
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-    implementation 'com.google.guava:guava:20.0'
+   // implementation 'com.google.guava:guava:20.0'
 
     // Use JUnit test framework
     compile 'junit:junit:4.12'
@@ -40,3 +39,7 @@ dependencies {
     
 }
 
+checkstyle {
+    	configFile = rootProject.file('iobserve-checkstyle-rules.xml')
+    	configProperties = [config_loc: "${rootDir}"]
+    }

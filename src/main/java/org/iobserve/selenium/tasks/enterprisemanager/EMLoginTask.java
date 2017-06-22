@@ -15,45 +15,42 @@
  ***************************************************************************/
 package org.iobserve.selenium.tasks.enterprisemanager;
 
-import java.util.concurrent.TimeUnit;
-
-import org.iobserve.selenium.tasks.AbstractUserTask;
+import org.iobserve.selenium.tasks.IUserTask;
 import org.openqa.selenium.By;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.WebDriver;
 
 /**
- * Represents the login of the enterprise manager in cocome.
+ * Represents the login of the enterprise manager in CoCoME.
+ *
  *
  * @author Marc Adolf
  *
  */
-public class EMLogin extends AbstractUserTask {
-
-    /**
-     * See {@link AbstractUserTask#AbstractUserTask(String, int, String)}.
-     *
-     * @param baseUrl
-     *            Base URL of the visited website.
-     *
-     * @param numberOfRuns
-     *            Number of repetitions for each task.
-     * @param pathDriver
-     *            Path to the PhantomJS binaries.
-     *
-     */
-    public EMLogin(final String baseUrl, final int numberOfRuns, final String pathDriver) {
-        super(baseUrl, numberOfRuns, pathDriver);
-        this.getDriver().manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-    }
+public final class EMLoginTask implements IUserTask {
+    private final String name = "Enterprise_manager - Login";
 
     @Override
-    protected void executeWorkload() {
-        final PhantomJSDriver driver = this.getDriver();
-        driver.get(this.getBaseUrl() + "/cloud-web-frontend/faces/login.xhtml");
+    public void accept(final WebDriver driver, final String baseUrl) {
+        driver.get(baseUrl + "/cloud-web-frontend/faces/login.xhtml");
         driver.findElement(By.name("j_idt27")).clear();
         driver.findElement(By.name("j_idt27")).sendKeys("enterprise");
         driver.findElement(By.name("j_idt24")).clear();
         driver.findElement(By.name("j_idt24")).sendKeys("enterprisemanager");
         driver.findElement(By.name("j_idt29")).click();
     }
+
+    /**
+     * Creates a single use instance of the defined task.
+     *
+     * @return A single use instance of the Task.
+     */
+    public static IUserTask create() {
+        return new EMLoginTask();
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
 }

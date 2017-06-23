@@ -16,6 +16,9 @@
 package org.iobserve.selenium.workloadgeneration;
 
 import org.iobserve.selenium.common.CommandlineArguments;
+import org.iobserve.selenium.tasks.enterprisemanager.EMLoginTask;
+import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
+import org.iobserve.selenium.workloads.handling.WorkloadPlan;
 
 import com.beust.jcommander.JCommander;
 
@@ -34,15 +37,10 @@ public class WorkloadGeneration {
         JCommander.newBuilder().addObject(arguments).build().parse(args);
 
         System.out.println(arguments.getPathPhantomjs());
+        final WorkloadConfiguration config = new WorkloadConfiguration("https://172.17.0.2:8181", 1,
+                "/usr/lib/node_modules/phantomjs/bin/phantomjs");
 
-        // TODO enable screenshots
-        // TODO better way to choose different workloads.
-        // TODO using the same session for multiple tasks
-
-        // final AbstractWorkloadPlan workload = new
-        // TestWorkloadPlan(CommandlineArguments.getBaseUrl(),
-        // CommandlineArguments.getNumberOfRuns(), arguments.getPathPhantomjs());
-        // workload.executeWorkloadPlan();
+        WorkloadPlan.builder().then(EMLoginTask.create()).newSession().then(new EMLoginTask()).build().execute(config);
 
         System.out.println("Finished");
 

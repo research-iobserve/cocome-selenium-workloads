@@ -17,7 +17,7 @@ package org.iobserve.selenium.workloads.config;
 
 import java.util.concurrent.TimeUnit;
 
-import org.iobserve.selenium.workloads.WorkloadPlan;
+import org.iobserve.selenium.workloads.handling.WorkloadPlan;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;

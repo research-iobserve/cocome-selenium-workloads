@@ -13,28 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.tasks;
-
-import java.util.function.Consumer;
+package org.iobserve.selenium.workloads.handling;
 
 import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 
 /**
- * A basic task in a workload plan.
- *
  * @author Marc Adolf
  *
  */
-
-public interface ITask extends Consumer<WorkloadConfiguration> {
+public abstract class AbstractWorkload {
 
     /**
+     * Creates a specific workload which is defined with and build as an {@link WorkloadPlan}.
      *
-     * @return The name of the task.
+     * @param
+     * @return
      */
-    public String getName();
-
-    @Override
-    public void accept(final WorkloadConfiguration t);
+    public abstract WorkloadPlan assembleWorkloadTasks(WorkloadConfiguration config);
 
 }

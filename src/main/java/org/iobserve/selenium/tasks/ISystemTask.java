@@ -15,28 +15,26 @@
  ***************************************************************************/
 package org.iobserve.selenium.tasks;
 
+import java.util.function.Consumer;
+
 import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 
 /**
- *
- * Creates a new session through replacing the old driver in the given
- * {@link WorkloadConfiguration}.
+ * A basic task in a workload plan.
  *
  * @author Marc Adolf
  *
  */
-public class CreateNewSessionTask implements ISystemTask {
-    private final String name = "Create new session";
+
+public interface ISystemTask extends Consumer<WorkloadConfiguration> {
+
+    /**
+     *
+     * @return The name of the task.
+     */
+    public String getName();
 
     @Override
-    public void accept(final WorkloadConfiguration t) {
-        t.newSession();
-
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
+    public void accept(final WorkloadConfiguration t);
 
 }

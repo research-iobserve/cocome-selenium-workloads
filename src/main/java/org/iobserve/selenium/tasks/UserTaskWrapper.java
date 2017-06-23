@@ -24,7 +24,7 @@ import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
  * @author Marc Adolf
  *
  */
-public class UserTaskWrapper implements ITask {
+public class UserTaskWrapper implements ISystemTask {
 
     private final IUserTask userTask;
 

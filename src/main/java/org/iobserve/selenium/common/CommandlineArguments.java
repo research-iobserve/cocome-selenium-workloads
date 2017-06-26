@@ -15,6 +15,9 @@
  ***************************************************************************/
 package org.iobserve.selenium.common;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.beust.jcommander.Parameter;
 
 /**
@@ -28,22 +31,29 @@ public class CommandlineArguments {
     @Parameter(names = "-phantomjs", description = "Path to the PhantomJS binaries", required = true)
     private String pathPhantomjs;
 
-    @Parameter(names = "-url", description = "base url for the selenium workloads")
+    @Parameter(names = "-url", description = "Base url for the selenium workloads")
     private static String baseUrl = "https://172.17.0.2:8181";
 
-    @Parameter(names = "-runs", description = " number of times a (repeatable) workload is executed")
+    @Parameter(names = "-runs", description = "The number of times a (repeatable) workload is executed")
     private static int numberOfRuns = 5;
+
+    @Parameter(names = "-workload", description = "The name(s) of the workload(s) that should be executed.", required = true)
+    private static List<String> workloads = new ArrayList<>();
 
     public String getPathPhantomjs() {
         return this.pathPhantomjs;
     }
 
-    public static String getBaseUrl() {
+    public String getBaseUrl() {
         return CommandlineArguments.baseUrl;
     }
 
-    public static int getNumberOfRuns() {
+    public int getNumberOfRuns() {
         return CommandlineArguments.numberOfRuns;
+    }
+
+    public final List<String> getWorkloads() {
+        return CommandlineArguments.workloads;
     }
 
 }

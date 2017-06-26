@@ -20,10 +20,10 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.iobserve.selenium.tasks.CreateNewSessionTask;
 import org.iobserve.selenium.tasks.ISystemTask;
 import org.iobserve.selenium.tasks.IUserTask;
 import org.iobserve.selenium.tasks.UserTaskWrapper;
+import org.iobserve.selenium.tasks.systemtasks.CreateNewSessionTask;
 import org.iobserve.selenium.workloadgeneration.WorkloadGeneration;
 import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 
@@ -74,24 +74,6 @@ public final class WorkloadPlan {
         return new Builder(config);
 
     }
-
-    // /**
-    // * Creates a new {@link Builder} which is used to assemble the {@link WorkloadPlan}.
-    // *
-    // * @param baseUrl
-    // * The base URL of the used web service.
-    // * @param numberOfRuns
-    // * Number of repetitions of the {@link WorkloadPlan}
-    // * @param pathWebDriver
-    // * The path to the used {@link WebDriver}.
-    // * @return A new {@link Builder}.
-    // */
-    // public static Builder builder(final String baseUrl, final int numberOfRuns, final String
-    // pathWebDriver) {
-    // final WorkloadConfiguration config = new WorkloadConfiguration(baseUrl, numberOfRuns,
-    // pathWebDriver);
-    // return new Builder();
-    // }
 
     /**
      * Executes all defined task. Repeats as often as the {@link WorkloadConfiguration} states it.

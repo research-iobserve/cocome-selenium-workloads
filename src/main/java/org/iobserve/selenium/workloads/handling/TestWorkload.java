@@ -13,30 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.tasks;
+package org.iobserve.selenium.workloads.handling;
 
+import org.iobserve.selenium.tasks.enterprisemanager.EMLoginTask;
 import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 
 /**
  *
- * Creates a new session through replacing the old driver in the given
- * {@link WorkloadConfiguration}.
- *
  * @author Marc Adolf
  *
  */
-public class CreateNewSessionTask implements ISystemTask {
-    private final String name = "Create new session";
+public class TestWorkload extends AbstractWorkload {
 
     @Override
-    public void accept(final WorkloadConfiguration t) {
-        t.newSession();
-
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
+    public WorkloadPlan assembleWorkloadTasks(final WorkloadConfiguration config) {
+        return WorkloadPlan.builder().then(EMLoginTask.create()).newSession().then(new EMLoginTask()).build();
     }
 
 }

@@ -30,6 +30,14 @@ import org.openqa.selenium.WebDriver;
  */
 public interface IUserTask extends BiConsumer<WebDriver, String> {
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.util.function.BiConsumer#accept(java.lang.Object, java.lang.Object)
+     */
+    @Override
+    void accept(WebDriver driver, String baseUrl);
+
     /**
      *
      * @return The name of the task.

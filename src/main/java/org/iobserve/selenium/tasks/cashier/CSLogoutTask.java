@@ -13,44 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.tasks.enterprisemanager;
+package org.iobserve.selenium.tasks.cashier;
 
 import org.iobserve.selenium.tasks.IUserTask;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 /**
- * Represents the login of the enterprise manager in CoCoME.
- *
+ * Represents the logout of the (already logged in) cashier in CoCoME.
  *
  * @author Marc Adolf
  *
  */
-public final class EMLoginTask implements IUserTask {
-    private final String name = "Enterprise manager - Login";
+public class CSLogoutTask implements IUserTask {
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.iobserve.selenium.tasks.IUserTask#accept(org.openqa.selenium.WebDriver,
+     * java.lang.String)
+     */
     @Override
     public void accept(final WebDriver driver, final String baseUrl) {
-        driver.get(baseUrl + "/cloud-web-frontend/faces/login.xhtml");
-        driver.findElement(By.name("j_idt27")).clear();
-        driver.findElement(By.name("j_idt27")).sendKeys("enterprise");
-        driver.findElement(By.name("j_idt24")).clear();
-        driver.findElement(By.name("j_idt24")).sendKeys("enterprisemanager");
-        driver.findElement(By.name("j_idt29")).click();
+        driver.get(baseUrl + "/cloud-web-frontend/faces/store/start_sale.xhtml");
+        driver.findElement(By.linkText("Logout")).click();
     }
 
-    /**
-     * Creates a single use instance of the defined task.
+    /*
+     * (non-Javadoc)
      *
-     * @return A single use instance of the Task.
+     * @see org.iobserve.selenium.tasks.IUserTask#getName()
      */
-    public static IUserTask create() {
-        return new EMLoginTask();
-    }
-
     @Override
     public String getName() {
-        return this.name;
+        return "Cashier - Logout";
     }
 
 }

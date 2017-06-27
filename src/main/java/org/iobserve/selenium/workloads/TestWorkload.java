@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.workloads.handling;
+package org.iobserve.selenium.workloads;
 
 import org.iobserve.selenium.tasks.enterprisemanager.EMLoginTask;
-import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
+import org.iobserve.selenium.workloads.handling.AbstractWorkload;
+import org.iobserve.selenium.workloads.handling.WorkloadPlan;
 
 /**
  *
@@ -26,7 +27,7 @@ import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 public class TestWorkload extends AbstractWorkload {
 
     @Override
-    public WorkloadPlan assembleWorkloadTasks(final WorkloadConfiguration config) {
+    public WorkloadPlan assembleWorkloadTasks() {
         return WorkloadPlan.builder().then(EMLoginTask.create()).newSession().then(new EMLoginTask()).build();
     }
 

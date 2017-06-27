@@ -21,8 +21,10 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.iobserve.selenium.workloadgeneration.WorkloadGeneration;
+import org.iobserve.selenium.workloads.CashierCashShoppingWorkload;
+import org.iobserve.selenium.workloads.EnterpriseManagerActionWorkload;
+import org.iobserve.selenium.workloads.TestWorkload;
 import org.iobserve.selenium.workloads.handling.AbstractWorkload;
-import org.iobserve.selenium.workloads.handling.TestWorkload;
 
 /**
  * Used to (manually) register Workloads. The {@link WorkloadGeneration Workload Generator} looks
@@ -42,6 +44,8 @@ public class WorkloadRegistry {
     public static void fillRegistry() {
         LogManager.getLogger(WorkloadRegistry.class).debug("Filling the registry");
         WorkloadRegistry.REGISTERED_WORKLOADS.put("Test", TestWorkload.class);
+        WorkloadRegistry.REGISTERED_WORKLOADS.put("EM-Workload1", EnterpriseManagerActionWorkload.class);
+        WorkloadRegistry.REGISTERED_WORKLOADS.put("CS_Workload1", CashierCashShoppingWorkload.class);
     }
 
     /**

@@ -15,8 +15,6 @@
  ***************************************************************************/
 package org.iobserve.selenium.workloads.handling;
 
-import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
-
 /**
  * @author Marc Adolf
  *
@@ -26,9 +24,8 @@ public abstract class AbstractWorkload {
     /**
      * Creates a specific workload which is defined with and build as an {@link WorkloadPlan}.
      *
-     * @param
-     * @return
+     * @return A {@link WorkloadPlan} ready to be executed.
      */
-    public abstract WorkloadPlan assembleWorkloadTasks(WorkloadConfiguration config);
+    public abstract WorkloadPlan assembleWorkloadTasks();
 
 }

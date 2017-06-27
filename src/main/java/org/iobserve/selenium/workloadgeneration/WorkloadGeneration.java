@@ -72,7 +72,7 @@ public class WorkloadGeneration {
         for (final String name : workloads) {
             try {
                 final AbstractWorkload workload = WorkloadRegistry.getWorkloadInstanceByName(name);
-                workload.assembleWorkloadTasks(config).execute(config);
+                workload.assembleWorkloadTasks().execute(config);
 
             } catch (final WorkloadNotCreatedException e) {
                 logger.info("Could not create workload '" + name + "'");

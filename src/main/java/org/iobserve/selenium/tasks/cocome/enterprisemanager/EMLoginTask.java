@@ -13,51 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.tasks.cashier;
+package org.iobserve.selenium.tasks.cocome.enterprisemanager;
 
 import org.iobserve.selenium.tasks.IUserTask;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.Select;
 
 /**
- * Represents the login of the cashier in CoCoME
+ * Represents the login of the enterprise manager in CoCoME.
+ *
  *
  * @author Marc Adolf
  *
  */
-public class CSLoginTask implements IUserTask {
+public final class EMLoginTask implements IUserTask {
+    private final String name = "Enterprise manager - Login";
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.iobserve.selenium.tasks.IUserTask#accept(org.openqa.selenium.WebDriver,
-     * java.lang.String)
-     */
     @Override
     public void accept(final WebDriver driver, final String baseUrl) {
         driver.get(baseUrl + "/cloud-web-frontend/faces/login.xhtml");
-        new Select(driver.findElement(By.id("j_idt10"))).selectByVisibleText("Cashier");
-        driver.findElement(By.cssSelector("option[value=\"CASHIER\"]")).click();
-        driver.findElement(By.name("j_idt21")).clear();
-        driver.findElement(By.name("j_idt21")).sendKeys("2");
-        driver.findElement(By.name("j_idt24")).clear();
-        driver.findElement(By.name("j_idt24")).sendKeys("cashier");
         driver.findElement(By.name("j_idt27")).clear();
-        driver.findElement(By.name("j_idt27")).sendKeys("cashier");
+        driver.findElement(By.name("j_idt27")).sendKeys("enterprise");
+        driver.findElement(By.name("j_idt24")).clear();
+        driver.findElement(By.name("j_idt24")).sendKeys("enterprisemanager");
         driver.findElement(By.name("j_idt29")).click();
-        driver.findElement(By.linkText("Cashdesk")).click();
-        driver.findElement(By.name("j_idt37:j_idt40")).click();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Creates a single use instance of the defined task.
      *
-     * @see org.iobserve.selenium.tasks.IUserTask#getName()
+     * @return A single use instance of the Task.
      */
+    public static IUserTask create() {
+        return new EMLoginTask();
+    }
+
     @Override
     public String getName() {
-        return "Cashier - Login";
+        return this.name;
     }
 
 }

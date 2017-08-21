@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.tasks.enterprisemanager;
+package org.iobserve.selenium.tasks.jpetstore.common;
 
 import org.iobserve.selenium.tasks.IUserTask;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 /**
- * Represents the logout of the (already logged in) enterprise manager in CoCoME.
+ * Checks out the current content of the shopping cart and confirms the order. Needs the
+ * {@link LoginJPetStoreTask} to be executed first.
  *
  * @author Marc Adolf
  *
  */
-public class EMLogoutTask implements IUserTask {
+public class CheckoutJPetStoreTask implements IUserTask {
 
     /*
      * (non-Javadoc)
@@ -35,8 +36,15 @@ public class EMLogoutTask implements IUserTask {
      */
     @Override
     public void accept(final WebDriver driver, final String baseUrl) {
-        driver.get(baseUrl + "/cloud-web-frontend/faces/store/show_stock.xhtml");
-        driver.findElement(By.linkText("Logout")).click();
+        driver.get(baseUrl + "/jpetstore/actions/Catalog.action");
+
+        driver.findElement(By.cssSelector("img[name=\"img_cart\"]")).click();
+
+        driver.findElement(By.linkText("Proceed to Checkout")).click();
+
+        driver.findElement(By.name("newOrder")).click();
+
+        driver.findElement(By.linkText("Confirm")).click();
     }
 
     /*
@@ -46,7 +54,8 @@ public class EMLogoutTask implements IUserTask {
      */
     @Override
     public String getName() {
-        return "Enterprise manager - Logout ";
+
+        return "Checkout current shopping cart";
     }
 
 }

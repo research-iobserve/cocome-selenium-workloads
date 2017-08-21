@@ -13,19 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.tasks.cashier;
+package org.iobserve.selenium.tasks.jpetstore.common;
 
 import org.iobserve.selenium.tasks.IUserTask;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 /**
- * Represents the logout of the (already logged in) cashier in CoCoME.
+ * Logs in with a given pair of credentials.
  *
  * @author Marc Adolf
  *
  */
-public class CSLogoutTask implements IUserTask {
+public class LoginJPetStoreTask implements IUserTask {
+    private final String username;
+    private final String password;
+
+    /**
+     * Creates a login task with the given credentials.
+     *
+     * @param username
+     *            The user to be logged in.
+     *
+     * @param password
+     *            The password used to log in.
+     */
+    public LoginJPetStoreTask(final String username, final String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     /*
      * (non-Javadoc)
@@ -35,8 +51,12 @@ public class CSLogoutTask implements IUserTask {
      */
     @Override
     public void accept(final WebDriver driver, final String baseUrl) {
-        driver.get(baseUrl + "/cloud-web-frontend/faces/store/start_sale.xhtml");
-        driver.findElement(By.linkText("Logout")).click();
+        driver.findElement(By.linkText("Sign In")).click();
+        driver.findElement(By.name("username")).clear();
+        driver.findElement(By.name("username")).sendKeys(this.username);
+        driver.findElement(By.name("password")).clear();
+        driver.findElement(By.name("password")).sendKeys(this.password);
+        driver.findElement(By.name("signon")).click();
     }
 
     /*
@@ -46,7 +66,6 @@ public class CSLogoutTask implements IUserTask {
      */
     @Override
     public String getName() {
-        return "Cashier - Logout";
+        return "Log in " + this.username;
     }
-
 }

@@ -15,19 +15,20 @@
  ***************************************************************************/
 package org.iobserve.selenium.workloads;
 
-import org.iobserve.selenium.tasks.cashier.CSBuySingleItemNTimesWithCashTask;
-import org.iobserve.selenium.tasks.cashier.CSLoginTask;
-import org.iobserve.selenium.tasks.cashier.CSLogoutTask;
+import org.iobserve.selenium.tasks.jpetstore.buy.AddFishToCartTask;
+import org.iobserve.selenium.tasks.jpetstore.common.CheckoutJPetStoreTask;
+import org.iobserve.selenium.tasks.jpetstore.common.LoginJPetStoreTask;
 import org.iobserve.selenium.workloads.handling.AbstractWorkload;
 import org.iobserve.selenium.workloads.handling.WorkloadPlan;
 
 /**
- * Login of the cashier, buying some products with cash and logout.
+ * Represents the workload used for evaluation in jPetstore by Christoph Dornieden in his Masters
+ * Thesis. See {@link http://eprints.uni-kiel.de/38825/}.
  *
  * @author Marc Adolf
  *
  */
-public class CashierCashShoppingWorkload extends AbstractWorkload {
+public class JPetStoreCdorWorkload extends AbstractWorkload {
 
     /*
      * (non-Javadoc)
@@ -36,17 +37,17 @@ public class CashierCashShoppingWorkload extends AbstractWorkload {
      */
     @Override
     public WorkloadPlan assembleWorkloadTasks() {
-        final int productBarCode = 12345678;
-        // first shopping
-        final int firstNumberOfItems = 4;
-        final int firstCashToPay = 50;
-        // second shopping
-        final int secondNumberOfItems = 7;
-        final int secondCashToPay = 100;
-        return WorkloadPlan.builder().then(new CSLoginTask())
-                .then(new CSBuySingleItemNTimesWithCashTask(productBarCode, firstNumberOfItems, firstCashToPay))
-                .then(new CSBuySingleItemNTimesWithCashTask(productBarCode, secondNumberOfItems, secondCashToPay))
-                .then(new CSLogoutTask()).build();
+        final int amountOfFish = 10;
+        // TODO better replace with enum?
+        final int fishPosition = 0;
+
+        final String username = "j2ee";
+        final String password = "j2ee";
+
+        // TODO add remaining workloads
+        return WorkloadPlan.builder().then(new AddFishToCartTask(amountOfFish, fishPosition))
+                .then(new LoginJPetStoreTask(username, password)).then(new CheckoutJPetStoreTask()).newSession()
+                .build();
     }
 
 }

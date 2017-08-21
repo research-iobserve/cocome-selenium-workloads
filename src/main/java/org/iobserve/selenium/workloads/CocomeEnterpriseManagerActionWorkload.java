@@ -15,12 +15,12 @@
  ***************************************************************************/
 package org.iobserve.selenium.workloads;
 
-import org.iobserve.selenium.tasks.enterprisemanager.EMAddSecondProductToFirstStoreOfSecondEnterpriseTask;
-import org.iobserve.selenium.tasks.enterprisemanager.EMCreateNewEnterpriseTask;
-import org.iobserve.selenium.tasks.enterprisemanager.EMCreateNewProductTask;
-import org.iobserve.selenium.tasks.enterprisemanager.EMCreateNewStoreTask;
-import org.iobserve.selenium.tasks.enterprisemanager.EMLoginTask;
-import org.iobserve.selenium.tasks.enterprisemanager.EMLogoutTask;
+import org.iobserve.selenium.tasks.cocome.enterprisemanager.EMAddSecondProductToFirstStoreOfSecondEnterpriseTask;
+import org.iobserve.selenium.tasks.cocome.enterprisemanager.EMCreateNewEnterpriseTask;
+import org.iobserve.selenium.tasks.cocome.enterprisemanager.EMCreateNewProductTask;
+import org.iobserve.selenium.tasks.cocome.enterprisemanager.EMCreateNewStoreTask;
+import org.iobserve.selenium.tasks.cocome.enterprisemanager.EMLoginTask;
+import org.iobserve.selenium.tasks.cocome.enterprisemanager.EMLogoutTask;
 import org.iobserve.selenium.workloads.handling.AbstractWorkload;
 import org.iobserve.selenium.workloads.handling.WorkloadPlan;
 
@@ -31,7 +31,7 @@ import org.iobserve.selenium.workloads.handling.WorkloadPlan;
  * @author Marc Adolf
  *
  */
-public class EnterpriseManagerActionWorkload extends AbstractWorkload {
+public class CocomeEnterpriseManagerActionWorkload extends AbstractWorkload {
 
     /*
      * (non-Javadoc)

@@ -13,22 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.workloads;
+package org.iobserve.selenium.tasks.cocome.cashier;
 
-import org.iobserve.selenium.tasks.cocome.enterprisemanager.EMLoginTask;
-import org.iobserve.selenium.workloads.handling.AbstractWorkload;
-import org.iobserve.selenium.workloads.handling.WorkloadPlan;
+import org.iobserve.selenium.tasks.IUserTask;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 /**
+ * Represents the logout of the (already logged in) cashier in CoCoME.
  *
  * @author Marc Adolf
  *
  */
-public class TestWorkload extends AbstractWorkload {
+public class CSLogoutTask implements IUserTask {
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.iobserve.selenium.tasks.IUserTask#accept(org.openqa.selenium.WebDriver,
+     * java.lang.String)
+     */
     @Override
-    public WorkloadPlan assembleWorkloadTasks() {
-        return WorkloadPlan.builder().then(EMLoginTask.create()).newSession().then(new EMLoginTask()).build();
+    public void accept(final WebDriver driver, final String baseUrl) {
+        driver.get(baseUrl + "/cloud-web-frontend/faces/store/start_sale.xhtml");
+        driver.findElement(By.linkText("Logout")).click();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.iobserve.selenium.tasks.IUserTask#getName()
+     */
+    @Override
+    public String getName() {
+        return "Cashier - Logout";
     }
 
 }

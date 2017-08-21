@@ -63,7 +63,7 @@ public class WorkloadGeneration {
         final List<String> workloads = arguments.getWorkloads();
 
         /*
-         * The registry have to be filled beforehand. Better Ideas are welcome.
+         * The registry has to be filled beforehand. Better Ideas are welcome.
          */
         WorkloadRegistry.fillRegistry();
 

@@ -16,7 +16,15 @@ e.g. `-workloads workload1,workload2` or `-workloads workload1  -workloads workl
 
 ### Optional Parameters
 -url sets the url of the tested service, default is https://172.17.0.2:8181 for the CoCoME frontend from our [experiment](https://github.com/research-iobserve/cocome-experiment) <br>
+-runs the number of times each workload is repeated to increase statiscal relevance, default is 5 <br> 
+-print_workloads if used, simply prints all available workloads <br> 
 
--runs<br> 
--print_workloads <br> 
 # Implementation of new Workloads
+
+Each workload consists of several tasks that are build in the builder pattern.
+Thereby, every task implements the implements the Java (Bi-)Consumer Interface and can be reused.
+New user and system tasks ( like creating a new session) can easily be implemented.
+The workloads contain these tasks and are designed to represent one complete run of the defined user actions.
+Each new workload has to be entered in the [WorkloadRegistry](https://github.com/research-iobserve/cocome-selenium-workloads/blob/master/src/main/java/org/iobserve/selenium/workloads/registry/WorkloadRegistry.java) to be able to be used!
+Multiple workloads can be called at the application start.
+

@@ -15,7 +15,8 @@ e.g. `-phantomjs /usr/lib/phantomjs/` <br>
 e.g. `-workloads workload1,workload2` or `-workloads workload1  -workloads workload2`
 
 ### Optional Parameters
--url sets the url of the tested service, default is https://172.17.0.2:8181 for the CoCoME frontend from our [[experiment | https://github.com/research-iobserve/cocome-experiment  ]]<br> 
+-url sets the url of the tested service, default is https://172.17.0.2:8181 for the CoCoME frontend from our [experiment](https://github.com/research-iobserve/cocome-experiment) <br>
+
 -runs<br> 
 -print_workloads <br> 
 # Implementation of new Workloads

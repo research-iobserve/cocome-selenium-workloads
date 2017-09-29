@@ -16,6 +16,8 @@
 package org.iobserve.selenium.workloadgeneration;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -56,6 +58,10 @@ public class WorkloadGeneration {
         logger.info("Creating the configuration for the workload with the webdriver path: "
                 + arguments.getPathPhantomjs() + ", base URL: " + arguments.getBaseUrl() + " and will repeating it "
                 + arguments.getNumberOfRuns() + " times");
+        if (arguments.getWorkloads().isEmpty() || CommandlineArguments.getPrintWorkloads()) {
+            WorkloadGeneration.printAvailableWorkloads();
+            return;
+        }
 
         final WorkloadConfiguration config = new WorkloadConfiguration(arguments.getBaseUrl(),
                 arguments.getNumberOfRuns(), arguments.getPathPhantomjs());
@@ -65,7 +71,6 @@ public class WorkloadGeneration {
         /*
          * The registry has to be filled beforehand. Better Ideas are welcome.
          */
-        WorkloadRegistry.fillRegistry();
 
         logger.info("Trying to execute following workloads: " + workloads.toString());
 
@@ -81,5 +86,21 @@ public class WorkloadGeneration {
         }
 
         logger.info("Workload execution finished");
+    }
+
+    private static void printAvailableWorkloads() {
+        final Map<String, Class<? extends AbstractWorkload>> registeredWorkloads = WorkloadRegistry
+                .getRegisteredWorkloads();
+
+        String output = "Following workloads are registered:";
+
+        for (final Entry<String, Class<? extends AbstractWorkload>> e : registeredWorkloads.entrySet()) {
+            output += "\n";
+            output += "Workload name: ";
+            output += e.getKey();
+            output += ", Corresponding class: ";
+            output += e.getValue().getSimpleName();
+        }
+        System.out.println(output);
     }
 }

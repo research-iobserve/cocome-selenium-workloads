@@ -36,18 +36,22 @@ import org.iobserve.selenium.workloads.handling.AbstractWorkload;
  */
 public class WorkloadRegistry {
 
-    private static final Map<String, Class<? extends AbstractWorkload>> REGISTERED_WORKLOADS = new HashMap<>();
-
     /**
-     * Fills the registry with predefined Workloads and their names. The keys are used to get the
-     * right workloads from the command line input.
+     * Returns the predefined registered workloads their names and the corresponding classes. The
+     * keys are used to get the right workloads from the command line input.
+     *
+     * @return all {@link AbstractWorkload workloads} known by the registry
      */
-    public static void fillRegistry() {
+    public static Map<String, Class<? extends AbstractWorkload>> getRegisteredWorkloads() {
         LogManager.getLogger(WorkloadRegistry.class).debug("Filling the registry");
-        WorkloadRegistry.REGISTERED_WORKLOADS.put("Test", TestWorkload.class);
-        WorkloadRegistry.REGISTERED_WORKLOADS.put("EM-Workload1", CocomeEnterpriseManagerActionWorkload.class);
-        WorkloadRegistry.REGISTERED_WORKLOADS.put("CS_Workload1", CocomeCashierCashShoppingWorkload.class);
-        WorkloadRegistry.REGISTERED_WORKLOADS.put("CDOR", JPetStoreCdorWorkload.class);
+        final Map<String, Class<? extends AbstractWorkload>> registeredWorkloads = new HashMap<>();
+
+        registeredWorkloads.put("Test", TestWorkload.class);
+        registeredWorkloads.put("EM-Workload1", CocomeEnterpriseManagerActionWorkload.class);
+        registeredWorkloads.put("CS_Workload1", CocomeCashierCashShoppingWorkload.class);
+        registeredWorkloads.put("CDOR", JPetStoreCdorWorkload.class);
+
+        return registeredWorkloads;
     }
 
     /**
@@ -65,14 +69,14 @@ public class WorkloadRegistry {
 
         logger.debug("Looking for workload with name: " + name);
 
-        final Class<? extends AbstractWorkload> searchedWorkload = WorkloadRegistry.REGISTERED_WORKLOADS.get(name);
+        final Class<? extends AbstractWorkload> searchedWorkload = WorkloadRegistry.getRegisteredWorkloads().get(name);
         if (searchedWorkload == null) {
             logger.debug(name + " was not found in the registry");
             throw new WorkloadNotCreatedException("Workload " + name + " was not found in the (internal) registry");
         }
 
         try {
-            return WorkloadRegistry.REGISTERED_WORKLOADS.get(name).newInstance();
+            return WorkloadRegistry.getRegisteredWorkloads().get(name).newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             logger.error(name + " could not be instantiated", e);
             throw new WorkloadNotCreatedException("Workload " + name + " could not be instantiated");

@@ -37,8 +37,11 @@ public class CommandlineArguments {
     @Parameter(names = "-runs", description = "The number of times a (repeatable) workload is executed")
     private static int numberOfRuns = 5;
 
-    @Parameter(names = "-workload", description = "The name(s) of the workload(s) that should be executed.", required = true)
+    @Parameter(names = "-workloads", description = "The name(s) of the workload(s) that should be executed.", required = true)
     private static List<String> workloads = new ArrayList<>();
+
+    @Parameter(names = "-print_workloads", description = "The name(s) of the workload(s) that should be executed.", help = true)
+    private static Boolean printWorkloads = false;
 
     public String getPathPhantomjs() {
         return this.pathPhantomjs;
@@ -54,6 +57,10 @@ public class CommandlineArguments {
 
     public final List<String> getWorkloads() {
         return CommandlineArguments.workloads;
+    }
+
+    public static Boolean getPrintWorkloads() {
+        return CommandlineArguments.printWorkloads;
     }
 
 }

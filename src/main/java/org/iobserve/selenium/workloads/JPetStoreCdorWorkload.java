@@ -50,4 +50,10 @@ public class JPetStoreCdorWorkload extends AbstractWorkload {
                 .build();
     }
 
+    // @Override
+    // public String getWorkloadDescription() {
+    // return "JPetStore workload: Executing the same workload as in the Evaluation in Christoph
+    // Dorniedens Masters Thesis";
+    // }
+
 }

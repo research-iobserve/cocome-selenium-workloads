@@ -63,8 +63,15 @@ public class CocomeEnterpriseManagerActionWorkload extends AbstractWorkload {
         return WorkloadPlan.builder().then(new EMLoginTask()).then(new EMCreateNewEnterpriseTask(enterpriseName))
                 .then(new EMCreateNewProductTask(productName, productBarCode, productPrice))
                 .then(new EMCreateNewStoreTask(storeName, storeLocation))
-                .then(new EMAddSecondProductToFirstStoreOfSecondEnterpriseTask(shopPrice, stockMin, stockMax, stockCurrent))
+                .then(new EMAddSecondProductToFirstStoreOfSecondEnterpriseTask(shopPrice, stockMin, stockMax,
+                        stockCurrent))
                 .then(new EMLogoutTask()).build();
     }
+
+    // @Override
+    // public String getWorkloadDescription() {
+    // return "Cocome workload: creates a new product, a new store and adds both to a new
+    // enterprise";
+    // }
 
 }

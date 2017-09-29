@@ -9,7 +9,7 @@ buildscript {
 }
 
 sourceCompatibility = 1.8
-
+targetCompatibility = 1.8
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -39,7 +39,15 @@ dependencies {
     
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.iobserve.selenium.workloadgeneration.WorkloadGeneration'
+    }
+}
+
+
 checkstyle {
+		int maxWarnings = 0
     	configFile = rootProject.file('iobserve-checkstyle-rules.xml')
     	configProperties = [config_loc: "${rootDir}"]
     }

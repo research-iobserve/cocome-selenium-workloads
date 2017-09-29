@@ -49,4 +49,9 @@ public class CocomeCashierCashShoppingWorkload extends AbstractWorkload {
                 .then(new CSLogoutTask()).build();
     }
 
+    // @Override
+    // public String getWorkloadDescription() {
+    // return "Cocome workload, login, do two different shoppings and logout";
+    // }
+
 }

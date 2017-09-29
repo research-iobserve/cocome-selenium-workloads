@@ -73,6 +73,7 @@ public class WorkloadConfiguration {
      * Delete old driver and create a new one therefore creating a new session.
      */
     public final void newSession() {
+        // TODO maybe to much, is there an easier way?
         this.createNewDriver();
     }
 

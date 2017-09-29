@@ -31,4 +31,9 @@ public class TestWorkload extends AbstractWorkload {
         return WorkloadPlan.builder().then(EMLoginTask.create()).newSession().then(new EMLoginTask()).build();
     }
 
+    // @Override
+    // public String getWorkloadDescription() {
+    // return "Test workload for testing purposes";
+    // }
+
 }

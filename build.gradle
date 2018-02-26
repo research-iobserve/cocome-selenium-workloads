@@ -7,7 +7,7 @@ buildscript {
         maven {url "https://maven.eveoh.nl/content/repositories/releases"}
     }
 }
-
+version = '1.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -40,14 +40,16 @@ dependencies {
 }
 
 jar {
-    manifest {
-        attributes 'Main-Class': 'org.iobserve.selenium.workloadgeneration.WorkloadGeneration'
+	manifest {
+                attributes 'Main-Class': 'org.iobserve.selenium.workloadgeneration.WorkloadGeneration'
     }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 
 checkstyle {
 		int maxWarnings = 0
     	configFile = rootProject.file('iobserve-checkstyle-rules.xml')
-    	configProperties = [config_loc: "${rootDir}"]
+    	configDir = file("${rootDir}")
     }

@@ -21,7 +21,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.Select;
 
 /**
- * Represents the login of the cashier in CoCoME
+ * Represents the login of the cashier in CoCoME.
  *
  * @author Marc Adolf
  *

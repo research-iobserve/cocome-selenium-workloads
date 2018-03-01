@@ -1,3 +1,5 @@
+<a href="https://travis-ci.org/research-iobserve/selenium-workloads"><img src="https://travis-ci.org/research-iobserve/selenium-workloads.svg?branch=master" alt="Build Status"></a>
+
 # Selenium-experiment-workloads
 This project ist meant to create different workloads for the experiment with cocome utilizing Selenium 
 

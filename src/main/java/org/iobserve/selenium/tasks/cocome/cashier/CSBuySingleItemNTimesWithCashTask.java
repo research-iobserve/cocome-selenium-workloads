@@ -15,7 +15,8 @@
  ***************************************************************************/
 package org.iobserve.selenium.tasks.cocome.cashier;
 
-import org.iobserve.selenium.tasks.IUserTask;
+import org.iobserve.selenium.tasks.AbstractUserTask;
+import org.iobserve.selenium.tasks.fuzzy.properties.parameter.VariableIntegerTaskParameter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -25,9 +26,9 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class CSBuySingleItemNTimesWithCashTask implements IUserTask {
+public class CSBuySingleItemNTimesWithCashTask extends AbstractUserTask {
     private final int productBarCode;
-    private final int numberOfItems;
+    private final VariableIntegerTaskParameter numberOfItems;
     private final int cashToPay;
 
     /**
@@ -44,7 +45,8 @@ public class CSBuySingleItemNTimesWithCashTask implements IUserTask {
      */
     public CSBuySingleItemNTimesWithCashTask(final int productBarCode, final int numberOfItems, final int cashToPay) {
         this.productBarCode = productBarCode;
-        this.numberOfItems = numberOfItems;
+        final int max = numberOfItems > 100 ? numberOfItems : 100;
+        this.numberOfItems = new VariableIntegerTaskParameter(1, max, numberOfItems);
         this.cashToPay = cashToPay;
     }
 
@@ -55,11 +57,11 @@ public class CSBuySingleItemNTimesWithCashTask implements IUserTask {
      * java.lang.String)
      */
     @Override
-    public void accept(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl) {
 
         driver.get(baseUrl + "/cloud-web-frontend/faces/store/start_sale.xhtml");
         // add all items to the "shopping cart"
-        for (int i = 0; i < this.numberOfItems; i++) {
+        for (int i = 0; i < this.numberOfItems.getParameter(this.configuration.isFuzzy()); i++) {
             driver.findElement(By.id("j_idt42:barcodetext")).clear();
             driver.findElement(By.id("j_idt42:barcodetext")).sendKeys(Integer.toString(this.productBarCode));
             driver.findElement(By.name("j_idt42:j_idt66")).click();

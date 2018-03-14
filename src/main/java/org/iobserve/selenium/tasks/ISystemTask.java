@@ -32,9 +32,9 @@ public interface ISystemTask extends Consumer<WorkloadConfiguration> {
      *
      * @return The name of the task.
      */
-    public String getName();
+    String getName();
 
     @Override
-    public void accept(final WorkloadConfiguration t);
+    void accept(final WorkloadConfiguration t);
 
 }

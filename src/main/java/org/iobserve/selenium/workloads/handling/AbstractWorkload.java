@@ -28,11 +28,4 @@ public abstract class AbstractWorkload {
      */
     public abstract WorkloadPlan assembleWorkloadTasks();
 
-    // /**
-    // * Gives a human readable description of the Workload.
-    // *
-    // * @return A description of the Workload.
-    // */
-    // public abstract String getWorkloadDescription();
-
 }

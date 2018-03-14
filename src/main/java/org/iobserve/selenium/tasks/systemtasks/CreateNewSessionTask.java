@@ -27,7 +27,7 @@ import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
  *
  */
 public class CreateNewSessionTask implements ISystemTask {
-    private final String name = "Create new session";
+    private static final String NAME = "Create new session";
 
     @Override
     public void accept(final WorkloadConfiguration t) {
@@ -37,7 +37,7 @@ public class CreateNewSessionTask implements ISystemTask {
 
     @Override
     public String getName() {
-        return this.name;
+        return CreateNewSessionTask.NAME;
     }
 
 }

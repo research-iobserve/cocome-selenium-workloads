@@ -15,10 +15,12 @@
  ***************************************************************************/
 package org.iobserve.selenium.tasks.jpetstore.buy;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-import org.iobserve.selenium.tasks.IUserTask;
+import org.iobserve.selenium.tasks.AbstractUserTask;
+import org.iobserve.selenium.tasks.fuzzy.properties.parameter.ListTaskParameter;
+import org.iobserve.selenium.tasks.fuzzy.properties.parameter.VariableIntegerTaskParameter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -28,11 +30,11 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class AddFishToCartTask implements IUserTask {
+public class AddFishToCartTask extends AbstractUserTask {
 
-    private final int amount;
-    private int itemPosition;
-    private final List<String> items;
+    private final VariableIntegerTaskParameter amount;
+    private final ListTaskParameter<String> items;
+    private final int itemPosition;
 
     /**
      * One task to add a certain amount of one sort of fish to the shopping cart.
@@ -44,18 +46,17 @@ public class AddFishToCartTask implements IUserTask {
      *            itemPosition exceeds the size of the list.
      */
     public AddFishToCartTask(final int amount, final int itemPosition) {
-        this.amount = amount;
+        this.amount = new VariableIntegerTaskParameter(1, 10, amount);
         this.itemPosition = itemPosition;
 
-        this.items = new ArrayList<>();
-        this.items.add("FI-SW-01");
-        this.items.add("FI-SW-02");
-        this.items.add("FI-FW-01");
-        this.items.add("FI-FW-02");
+        final List<String> givenItems = new LinkedList<>();
+        givenItems.add("FI-SW-01");
+        givenItems.add("FI-SW-02");
+        givenItems.add("FI-FW-01");
+        givenItems.add("FI-FW-02");
 
-        if (itemPosition < (this.items.size() - 1)) {
-            this.itemPosition = this.items.size() - 1;
-        }
+        this.items = new ListTaskParameter<>(givenItems, itemPosition);
+
     }
 
     /*
@@ -65,13 +66,16 @@ public class AddFishToCartTask implements IUserTask {
      * java.lang.String)
      */
     @Override
-    public void accept(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl) {
         driver.get(baseUrl + "/jpetstore/actions/Catalog.action");
+        final Boolean fuzzy = this.configuration.isFuzzy();
+        final String item = this.items.getParameter(fuzzy);
+        final int currentAmount = this.amount.getParameter(fuzzy);
 
         // buy fish
-        for (int j = 0; j < this.amount; j++) {
+        for (int j = 0; j < currentAmount; j++) {
             driver.findElement(By.cssSelector("#QuickLinks > a > img")).click();
-            driver.findElement(By.linkText(this.items.get(this.itemPosition))).click();
+            driver.findElement(By.linkText(item)).click();
             driver.findElement(By.linkText("Add to Cart")).click();
         }
     }

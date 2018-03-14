@@ -36,7 +36,13 @@ import com.beust.jcommander.JCommander;
  * @author Christoph Dornieden
  * @author Marc Adolf
  */
-public class WorkloadGeneration {
+public final class WorkloadGeneration {
+
+    /**
+     * Empty constructor.
+     */
+    private WorkloadGeneration() {
+    }
 
     /**
      * Executes the given workloads with the given parameters.
@@ -53,18 +59,23 @@ public class WorkloadGeneration {
         // logger.debug("Webdriver path: " + arguments.getPathPhantomjs());
         // logger.debug("Base URL: " + arguments.getBaseUrl());
         // logger.debug("Number of runs: " + arguments.getNumberOfRuns());
-        logger.debug("Workloads to execute: " + arguments.getWorkloads());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Workloads to execute: " + arguments.getWorkloads());
+        }
 
-        logger.info("Creating the configuration for the workload with the webdriver path: "
-                + arguments.getPathPhantomjs() + ", base URL: " + arguments.getBaseUrl() + " and will repeating it "
-                + arguments.getNumberOfRuns() + " times");
+        if (logger.isInfoEnabled()) {
+            logger.info("Creating the configuration for the workload with the webdriver path: " // NOPMD
+                    + arguments.getPathPhantomjs() + ", base URL: " + arguments.getBaseUrl() + " and will repeating it "
+                    + arguments.getNumberOfRuns() + " times");
+        }
+
         if (arguments.getWorkloads().isEmpty() || CommandlineArguments.getPrintWorkloads()) {
             WorkloadGeneration.printAvailableWorkloads();
             return;
         }
 
         final WorkloadConfiguration config = new WorkloadConfiguration(arguments.getBaseUrl(),
-                arguments.getNumberOfRuns(), arguments.getPathPhantomjs());
+                arguments.getNumberOfRuns(), arguments.getPathPhantomjs(), CommandlineArguments.getIsFuzzy());
 
         final List<String> workloads = arguments.getWorkloads();
 
@@ -72,7 +83,9 @@ public class WorkloadGeneration {
          * The registry has to be filled beforehand. Better Ideas are welcome.
          */
 
-        logger.info("Trying to execute following workloads: " + workloads.toString());
+        if (logger.isInfoEnabled()) {
+            logger.info("Trying to execute following workloads: " + workloads.toString()); // NOPMD
+        }
 
         for (final String name : workloads) {
             try {
@@ -80,8 +93,12 @@ public class WorkloadGeneration {
                 workload.assembleWorkloadTasks().execute(config);
 
             } catch (final WorkloadNotCreatedException e) {
-                logger.info("Could not create workload '" + name + "'");
-                logger.debug("Workload " + name + ", Error (resuming): " + e.getMessage(), e);
+                if (logger.isInfoEnabled()) {
+                    logger.info("Could not create workload '" + name + "'"); // NOPMD
+                }
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Workload " + name + ", Error (resuming): " + e.getMessage(), e);
+                }
             }
         }
 
@@ -101,6 +118,6 @@ public class WorkloadGeneration {
             output += ", Corresponding class: ";
             output += e.getValue().getSimpleName();
         }
-        System.out.println(output);
+        System.out.println(output); // NOPMD -> creates output for command line
     }
 }

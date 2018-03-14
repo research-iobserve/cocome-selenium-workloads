@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.tasks.cocome.enterprisemanager;
 
-import org.iobserve.selenium.tasks.IUserTask;
+import org.iobserve.selenium.tasks.AbstractUserTask;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -25,7 +25,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class EMCreateNewStoreTask implements IUserTask {
+public class EMCreateNewStoreTask extends AbstractUserTask {
     private final String storeName;
     private final String storeLocation;
 
@@ -50,7 +50,7 @@ public class EMCreateNewStoreTask implements IUserTask {
      * java.lang.String)
      */
     @Override
-    public void accept(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl) {
         driver.get(baseUrl + "/cloud-web-frontend/faces/enterprise/create_product.xhtml");
         driver.findElement(By.linkText("Enterprises")).click();
         driver.findElement(By.xpath("//tr[2]/td[3]/a[2]/img")).click();

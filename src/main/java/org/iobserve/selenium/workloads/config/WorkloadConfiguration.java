@@ -35,6 +35,7 @@ public class WorkloadConfiguration {
     private final int numberOfRuns;
     private final String pathWebDriver;
     private PhantomJSDriver driver;
+    private final Boolean fuzzy;
 
     /**
      *
@@ -45,11 +46,13 @@ public class WorkloadConfiguration {
      * @param pathWebDriver
      *            Path to the PhantomJS binaries
      */
-    public WorkloadConfiguration(final String baseUrl, final int numberOfRuns, final String pathWebDriver) {
+    public WorkloadConfiguration(final String baseUrl, final int numberOfRuns, final String pathWebDriver,
+            final Boolean isFuzzy) {
         this.baseUrl = baseUrl;
         this.numberOfRuns = numberOfRuns;
         this.pathWebDriver = pathWebDriver;
         this.createNewDriver();
+        this.fuzzy = isFuzzy;
 
     }
 
@@ -73,7 +76,7 @@ public class WorkloadConfiguration {
      * Delete old driver and create a new one therefore creating a new session.
      */
     public final void newSession() {
-        // TODO maybe to much, is there an easier way?
+        // maybe to much, is there an easier way?
         this.createNewDriver();
     }
 
@@ -87,6 +90,10 @@ public class WorkloadConfiguration {
 
     public final PhantomJSDriver getDriver() {
         return this.driver;
+    }
+
+    public Boolean isFuzzy() {
+        return this.fuzzy;
     }
 
 }

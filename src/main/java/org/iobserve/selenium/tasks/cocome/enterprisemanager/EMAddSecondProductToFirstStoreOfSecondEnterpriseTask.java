@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.tasks.cocome.enterprisemanager;
 
-import org.iobserve.selenium.tasks.IUserTask;
+import org.iobserve.selenium.tasks.AbstractUserTask;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -26,7 +26,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class EMAddSecondProductToFirstStoreOfSecondEnterpriseTask implements IUserTask {
+public class EMAddSecondProductToFirstStoreOfSecondEnterpriseTask extends AbstractUserTask {
     private final float shopPrice;
     private final int stockMin;
     private final int stockMax;
@@ -61,7 +61,7 @@ public class EMAddSecondProductToFirstStoreOfSecondEnterpriseTask implements IUs
      * java.lang.String)
      */
     @Override
-    public void accept(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl) {
         driver.get(baseUrl + "/cloud-web-frontend/faces/enterprise/show_stores.xhtml");
         driver.findElement(By.linkText("Enterprises")).click();
         driver.findElement(By.xpath("//tr[2]/td[3]/a/img")).click();

@@ -18,7 +18,7 @@ package org.iobserve.selenium.tasks;
 import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 
 /**
- * Wraps {@link IUserTask UserTasks}. Enables the system to use func(config) and
+ * Wraps {@link AbstractUserTask UserTasks}. Enables the system to use func(config) and
  * func(config.getDriver(),config.getBaseUrl()) in the same way.
  *
  * @author Marc Adolf
@@ -26,14 +26,14 @@ import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
  */
 public class UserTaskWrapper implements ISystemTask {
 
-    private final IUserTask userTask;
+    private final AbstractUserTask userTask;
 
     /**
      *
      * @param userTask
      *            The task that will be executed on accept().
      */
-    public UserTaskWrapper(final IUserTask userTask) {
+    public UserTaskWrapper(final AbstractUserTask userTask) {
         this.userTask = userTask;
     }
 
@@ -45,7 +45,7 @@ public class UserTaskWrapper implements ISystemTask {
      */
     @Override
     public void accept(final WorkloadConfiguration config) {
-        this.userTask.accept(config.getDriver(), config.getBaseUrl());
+        this.userTask.executeTask(config.getDriver(), config.getBaseUrl());
     }
 
     @Override

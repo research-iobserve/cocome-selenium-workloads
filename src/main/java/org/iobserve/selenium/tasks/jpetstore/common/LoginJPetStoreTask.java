@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.tasks.jpetstore.common;
 
-import org.iobserve.selenium.tasks.IUserTask;
+import org.iobserve.selenium.tasks.AbstractUserTask;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -25,7 +25,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class LoginJPetStoreTask implements IUserTask {
+public class LoginJPetStoreTask extends AbstractUserTask {
     private final String username;
     private final String password;
 
@@ -50,7 +50,7 @@ public class LoginJPetStoreTask implements IUserTask {
      * java.lang.String)
      */
     @Override
-    public void accept(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl) {
         driver.findElement(By.linkText("Sign In")).click();
         driver.findElement(By.name("username")).clear();
         driver.findElement(By.name("username")).sendKeys(this.username);
@@ -68,4 +68,5 @@ public class LoginJPetStoreTask implements IUserTask {
     public String getName() {
         return "Log in " + this.username;
     }
+
 }

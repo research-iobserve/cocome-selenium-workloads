@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.tasks.jpetstore.common;
 
-import org.iobserve.selenium.tasks.IUserTask;
+import org.iobserve.selenium.tasks.AbstractUserTask;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -26,7 +26,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class CheckoutJPetStoreTask implements IUserTask {
+public class CheckoutJPetStoreTask extends AbstractUserTask {
 
     /*
      * (non-Javadoc)
@@ -35,7 +35,7 @@ public class CheckoutJPetStoreTask implements IUserTask {
      * java.lang.String)
      */
     @Override
-    public void accept(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl) {
         driver.get(baseUrl + "/jpetstore/actions/Catalog.action");
 
         driver.findElement(By.cssSelector("img[name=\"img_cart\"]")).click();

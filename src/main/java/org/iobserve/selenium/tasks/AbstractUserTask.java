@@ -16,31 +16,43 @@
 
 package org.iobserve.selenium.tasks;
 
-import java.util.function.BiConsumer;
-
+import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 import org.openqa.selenium.WebDriver;
 
 /**
- * Cosmetic Interface to have a clear distinction between task of user and other (system) tasks.
+ * Cosmetic interface for a clear distinction between task of users and other (system) tasks.
  *
  *
  * @author Marc Adolf
  * @author Sören Henning
  *
  */
-public interface IUserTask extends BiConsumer<WebDriver, String> {
+public abstract class AbstractUserTask {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.function.BiConsumer#accept(java.lang.Object, java.lang.Object)
+    protected WorkloadConfiguration configuration;
+
+    /**
+     * Executes the defined task.
+     *
+     * @param driver
+     *            the driver for the web browser.
+     * @param baseUrl
+     *            the URL where the side is hosted.
      */
-    @Override
-    void accept(WebDriver driver, String baseUrl);
+    public abstract void executeTask(WebDriver driver, String baseUrl);
 
     /**
      *
      * @return The name of the task.
      */
-    public String getName();
+    public abstract String getName();
+
+    public WorkloadConfiguration getConfiguration() {
+        return this.configuration;
+    }
+
+    public void setConfiguration(final WorkloadConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
 }

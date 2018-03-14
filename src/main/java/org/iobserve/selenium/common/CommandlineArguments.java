@@ -28,20 +28,23 @@ import com.beust.jcommander.Parameter;
  */
 public class CommandlineArguments {
 
-    @Parameter(names = "-phantomjs", description = "Path to the PhantomJS binaries", required = true)
-    private String pathPhantomjs;
-
     @Parameter(names = "-url", description = "Base url for the selenium workloads")
     private static String baseUrl = "https://172.17.0.2:8181";
+
+    @Parameter(names = "-fuzzy", description = "Enables fuzzy behavior if defined by the tasks")
+    private static Boolean isFuzzy = false;
 
     @Parameter(names = "-runs", description = "The number of times a (repeatable) workload is executed")
     private static int numberOfRuns = 5;
 
+    @Parameter(names = "-print_workloads", description = "The name(s) of the workload(s) that should be executed.", help = true)
+    private static Boolean printWorkloads = false;
+
     @Parameter(names = "-workloads", description = "The name(s) of the workload(s) that should be executed.", required = true)
     private static List<String> workloads = new ArrayList<>();
 
-    @Parameter(names = "-print_workloads", description = "The name(s) of the workload(s) that should be executed.", help = true)
-    private static Boolean printWorkloads = false;
+    @Parameter(names = "-phantomjs", description = "Path to the PhantomJS binaries", required = true)
+    private String pathPhantomjs;
 
     public String getPathPhantomjs() {
         return this.pathPhantomjs;
@@ -57,6 +60,10 @@ public class CommandlineArguments {
 
     public final List<String> getWorkloads() {
         return CommandlineArguments.workloads;
+    }
+
+    public static Boolean getIsFuzzy() {
+        return CommandlineArguments.isFuzzy;
     }
 
     public static Boolean getPrintWorkloads() {

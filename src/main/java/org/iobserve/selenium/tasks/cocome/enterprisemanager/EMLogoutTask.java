@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.tasks.cocome.enterprisemanager;
 
-import org.iobserve.selenium.tasks.IUserTask;
+import org.iobserve.selenium.tasks.AbstractUserTask;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -25,7 +25,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class EMLogoutTask implements IUserTask {
+public class EMLogoutTask extends AbstractUserTask {
 
     /*
      * (non-Javadoc)
@@ -34,7 +34,7 @@ public class EMLogoutTask implements IUserTask {
      * java.lang.String)
      */
     @Override
-    public void accept(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl) {
         driver.get(baseUrl + "/cloud-web-frontend/faces/store/show_stock.xhtml");
         driver.findElement(By.linkText("Logout")).click();
     }

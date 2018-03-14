@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2017 iObserve Project (https://www.iobserve-devops.net)
+ * Copyright (C) 2018 iObserve Project (https://www.iobserve-devops.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.workloads;
-
-import org.iobserve.selenium.tasks.cocome.enterprisemanager.EMLoginTask;
-import org.iobserve.selenium.workloads.handling.AbstractWorkload;
-import org.iobserve.selenium.workloads.handling.WorkloadPlan;
+package org.iobserve.selenium.common;
 
 /**
+ * Represents an exception if errors occur during the initialization of workloads.
  *
  * @author Marc Adolf
  *
  */
-public class TestWorkload extends AbstractWorkload {
+public class WorkloadInitializationException extends Exception {
 
-    @Override
-    public WorkloadPlan assembleWorkloadTasks() {
-        return WorkloadPlan.builder().then(EMLoginTask.create()).newSession().then(new EMLoginTask()).build();
-    }
+    private static final long serialVersionUID = 1L;
 
 }

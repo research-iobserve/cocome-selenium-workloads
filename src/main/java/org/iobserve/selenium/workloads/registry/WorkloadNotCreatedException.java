@@ -22,6 +22,7 @@ package org.iobserve.selenium.workloads.registry;
  *
  */
 public class WorkloadNotCreatedException extends Exception {
+    private static final long serialVersionUID = 1L;
 
     /**
      * New {@link WorkloadNotCreatedException}.
@@ -32,7 +33,5 @@ public class WorkloadNotCreatedException extends Exception {
     public WorkloadNotCreatedException(final String string) {
         super(string);
     }
-
-    private static final long serialVersionUID = 1L;
 
 }

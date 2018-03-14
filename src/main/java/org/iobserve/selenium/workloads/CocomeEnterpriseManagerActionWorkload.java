@@ -68,10 +68,4 @@ public class CocomeEnterpriseManagerActionWorkload extends AbstractWorkload {
                 .then(new EMLogoutTask()).build();
     }
 
-    // @Override
-    // public String getWorkloadDescription() {
-    // return "Cocome workload: creates a new product, a new store and adds both to a new
-    // enterprise";
-    // }
-
 }

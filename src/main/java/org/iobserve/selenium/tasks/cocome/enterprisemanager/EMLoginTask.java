@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.tasks.cocome.enterprisemanager;
 
-import org.iobserve.selenium.tasks.IUserTask;
+import org.iobserve.selenium.tasks.AbstractUserTask;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -26,11 +26,11 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public final class EMLoginTask implements IUserTask {
-    private final String name = "Enterprise manager - Login";
+public final class EMLoginTask extends AbstractUserTask {
+    private final static String NAME = "Enterprise manager - Login";
 
     @Override
-    public void accept(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl) {
         driver.get(baseUrl + "/cloud-web-frontend/faces/login.xhtml");
         driver.findElement(By.name("j_idt27")).clear();
         driver.findElement(By.name("j_idt27")).sendKeys("enterprise");
@@ -44,13 +44,13 @@ public final class EMLoginTask implements IUserTask {
      *
      * @return A single use instance of the Task.
      */
-    public static IUserTask create() {
+    public static AbstractUserTask create() {
         return new EMLoginTask();
     }
 
     @Override
     public String getName() {
-        return this.name;
+        return EMLoginTask.NAME;
     }
 
 }

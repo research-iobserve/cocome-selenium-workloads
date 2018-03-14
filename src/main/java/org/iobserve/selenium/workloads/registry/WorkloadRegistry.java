@@ -34,7 +34,14 @@ import org.iobserve.selenium.workloads.handling.AbstractWorkload;
  * @author Marc Adolf
  *
  */
-public class WorkloadRegistry {
+public final class WorkloadRegistry {
+
+    /**
+     * Empty Constructor.
+     */
+    private WorkloadRegistry() {
+        // TODO Auto-generated constructor stub
+    }
 
     /**
      * Returns the predefined registered workloads their names and the corresponding classes. The
@@ -67,19 +74,29 @@ public class WorkloadRegistry {
     public static AbstractWorkload getWorkloadInstanceByName(final String name) throws WorkloadNotCreatedException {
         final Logger logger = LogManager.getLogger(WorkloadRegistry.class);
 
-        logger.debug("Looking for workload with name: " + name);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Looking for workload with name: " + name);
+        }
 
         final Class<? extends AbstractWorkload> searchedWorkload = WorkloadRegistry.getRegisteredWorkloads().get(name);
         if (searchedWorkload == null) {
-            logger.debug(name + " was not found in the registry");
+            if (logger.isDebugEnabled()) {
+                logger.debug(name + " was not found in the registry");
+            }
             throw new WorkloadNotCreatedException("Workload " + name + " was not found in the (internal) registry");
         }
 
         try {
             return WorkloadRegistry.getRegisteredWorkloads().get(name).newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            logger.error(name + " could not be instantiated", e);
-            throw new WorkloadNotCreatedException("Workload " + name + " could not be instantiated");
+            if (logger.isErrorEnabled()) {
+                logger.error(name + " could not be instantiated", e);
+            }
+            throw new WorkloadNotCreatedException("Workload " + name + " could not be instantiated"); // NOPMD
+                                                                                                      // stacktrace
+                                                                                                      // in
+                                                                                                      // error
+                                                                                                      // log
         }
     }
 }

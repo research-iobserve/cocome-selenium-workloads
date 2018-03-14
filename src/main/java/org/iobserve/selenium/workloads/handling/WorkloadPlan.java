@@ -20,16 +20,16 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.iobserve.selenium.tasks.AbstractUserTask;
 import org.iobserve.selenium.tasks.ISystemTask;
-import org.iobserve.selenium.tasks.IUserTask;
 import org.iobserve.selenium.tasks.UserTaskWrapper;
 import org.iobserve.selenium.tasks.systemtasks.CreateNewSessionTask;
 import org.iobserve.selenium.workloadgeneration.WorkloadGeneration;
 import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 
 /**
- * Collects and handles all {@link IUserTask tasks} and the {@link WorkloadConfiguration} for one
- * specified workload.
+ * Collects and handles all {@link AbstractUserTask tasks} and the {@link WorkloadConfiguration} for
+ * one specified workload.
  *
  *
  * @author Marc Adolf
@@ -38,9 +38,9 @@ import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
  */
 public final class WorkloadPlan {
 
+    private static final Logger LOGGER = LogManager.getLogger(WorkloadPlan.class);
     private final List<ISystemTask> tasks = new ArrayList<>();
     private WorkloadConfiguration config;
-    private final Logger logger = LogManager.getLogger(this.getClass());
 
     private WorkloadPlan() {
     }
@@ -79,21 +79,21 @@ public final class WorkloadPlan {
      * Executes all defined task. Repeats as often as the {@link WorkloadConfiguration} states it.
      * If the {@link WorkloadPlan} already has a WorkloadConfiguration the parameter is unused.
      *
-     * @param config
+     * @param configuration
      *            The {@link WorkloadConfiguration} that defines the base URL of the used web
      *            service, the used driver and the number of repetitions. It will NOT be used if the
      *            Object already has an existing configuration.
      */
-    public void execute(final WorkloadConfiguration config) {
+    public void execute(final WorkloadConfiguration configuration) {
         final WorkloadConfiguration usedConfig;
         if (this.config != null) {
             usedConfig = this.config;
         } else {
-            usedConfig = config;
+            usedConfig = configuration;
         }
         for (int i = 0; i < usedConfig.getNumberOfRuns(); i++) {
             this.tasks.stream().forEach(t -> {
-                this.logger.info("Executing task: " + t.getName());
+                WorkloadPlan.LOGGER.info("Executing task: %s ", t.getName());
                 t.accept(usedConfig);
             });
         }
@@ -101,7 +101,7 @@ public final class WorkloadPlan {
 
     /**
      *
-     * Assembles the {@link IUserTask tasks} for a new {@link WorkloadPlan}.
+     * Assembles the {@link AbstractUserTask tasks} for a new {@link WorkloadPlan}.
      *
      * @author Marc Adolf
      * @author Sören Henning
@@ -133,14 +133,14 @@ public final class WorkloadPlan {
         }
 
         /**
-         * Wraps an {@link IUserTask} in an {@link ISystemTask} and adds it at the current end of
-         * the task list in the given {@link WorkloadPlan}.
+         * Wraps an {@link AbstractUserTask} in an {@link ISystemTask} and adds it at the current
+         * end of the task list in the given {@link WorkloadPlan}.
          *
          * @param task
-         *            The {@link IUserTask} to be executed next.
+         *            The {@link AbstractUserTask} to be executed next.
          * @return The current {@link Builder} instance which assembles all tasks.
          */
-        public Builder then(final IUserTask task) {
+        public Builder then(final AbstractUserTask task) {
             this.workloadPlan.tasks.add(new UserTaskWrapper(task));
             return this;
         }

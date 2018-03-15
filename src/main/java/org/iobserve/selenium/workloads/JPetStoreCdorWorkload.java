@@ -45,7 +45,7 @@ public class JPetStoreCdorWorkload extends AbstractWorkload {
         final String password = "j2ee";
 
         // TODO add remaining workloads
-        return WorkloadPlan.builder().then(new AddFishToCartTask(amountOfFish, fishPosition))
+        return WorkloadPlan.builder().fuzzyThen(new AddFishToCartTask(amountOfFish, fishPosition), 10)
                 .then(new LoginJPetStoreTask(username, password)).then(new CheckoutJPetStoreTask()).newSession()
                 .build();
     }

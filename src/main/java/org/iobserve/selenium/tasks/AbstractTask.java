@@ -25,16 +25,28 @@ import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
  * @author Marc Adolf
  *
  */
-
-public interface ISystemTask extends Consumer<WorkloadConfiguration> {
+public abstract class AbstractTask implements Consumer<WorkloadConfiguration> {
 
     /**
      *
      * @return The name of the task.
      */
-    String getName();
+    public abstract String getName();
 
     @Override
-    void accept(final WorkloadConfiguration t);
+    public abstract void accept(final WorkloadConfiguration t);
+
+    /**
+     * Returns the amount of repetitions dependent if the workload should be fuzzy and if the task
+     * supports it.
+     *
+     * @param fuzzy
+     *            If the workload should be fuzzy.
+     * @return The computed or initiated amount of repetitions.
+     */
+    public int getRepetitions(final Boolean fuzzy) {
+        // default 1
+        return 1;
+    }
 
 }

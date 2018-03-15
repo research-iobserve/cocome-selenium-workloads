@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.tasks.systemtasks;
 
-import org.iobserve.selenium.tasks.ISystemTask;
+import org.iobserve.selenium.tasks.AbstractTask;
 import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 
 /**
@@ -26,7 +26,7 @@ import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
  * @author Marc Adolf
  *
  */
-public class CreateNewSessionTask implements ISystemTask {
+public class CreateNewSessionTask extends AbstractTask {
     private static final String NAME = "Create new session";
 
     @Override

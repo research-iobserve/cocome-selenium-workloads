@@ -20,8 +20,8 @@ import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 import org.openqa.selenium.WebDriver;
 
 /**
- * Cosmetic interface for a clear distinction between task of users and other (system) tasks.
- *
+ * Abstract class for the distinction between task of users and other (system) tasks. The
+ * {@link WorkloadConfiguration configuration} is saved as a class member.
  *
  * @author Marc Adolf
  * @author Sören Henning

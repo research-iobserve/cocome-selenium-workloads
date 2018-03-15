@@ -17,11 +17,12 @@ package org.iobserve.selenium.workloads.handling;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.iobserve.selenium.tasks.AbstractTask;
 import org.iobserve.selenium.tasks.AbstractUserTask;
-import org.iobserve.selenium.tasks.ISystemTask;
 import org.iobserve.selenium.tasks.UserTaskWrapper;
 import org.iobserve.selenium.tasks.systemtasks.CreateNewSessionTask;
 import org.iobserve.selenium.workloadgeneration.WorkloadGeneration;
@@ -39,7 +40,7 @@ import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 public final class WorkloadPlan {
 
     private static final Logger LOGGER = LogManager.getLogger(WorkloadPlan.class);
-    private final List<ISystemTask> tasks = new ArrayList<>();
+    private final List<AbstractTask> plannedTasks = new ArrayList<>();
     private WorkloadConfiguration config;
 
     private WorkloadPlan() {
@@ -91,11 +92,25 @@ public final class WorkloadPlan {
         } else {
             usedConfig = configuration;
         }
+        final List<AbstractTask> tasks = new ArrayList<>(this.plannedTasks);
+        // Create fuzzed list of task
+        // if (usedConfig.isFuzzy()) {
+        // for (final AbstractTask t : this.plannedTasks) {
+        // for (int i = 1; i <= t.getRepetitions(usedConfig.isFuzzy()); i++) {
+        // tasks.add(t.getClass())
+        // }
+        //
+        // }
+        // }
+
         for (int i = 0; i < usedConfig.getNumberOfRuns(); i++) {
-            this.tasks.stream().forEach(t -> {
-                WorkloadPlan.LOGGER.info("Executing task: %s ", t.getName());
-                t.accept(usedConfig);
+            tasks.stream().forEach((final AbstractTask t) -> {
+                IntStream.range(1, t.getRepetitions(usedConfig.isFuzzy())).forEach(idx -> {
+                    WorkloadPlan.LOGGER.info("Executing task: %s in repetition %i ", t.getName(), idx);
+                    t.accept(usedConfig);
+                });
             });
+
         }
     }
 
@@ -120,20 +135,20 @@ public final class WorkloadPlan {
         }
 
         /**
-         * Adds an {@link ISystemTask} at the current end of the task list in the given
+         * Adds an {@link AbstractTask} at the current end of the task list in the given
          * {@link WorkloadPlan}.
          *
          * @param task
-         *            The {@link ISystemTask} to be executed next.
+         *            The {@link AbstractTask} to be executed next.
          * @return The current {@link Builder} instance which assembles all tasks.
          */
-        public Builder then(final ISystemTask task) {
-            this.workloadPlan.tasks.add(task);
+        public Builder then(final AbstractTask task) {
+            this.workloadPlan.plannedTasks.add(task);
             return this;
         }
 
         /**
-         * Wraps an {@link AbstractUserTask} in an {@link ISystemTask} and adds it at the current
+         * Wraps an {@link AbstractUserTask} in an {@link AbstractTask} and adds it at the current
          * end of the task list in the given {@link WorkloadPlan}.
          *
          * @param task
@@ -141,7 +156,20 @@ public final class WorkloadPlan {
          * @return The current {@link Builder} instance which assembles all tasks.
          */
         public Builder then(final AbstractUserTask task) {
-            this.workloadPlan.tasks.add(new UserTaskWrapper(task));
+            this.workloadPlan.plannedTasks.add(new UserTaskWrapper(task));
+            return this;
+        }
+
+        /**
+         *
+         * @param task
+         *            The {@link AbstractUserTask} to be executed next.
+         * @param maxRepetitions
+         *            The maximum repetitions that may occur if the workload is executed as fuzzy.
+         * @return The current {@link Builder} instance which assembles all tasks.
+         */
+        public Builder fuzzyThen(final AbstractUserTask task, final int maxRepetitions) {
+            this.workloadPlan.plannedTasks.add(new UserTaskWrapper(task, maxRepetitions));
             return this;
         }
 

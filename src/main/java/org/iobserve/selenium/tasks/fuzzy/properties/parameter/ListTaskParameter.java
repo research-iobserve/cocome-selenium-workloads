@@ -19,11 +19,27 @@ package org.iobserve.selenium.tasks.fuzzy.properties.parameter;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Represents a list of possible values for one parameter.
+ *
+ * @author Marc Adolf
+ *
+ * @param <T>
+ *            The type of the elements in the list.
+ */
 public class ListTaskParameter<T> implements ITaskParameter<T> {
 
     private final List<T> items;
     private int defaultPosition;
 
+    /**
+     * Creates a variable parameter that saves the possible values in a list.
+     *
+     * @param items
+     *            The list of possible values.
+     * @param defaultPosition
+     *            The position in the list of the default value.
+     */
     public ListTaskParameter(final List<T> items, final int defaultPosition) {
         this.items = items;
         this.defaultPosition = defaultPosition;

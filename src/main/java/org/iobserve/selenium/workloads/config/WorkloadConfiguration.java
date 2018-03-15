@@ -17,6 +17,7 @@ package org.iobserve.selenium.workloads.config;
 
 import java.util.concurrent.TimeUnit;
 
+import org.iobserve.selenium.tasks.fuzzy.properties.parameter.ITaskParameter;
 import org.iobserve.selenium.workloads.handling.WorkloadPlan;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
@@ -45,6 +46,9 @@ public class WorkloadConfiguration {
      *            The number of repetitions of the {@link WorkloadPlan}.
      * @param pathWebDriver
      *            Path to the PhantomJS binaries
+     * @param isFuzzy
+     *            If true, all tasks in the workloads use the random content of the predefined
+     *            {@link ITaskParameter parameters}.
      */
     public WorkloadConfiguration(final String baseUrl, final int numberOfRuns, final String pathWebDriver,
             final Boolean isFuzzy) {

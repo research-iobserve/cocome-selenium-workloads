@@ -27,7 +27,7 @@ import org.openqa.selenium.WebDriver;
  *
  */
 public final class EMLoginTask extends AbstractUserTask {
-    private final static String NAME = "Enterprise manager - Login";
+    private static final String NAME = "Enterprise manager - Login";
 
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl) {

@@ -16,6 +16,8 @@
 
 package org.iobserve.selenium.tasks;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 import org.openqa.selenium.WebDriver;
 
@@ -28,6 +30,8 @@ import org.openqa.selenium.WebDriver;
  *
  */
 public abstract class AbstractUserTask {
+
+    protected static final Logger LOGGER = LogManager.getLogger(AbstractUserTask.class);
 
     protected WorkloadConfiguration configuration;
 

@@ -27,111 +27,66 @@ import org.openqa.selenium.WebDriver;
  */
 public class ChangeAccountInformationTask extends AbstractUserTask {
     private final Attribute attribute;
+    private String newValue;
+    private final String buttonToClick;
 
-    public ChangeAccountInformationTask(final Attribute attributToChange) {
+    public ChangeAccountInformationTask(final Attribute attributToChange, final String newValue) {
         this.attribute = attributToChange;
+        this.buttonToClick = this.attribute.getAttributeName();
+        this.newValue = newValue;
     }
 
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl) {
-        // TODO
-        final String newValue = "Joe";
 
-        String attributeString = "";
+        final String attributeString = this.attribute.getAttributeName();
+        driver.get(baseUrl + "/jpetstore/actions/Account.action?editAccountForm");
 
-        // Ausreichend?
-        final boolean checkBox = false;
-
-        switch (this.attribute) {
-        case FIRSTNAME:
-            attributeString = "account.firstName";
-            break;
-
-        case LASTNAME:
-            attributeString = "account.lastName";
-            break;
-
-        case EMAIL:
-            attributeString = "account.email";
-            break;
-
-        case PHONE:
-            attributeString = "account.phone";
-            break;
-
-        case ADDRESS1:
-            attributeString = "account.address1";
-            break;
-
-        case ADDRESS2:
-            attributeString = "account.address2";
-            break;
-
-        case CITY:
-            attributeString = "account.city";
-            break;
-
-        case STATE:
-            attributeString = "account.state";
-            break;
-
-        case ZIP:
-            attributeString = "account.zip";
-            break;
-
-        case COUNTRY:
-            attributeString = "account.country";
-            break;
-
-        default:
-            break;
+        if (this.attribute.equals(Attribute.LANGUAGE) || this.attribute.equals(Attribute.CATEGORY)) {
+            // default is japanese.. maybe change for the future
+            this.newValue = this.getDropDownOption();
+            this.useDropDown(driver, attributeString);
+        } else if (!(this.attribute.equals(Attribute.LIST_OPTION) || this.attribute.equals(Attribute.BANNER_OPTION))) {
+            // the remaining options are only fields.
+            this.fillAttributeFields(driver, attributeString);
         }
 
-        if (!checkBox) {
-            driver.get(baseUrl + "/jpetstore/actions/Account.action?editAccountForm");
-            driver.findElement(By.name(attributeString)).clear();
-            driver.findElement(By.name(attributeString)).sendKeys(newValue);
-            driver.findElement(By.name(attributeString)).click();
+        // checkBox is just to click the button with the attribute string
+
+        driver.findElement(By.name(this.buttonToClick)).click();
+        driver.findElement(By.name("editAccount")).click();
+
+    }
+
+    private String getDropDownOption() {
+        String value = "";
+
+        if (this.attribute.equals(Attribute.CATEGORY) && !("DOGS".equals(this.newValue) || "FISH".equals(this.newValue)
+                || "REPTILES".equals(this.newValue) || "BIRDS".equals(this.newValue))) {
+            // default is cats.. maybe change in the future
+            value = "CATS";
+        } else if (this.attribute.equals(Attribute.LANGUAGE) && !"english".equals(this.newValue)) {
+            // default is japanese
+            value = "japanese";
         }
 
-        // driver.findElement(By.name("account.languagePreference")).click();
-        // driver.findElement(By.xpath("//option[@value='english']")).click();
-        // driver.findElement(By.name("account.languagePreference")).click();
-        // new
-        // Select(driver.findElement(By.name("account.languagePreference"))).selectByVisibleText("japanese");
-        // driver.findElement(By.xpath("//option[@value='japanese']")).click();
-        // driver.findElement(By.name("account.favouriteCategoryId")).click();
-        // new
-        // Select(driver.findElement(By.name("account.favouriteCategoryId"))).selectByVisibleText("FISH");
-        // driver.findElement(By.xpath("//option[@value='FISH']")).click();
-        // driver.findElement(By.name("account.favouriteCategoryId")).click();
-        // new
-        // Select(driver.findElement(By.name("account.favouriteCategoryId"))).selectByVisibleText("DOGS");
-        // driver.findElement(By.xpath("//option[@value='DOGS']")).click();
-        // driver.findElement(By.name("account.favouriteCategoryId")).click();
-        // new
-        // Select(driver.findElement(By.name("account.favouriteCategoryId"))).selectByVisibleText("REPTILES");
-        // driver.findElement(By.xpath("//option[@value='REPTILES']")).click();
-        // driver.findElement(By.name("account.favouriteCategoryId")).click();
-        // new
-        // Select(driver.findElement(By.name("account.favouriteCategoryId"))).selectByVisibleText("CATS");
-        // driver.findElement(By.xpath("//option[@value='CATS']")).click();
-        // driver.findElement(By.name("account.favouriteCategoryId")).click();
-        // new
-        // Select(driver.findElement(By.name("account.favouriteCategoryId"))).selectByVisibleText("BIRDS");
-        // driver.findElement(By.xpath("//option[@value='BIRDS']")).click();
-        // driver.findElement(By.name("account.listOption")).click();
-        // driver.findElement(By.name("account.listOption")).click();
-        // driver.findElement(By.name("account.bannerOption")).click();
-        // driver.findElement(By.name("account.bannerOption")).click();
-        // driver.findElement(By.name("editAccount")).click();
+        return value;
 
+    }
+
+    private void fillAttributeFields(final WebDriver driver, final String attributeString) {
+        driver.findElement(By.name(attributeString)).clear();
+        driver.findElement(By.name(attributeString)).sendKeys(this.newValue);
+    }
+
+    private void useDropDown(final WebDriver driver, final String attributeString) {
+        driver.findElement(By.name(attributeString)).click();
+        driver.findElement(By.xpath("//option[@value='" + this.newValue + "']")).click();
     }
 
     @Override
     public String getName() {
-        // TODO Auto-generated method stub
-        return null;
+        return "Set (or toggle) account information" + this.attribute + " to: " + this.newValue;
     }
 
     /**
@@ -141,7 +96,23 @@ public class ChangeAccountInformationTask extends AbstractUserTask {
      *
      */
     public enum Attribute {
-        FIRSTNAME, LASTNAME, EMAIL, PHONE, ADDRESS1, ADDRESS2, CITY, STATE, ZIP, COUNTRY
+        FIRSTNAME("account.firstname"), LASTNAME("account.lastName"), EMAIL("account.email"), PHONE(
+                "account.phone"), ADDRESS1("account.address1"), ADDRESS2("account.address2"), CITY(
+                        "account.city"), STATE("account.state"), ZIP("account.zip"), COUNTRY(
+                                "account.country"), LANGUAGE("account.languagePreference"), CATEGORY(
+                                        "account.favouriteCategoryId"), LIST_OPTION(
+                                                "account.listOption"), BANNER_OPTION("account.bannerOption");
+
+        private String attributeName;
+
+        private Attribute(final String attributeName) {
+            this.attributeName = attributeName;
+        }
+
+        public String getAttributeName() {
+            return this.attributeName;
+        }
+
     }
 
 }

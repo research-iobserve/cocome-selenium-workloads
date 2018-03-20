@@ -15,6 +15,10 @@
  ***************************************************************************/
 package org.iobserve.selenium.tasks.jpetstore.account;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.iobserve.selenium.tasks.AbstractUserTask;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -26,6 +30,8 @@ import org.openqa.selenium.WebDriver;
  *
  */
 public class ChangeAccountInformationTask extends AbstractUserTask {
+    private static Set<String> allowedFavoriteCategories = new HashSet<>(
+            Arrays.asList("DOGS", "CATS", "REPTILES", "BIRDS", "FISH"));
     private final Attribute attribute;
     private String newValue;
     private final String buttonToClick;
@@ -59,10 +65,10 @@ public class ChangeAccountInformationTask extends AbstractUserTask {
     }
 
     private String getDropDownOption() {
-        String value = "";
+        String value = this.newValue;
 
-        if (this.attribute.equals(Attribute.CATEGORY) && !("DOGS".equals(this.newValue) || "FISH".equals(this.newValue)
-                || "REPTILES".equals(this.newValue) || "BIRDS".equals(this.newValue))) {
+        if (this.attribute.equals(Attribute.CATEGORY)
+                && !ChangeAccountInformationTask.allowedFavoriteCategories.contains(value)) {
             // default is cats.. maybe change in the future
             value = "CATS";
         } else if (this.attribute.equals(Attribute.LANGUAGE) && !"english".equals(this.newValue)) {

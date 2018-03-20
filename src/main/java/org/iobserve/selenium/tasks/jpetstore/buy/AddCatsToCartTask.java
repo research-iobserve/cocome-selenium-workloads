@@ -63,7 +63,7 @@ public class AddCatsToCartTask extends AbstractUserTask {
      */
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl) {
-        driver.get(baseUrl + "/jpetstore/actions/Catalog.action");
+        driver.get(baseUrl + "actions/Catalog.action");
         final Boolean fuzzy = this.configuration.isFuzzy();
         final String item = this.items.getParameter(fuzzy);
         final int currentAmount = this.amount.getParameter(fuzzy);

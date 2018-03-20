@@ -36,6 +36,14 @@ public class ChangeAccountInformationTask extends AbstractUserTask {
     private String newValue;
     private final String buttonToClick;
 
+    /**
+     * Creates a new task to change information of an already logged in user.
+     * 
+     * @param attributToChange
+     *            The field that should be changed.
+     * @param newValue
+     *            The new value for the changed field.
+     */
     public ChangeAccountInformationTask(final Attribute attributToChange, final String newValue) {
         this.attribute = attributToChange;
         this.buttonToClick = this.attribute.getAttributeName();
@@ -46,7 +54,7 @@ public class ChangeAccountInformationTask extends AbstractUserTask {
     public void executeTask(final WebDriver driver, final String baseUrl) {
 
         final String attributeString = this.attribute.getAttributeName();
-        driver.get(baseUrl + "/jpetstore/actions/Account.action?editAccountForm");
+        driver.get(baseUrl + "actions/Account.action?editAccountForm");
 
         if (this.attribute.equals(Attribute.LANGUAGE) || this.attribute.equals(Attribute.CATEGORY)) {
             // default is japanese.. maybe change for the future

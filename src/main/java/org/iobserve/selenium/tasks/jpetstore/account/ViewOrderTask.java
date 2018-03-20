@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2017 iObserve Project (https://www.iobserve-devops.net)
+ * Copyright (C) 2018 iObserve Project (https://www.iobserve-devops.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,49 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.tasks.jpetstore.common;
+package org.iobserve.selenium.tasks.jpetstore.account;
+
+import java.util.List;
 
 import org.iobserve.selenium.tasks.AbstractUserTask;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 /**
- * Checks out the current content of the shopping cart and confirms the order. Needs the
- * {@link LoginJPetStoreTask} to be executed first.
+ * Task for viewing all orders of one account and clicking the first one.
  *
  * @author Marc Adolf
  *
  */
-public class CheckoutJPetStoreTask extends AbstractUserTask {
+public class ViewOrderTask extends AbstractUserTask {
 
     /*
      * (non-Javadoc)
      *
-     * @see org.iobserve.selenium.tasks.IUserTask#accept(org.openqa.selenium.WebDriver,
+     * @see org.iobserve.selenium.tasks.AbstractUserTask#executeTask(org.openqa.selenium.WebDriver,
      * java.lang.String)
      */
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl) {
-        driver.get(baseUrl + "actions/Catalog.action");
-
-        driver.findElement(By.cssSelector("img[name=\"img_cart\"]")).click();
-
-        driver.findElement(By.linkText("Proceed to Checkout")).click();
-
-        driver.findElement(By.name("newOrder")).click();
-
-        driver.findElement(By.linkText("Confirm")).click();
+        final String orderToClick = "1000";
+        driver.get(baseUrl + "actions/Account.action?editAccountForm=");
+        driver.findElement(By.linkText("My Orders")).click();
+        final List<WebElement> foundOrders = driver.findElements(By.linkText(orderToClick));
+        if (!foundOrders.isEmpty()) {
+            foundOrders.get(0).click();
+        }
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.iobserve.selenium.tasks.IUserTask#getName()
+     * @see org.iobserve.selenium.tasks.AbstractUserTask#getName()
      */
     @Override
     public String getName() {
-
-        return "Checkout current shopping cart";
+        return "View all orders and click the first one";
     }
 
 }

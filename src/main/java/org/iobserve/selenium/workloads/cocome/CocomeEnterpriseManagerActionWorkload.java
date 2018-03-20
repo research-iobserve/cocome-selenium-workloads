@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.workloads;
+package org.iobserve.selenium.workloads.cocome;
 
 import org.iobserve.selenium.tasks.cocome.enterprisemanager.EMAddSecondProductToFirstStoreOfSecondEnterpriseTask;
 import org.iobserve.selenium.tasks.cocome.enterprisemanager.EMCreateNewEnterpriseTask;

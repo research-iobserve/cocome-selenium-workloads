@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2017 iObserve Project (https://www.iobserve-devops.net)
+ * Copyright (C) 2018 iObserve Project (https://www.iobserve-devops.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.workloads;
+package org.iobserve.selenium.workloads.jpetstore;
 
-import org.iobserve.selenium.tasks.jpetstore.buy.AddFishToCartTask;
-import org.iobserve.selenium.tasks.jpetstore.common.CheckoutJPetStoreTask;
-import org.iobserve.selenium.tasks.jpetstore.common.LoginJPetStoreTask;
+import org.iobserve.selenium.tasks.jpetstore.browse.ViewProductTask;
+import org.iobserve.selenium.tasks.jpetstore.browse.ViewProductTask.Category;
 import org.iobserve.selenium.workloads.handling.AbstractWorkload;
 import org.iobserve.selenium.workloads.handling.WorkloadPlan;
 
 /**
- * Represents the workload used for evaluation in jPetstore by Christoph Dornieden in his Masters
- * Thesis. See {@link http://eprints.uni-kiel.de/38825/}.
+ *
+ * Visits 2 categories and their products.
  *
  * @author Marc Adolf
  *
  */
-public class JPetStoreCdorWorkload extends AbstractWorkload {
+public class BrowsingUserWorkload extends AbstractWorkload {
 
     /*
      * (non-Javadoc)
@@ -37,17 +36,8 @@ public class JPetStoreCdorWorkload extends AbstractWorkload {
      */
     @Override
     public WorkloadPlan assembleWorkloadTasks() {
-        final int amountOfFish = 10;
-        // TODO better replace with enum?
-        final int fishPosition = 0;
-
-        final String username = "j2ee";
-        final String password = "j2ee";
-
-        // TODO add remaining workloads
-        return WorkloadPlan.builder().fuzzyThen(new AddFishToCartTask(amountOfFish, fishPosition), 10)
-                .then(new LoginJPetStoreTask(username, password)).then(new CheckoutJPetStoreTask()).newSession()
-                .build();
+        return WorkloadPlan.builder().fuzzyThen(new ViewProductTask(Category.CATS), 5)
+                .fuzzyThen(new ViewProductTask(Category.FISH), 6).build();
     }
 
 }

@@ -64,7 +64,7 @@ public final class WorkloadRegistry {
         registeredWorkloads.put("CS_Workload1", CocomeCashierCashShoppingWorkload.class);
         registeredWorkloads.put("CDOR", JPetStoreCdorWorkload.class);
         registeredWorkloads.put("AccountManager", AccountManagerWorkload.class);
-        registeredWorkloads.put("BrwosingUser", BrowsingUserWorkload.class);
+        registeredWorkloads.put("BrowsingUser", BrowsingUserWorkload.class);
         registeredWorkloads.put("CatLover", CatLoverWorkload.class);
         registeredWorkloads.put("FishLover", FishLoverWorkload.class);
         registeredWorkloads.put("NewCustomer", NewCustomerWorkload.class);

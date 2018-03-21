@@ -90,6 +90,9 @@ public final class WorkloadGeneration {
         for (final String name : workloads) {
             try {
                 final AbstractWorkload workload = WorkloadRegistry.getWorkloadInstanceByName(name);
+                if (logger.isInfoEnabled()) {
+                    logger.info("Execute workload: " + workload); // NOPMD
+                }
                 workload.assembleWorkloadTasks().execute(config);
 
             } catch (final WorkloadNotCreatedException e) {

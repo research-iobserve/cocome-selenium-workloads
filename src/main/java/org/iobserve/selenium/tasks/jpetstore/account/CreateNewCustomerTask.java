@@ -55,8 +55,8 @@ public class CreateNewCustomerTask extends AbstractUserTask {
         driver.get(baseUrl + "actions/Catalog.action");
         driver.findElement(By.linkText("Sign In")).click();
         driver.findElement(By.linkText("Register Now!")).click();
-        driver.findElement(By.id("stripes-1699619317")).clear();
-        driver.findElement(By.id("stripes-1699619317")).sendKeys(this.userName);
+        driver.findElement(By.name("username")).clear();
+        driver.findElement(By.name("username")).sendKeys(this.userName);
         driver.findElement(By.name("password")).clear();
         driver.findElement(By.name("password")).sendKeys(this.password);
         driver.findElement(By.name("repeatedPassword")).clear();

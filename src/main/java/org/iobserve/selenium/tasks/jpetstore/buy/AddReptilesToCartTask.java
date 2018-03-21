@@ -68,7 +68,7 @@ public class AddReptilesToCartTask extends AbstractUserTask {
         final String item = this.items.getParameter(fuzzy);
         final int currentAmount = this.amount.getParameter(fuzzy);
 
-        AbstractUserTask.LOGGER.info("%s: item: %s amount: %i ", this.getName(), item, currentAmount);
+        AbstractUserTask.LOGGER.info(String.format("%s: item: %s amount: %d ", this.getName(), item, currentAmount));
 
         for (int j = 0; j < currentAmount; j++) {
             driver.findElement(By.xpath("//div[@id='QuickLinks']/a[3]/img")).click();

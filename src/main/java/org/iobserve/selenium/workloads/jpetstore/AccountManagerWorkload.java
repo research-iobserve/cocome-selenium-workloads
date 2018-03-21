@@ -42,7 +42,7 @@ public class AccountManagerWorkload extends AbstractWorkload {
 
         return WorkloadPlan.builder().then(new LoginJPetStoreTask(username, password))
                 .fuzzyThen(new ChangeAccountInformationTask(Attribute.ADDRESS2, "Christian-Albrechts-Platz 4"), 10)
-                .fuzzyThen(new ViewOrderTask(), 20).build();
+                .fuzzyThen(new ViewOrderTask(), 20).newSession().build();
     }
 
 }

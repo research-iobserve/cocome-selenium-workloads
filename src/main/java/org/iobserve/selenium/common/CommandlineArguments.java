@@ -29,7 +29,7 @@ import com.beust.jcommander.Parameter;
 public class CommandlineArguments {
 
     @Parameter(names = "-url", description = "Base url for the selenium workloads")
-    private static String baseUrl = "https://172.17.0.2:8080/jpetstore/";
+    private static String baseUrl = "http://172.17.0.2:8080/jpetstore/";
 
     @Parameter(names = "-fuzzy", description = "Enables fuzzy behavior if defined by the tasks")
     private static Boolean isFuzzy = false;

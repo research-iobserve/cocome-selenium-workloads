@@ -43,7 +43,8 @@ public class FishLoverWorkload extends AbstractWorkload {
         final String password = "j2ee";
 
         return WorkloadPlan.builder().fuzzyThen(new AddFishToCartTask(amountOfFish, fishPosition), 10)
-                .then(new LoginJPetStoreTask(username, password)).then(new CheckoutJPetStoreTask()).build();
+                .then(new LoginJPetStoreTask(username, password)).then(new CheckoutJPetStoreTask()).newSession()
+                .build();
     }
 
 }

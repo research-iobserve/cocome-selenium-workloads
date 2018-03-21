@@ -40,7 +40,8 @@ public class SingleCatBuyerWorkload extends AbstractWorkload {
         final String password = "j2ee";
 
         return WorkloadPlan.builder().fuzzyThen(new AddCatsToCartTask(1, 1), 1)
-                .then(new LoginJPetStoreTask(username, password)).then(new CheckoutJPetStoreTask()).build();
+                .then(new LoginJPetStoreTask(username, password)).then(new CheckoutJPetStoreTask()).newSession()
+                .build();
     }
 
 }

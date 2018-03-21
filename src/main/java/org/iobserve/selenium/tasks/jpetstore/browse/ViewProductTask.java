@@ -59,7 +59,7 @@ public class ViewProductTask extends AbstractUserTask {
         final String categoryString = curentCategory.getCategoryString();
         final String productString = curentCategory.getProducts().getParameter(this.configuration.isFuzzy());
         driver.get(baseUrl + "actions/Catalog.action");
-        driver.findElement(By.xpath("//div[@id='SidebarContent']/" + categoryString + "/img")).click();
+        driver.findElement(By.xpath("//div[@id='QuickLinks']/" + categoryString + "/img")).click();
         driver.findElement(By.linkText(productString)).click();
         // since the item ids have a special pattern we can just iterate until we find the first one
         this.clickItemElement(driver);
@@ -72,14 +72,20 @@ public class ViewProductTask extends AbstractUserTask {
      */
     @Override
     public String getName() {
-        return "View category " + this.category.toString() + " and one of its products: ";
+        return "View category " + this.category.getDefaultParameter().toString() + " and one of its products: ";
     }
 
     private void clickItemElement(final WebDriver driver) {
         final String baseString = "EST-";
         for (int i = 1; i < 30; i++) {
+            if (AbstractUserTask.LOGGER.isDebugEnabled()) {
+                AbstractUserTask.LOGGER.debug("Try to find " + baseString + i);
+            }
             final List<WebElement> elements = driver.findElements(By.linkText(baseString + i));
             if (!elements.isEmpty()) {
+                if (AbstractUserTask.LOGGER.isDebugEnabled()) {
+                    AbstractUserTask.LOGGER.debug("Found element and will click on it: " + elements);
+                }
                 elements.get(0).click();
                 return;
             }

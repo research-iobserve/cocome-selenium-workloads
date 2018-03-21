@@ -66,7 +66,7 @@ public final class WorkloadGeneration {
         if (logger.isInfoEnabled()) {
             logger.info("Creating the configuration for the workload with the webdriver path: " // NOPMD
                     + arguments.getPathPhantomjs() + ", base URL: " + arguments.getBaseUrl() + " and will repeating it "
-                    + arguments.getNumberOfRuns() + " times");
+                    + arguments.getNumberOfRuns() + " times," + " fuzzy?: " + CommandlineArguments.getIsFuzzy());
         }
 
         if (arguments.getWorkloads().isEmpty() || CommandlineArguments.getPrintWorkloads()) {

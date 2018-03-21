@@ -37,7 +37,7 @@ public class BrowsingUserWorkload extends AbstractWorkload {
     @Override
     public WorkloadPlan assembleWorkloadTasks() {
         return WorkloadPlan.builder().fuzzyThen(new ViewProductTask(Category.CATS), 5)
-                .fuzzyThen(new ViewProductTask(Category.FISH), 6).build();
+                .fuzzyThen(new ViewProductTask(Category.FISH), 6).newSession().build();
     }
 
 }

@@ -42,7 +42,7 @@ public class NewCustomerWorkload extends AbstractWorkload {
 
         return WorkloadPlan.builder().then(new CreateNewCustomerTask(username, password))
                 .fuzzyThen(new AddReptilesToCartTask(1, 1), 1).then(new LoginJPetStoreTask(username, password))
-                .then(new CheckoutJPetStoreTask()).build();
+                .then(new CheckoutJPetStoreTask()).newSession().build();
     }
 
 }

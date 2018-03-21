@@ -68,6 +68,7 @@ public class UserTaskWrapper extends AbstractTask {
      */
     @Override
     public void accept(final WorkloadConfiguration config) {
+        this.userTask.setConfiguration(config);
         this.userTask.executeTask(config.getDriver(), config.getBaseUrl());
     }
 

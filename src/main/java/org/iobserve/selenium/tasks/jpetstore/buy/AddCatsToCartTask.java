@@ -25,33 +25,31 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 /**
- * One task to add a certain amount of one sort of fish to the shopping cart.
+ * One task to add a certain amount of one sort of cat to the shopping cart.
  *
  * @author Marc Adolf
  *
  */
-public class AddFishToCartTask extends AbstractUserTask {
+public class AddCatsToCartTask extends AbstractUserTask {
 
     private final VariableIntegerTaskParameter amount;
     private final ListTaskParameter<String> items;
 
     /**
-     * One task to add a certain amount of one sort of fish to the shopping cart.
+     * One task to add a certain amount of one sort of cat to the shopping cart.
      *
      * @param amount
-     *            The amount of fish added in one task
+     *            The amount of cat added in one task
      * @param itemPosition
-     *            The position of the sort of fish in the list. Is set to the last position if the
+     *            The position of the sort of cat in the list. Is set to the last position if the
      *            itemPosition exceeds the size of the list.
      */
-    public AddFishToCartTask(final int amount, final int itemPosition) {
+    public AddCatsToCartTask(final int amount, final int itemPosition) {
         this.amount = new VariableIntegerTaskParameter(1, 10, amount);
 
         final List<String> givenItems = new LinkedList<>();
-        givenItems.add("FI-SW-01");
-        givenItems.add("FI-SW-02");
-        givenItems.add("FI-FW-01");
-        givenItems.add("FI-FW-02");
+        givenItems.add("FL-DSH-01");
+        givenItems.add("FL-DLH-02");
 
         this.items = new ListTaskParameter<>(givenItems, itemPosition);
 
@@ -71,10 +69,9 @@ public class AddFishToCartTask extends AbstractUserTask {
         final int currentAmount = this.amount.getParameter(fuzzy);
 
         AbstractUserTask.LOGGER.info(String.format("%s: item: %s amount: %d ", this.getName(), item, currentAmount));
-        // buy fish
+
         for (int j = 0; j < currentAmount; j++) {
-            driver.findElement(By.xpath("//div[@id='QuickLinks']/a/img")).click();
-            // driver.findElement(By.cssSelector("#QuickLinks > a > img")).click();
+            driver.findElement(By.xpath("//div[@id='QuickLinks']/a[4]/img")).click();
             driver.findElement(By.linkText(item)).click();
             driver.findElement(By.linkText("Add to Cart")).click();
         }
@@ -88,7 +85,7 @@ public class AddFishToCartTask extends AbstractUserTask {
     @Override
     public String getName() {
 
-        return "Adding fish to cart task";
+        return "Adding cats to cart task";
     }
 
 }

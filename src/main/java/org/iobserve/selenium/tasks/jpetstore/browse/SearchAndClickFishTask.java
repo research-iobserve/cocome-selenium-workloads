@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2017 iObserve Project (https://www.iobserve-devops.net)
+ * Copyright (C) 2018 iObserve Project (https://www.iobserve-devops.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,49 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.tasks.jpetstore.common;
+package org.iobserve.selenium.tasks.jpetstore.browse;
 
 import org.iobserve.selenium.tasks.AbstractUserTask;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 /**
- * Checks out the current content of the shopping cart and confirms the order. Needs the
- * {@link LoginJPetStoreTask} to be executed first.
+ * Specific task to search for 'Fish' and then click the first result.
  *
  * @author Marc Adolf
  *
  */
-public class CheckoutJPetStoreTask extends AbstractUserTask {
+public class SearchAndClickFishTask extends AbstractUserTask {
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.iobserve.selenium.tasks.IUserTask#accept(org.openqa.selenium.WebDriver,
-     * java.lang.String)
-     */
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl) {
+        final String searchKey = "Fish";
+        // TODO read Table and select one element.
+        final String productToClick = "Fresh Water fish from China";
+
         driver.get(baseUrl + "actions/Catalog.action");
+        driver.findElement(By.name("keyword")).click();
+        driver.findElement(By.name("keyword")).clear();
+        driver.findElement(By.name("keyword")).sendKeys(searchKey);
+        driver.findElement(By.name("searchProducts")).click();
+        driver.findElement(By.linkText(productToClick)).click();
 
-        driver.findElement(By.cssSelector("img[name=\"img_cart\"]")).click();
-
-        driver.findElement(By.linkText("Proceed to Checkout")).click();
-
-        driver.findElement(By.name("newOrder")).click();
-
-        driver.findElement(By.linkText("Confirm")).click();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.iobserve.selenium.tasks.IUserTask#getName()
-     */
     @Override
     public String getName() {
-
-        return "Checkout current shopping cart";
+        return "Search for Fish and click 'Fresh Water fish from China'";
     }
 
 }

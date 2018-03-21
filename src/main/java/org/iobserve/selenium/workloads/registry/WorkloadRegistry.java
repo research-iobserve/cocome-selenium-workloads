@@ -21,11 +21,18 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.iobserve.selenium.workloadgeneration.WorkloadGeneration;
-import org.iobserve.selenium.workloads.CocomeCashierCashShoppingWorkload;
-import org.iobserve.selenium.workloads.CocomeEnterpriseManagerActionWorkload;
-import org.iobserve.selenium.workloads.JPetStoreCdorWorkload;
-import org.iobserve.selenium.workloads.TestWorkload;
+import org.iobserve.selenium.workloads.cocome.CocomeCashierCashShoppingWorkload;
+import org.iobserve.selenium.workloads.cocome.CocomeEnterpriseManagerActionWorkload;
+import org.iobserve.selenium.workloads.cocome.TestWorkload;
 import org.iobserve.selenium.workloads.handling.AbstractWorkload;
+import org.iobserve.selenium.workloads.jpetstore.AccountManagerWorkload;
+import org.iobserve.selenium.workloads.jpetstore.BrowsingUserWorkload;
+import org.iobserve.selenium.workloads.jpetstore.CatLoverWorkload;
+import org.iobserve.selenium.workloads.jpetstore.FishLoverWorkload;
+import org.iobserve.selenium.workloads.jpetstore.JPetStoreCdorWorkload;
+import org.iobserve.selenium.workloads.jpetstore.NewCustomerWorkload;
+import org.iobserve.selenium.workloads.jpetstore.SingleCatBuyerWorkload;
+import org.iobserve.selenium.workloads.jpetstore.SingleReptileBuyerWorkload;
 
 /**
  * Used to (manually) register Workloads. The {@link WorkloadGeneration Workload Generator} looks
@@ -40,7 +47,6 @@ public final class WorkloadRegistry {
      * Empty Constructor.
      */
     private WorkloadRegistry() {
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -57,6 +63,13 @@ public final class WorkloadRegistry {
         registeredWorkloads.put("EM-Workload1", CocomeEnterpriseManagerActionWorkload.class);
         registeredWorkloads.put("CS_Workload1", CocomeCashierCashShoppingWorkload.class);
         registeredWorkloads.put("CDOR", JPetStoreCdorWorkload.class);
+        registeredWorkloads.put("AccountManager", AccountManagerWorkload.class);
+        registeredWorkloads.put("BrowsingUser", BrowsingUserWorkload.class);
+        registeredWorkloads.put("CatLover", CatLoverWorkload.class);
+        registeredWorkloads.put("FishLover", FishLoverWorkload.class);
+        registeredWorkloads.put("NewCustomer", NewCustomerWorkload.class);
+        registeredWorkloads.put("SingleCatBuyer", SingleCatBuyerWorkload.class);
+        registeredWorkloads.put("SingleReptileBuyer", SingleReptileBuyerWorkload.class);
 
         return registeredWorkloads;
     }

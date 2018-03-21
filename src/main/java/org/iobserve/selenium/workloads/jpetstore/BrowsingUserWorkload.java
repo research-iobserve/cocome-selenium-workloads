@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2017 iObserve Project (https://www.iobserve-devops.net)
+ * Copyright (C) 2018 iObserve Project (https://www.iobserve-devops.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.workloads;
+package org.iobserve.selenium.workloads.jpetstore;
 
-import org.iobserve.selenium.tasks.cocome.enterprisemanager.EMLoginTask;
+import org.iobserve.selenium.tasks.jpetstore.browse.ViewProductTask;
+import org.iobserve.selenium.tasks.jpetstore.browse.ViewProductTask.Category;
 import org.iobserve.selenium.workloads.handling.AbstractWorkload;
 import org.iobserve.selenium.workloads.handling.WorkloadPlan;
 
 /**
  *
+ * Visits 2 categories and their products.
+ *
  * @author Marc Adolf
  *
  */
-public class TestWorkload extends AbstractWorkload {
+public class BrowsingUserWorkload extends AbstractWorkload {
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.iobserve.selenium.workloads.handling.AbstractWorkload#assembleWorkloadTasks()
+     */
     @Override
     public WorkloadPlan assembleWorkloadTasks() {
-        return WorkloadPlan.builder().then(EMLoginTask.create()).newSession().then(new EMLoginTask()).build();
+        return WorkloadPlan.builder().fuzzyThen(new ViewProductTask(Category.CATS), 5)
+                .fuzzyThen(new ViewProductTask(Category.FISH), 6).newSession().build();
     }
 
 }

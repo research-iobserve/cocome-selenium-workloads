@@ -105,8 +105,8 @@ public final class WorkloadPlan {
 
         for (int i = 0; i < usedConfig.getNumberOfRuns(); i++) {
             tasks.stream().forEach((final AbstractTask t) -> {
-                IntStream.range(1, t.getRepetitions(usedConfig.isFuzzy())).forEach(idx -> {
-                    WorkloadPlan.LOGGER.info("Executing task: %s in repetition %i ", t.getName(), idx);
+                IntStream.range(1, t.getRepetitions(usedConfig.isFuzzy()) + 1).forEach(idx -> {
+                    WorkloadPlan.LOGGER.info(String.format("Executing task: %s in repetition %d ", t.getName(), idx));
                     t.accept(usedConfig);
                 });
             });

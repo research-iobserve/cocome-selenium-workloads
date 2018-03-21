@@ -48,4 +48,5 @@ public interface ITaskParameter<T> {
      * @return The computed value for this parameter.
      */
     T getParameter(Boolean fuzzy);
+
 }

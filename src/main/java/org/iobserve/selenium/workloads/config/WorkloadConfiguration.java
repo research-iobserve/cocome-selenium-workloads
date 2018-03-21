@@ -72,7 +72,7 @@ public class WorkloadConfiguration {
         this.driver = new PhantomJSDriver(capabilities);
         // this.driver.setLogLevel(Level.INFO);
         // this.driver = new HtmlUnitDriver();
-        this.driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+        this.driver.manage().timeouts().implicitlyWait(10, TimeUnit.MILLISECONDS);
         this.driver.manage().window().setSize(new Dimension(800, 600));
     }
 

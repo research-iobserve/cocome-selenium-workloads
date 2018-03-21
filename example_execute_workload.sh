@@ -1,0 +1,1 @@
+java -jar build/libs/selenium-experiment-workloads-1.0.jar -phantomjs /usr/lib/phantomjs/bin/phantomjs -workloads FishLover,SingleReptileBuyer,SingleCatBuyer,BrowsingUser,AccountManager,CatLover,NewCustomer -fuzzy

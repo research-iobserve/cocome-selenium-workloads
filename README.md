@@ -9,10 +9,13 @@ Currently,  this tool is tailored for the software systems CoCoME and JPetStore 
 # Dependencies and Requirements
 
 To use our workload drivers
+1. Create a experiment setup directory `mkdir experiment`
 1. Download phantom.js (http://phantomjs.org/download.html) Usually, the package in your Linux distribution won't suffice.
-1. Checkout this repository
+1. Extract the package, e.g., with `tar -xvjpf phantomjs-2.1.1-linux-x86_64.tar.bz2` in experiment
+1. Checkout this repository alongside of `phantomjs-2.1.1-linux-x86_64`
+1. Change into the workload directory `cd selenium-workloads`
 1. Build the repository with `./gradlew build`
-
+1. Have a look in `example_execute_workload.sh` to see whether the script matches your requirements.
 
 # Execution of Workloads
 The workloads are meant to be executed within scripts.

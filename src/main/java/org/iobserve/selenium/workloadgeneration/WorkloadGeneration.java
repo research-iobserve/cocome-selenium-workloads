@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.beust.jcommander.JCommander;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.iobserve.selenium.common.CommandlineArguments;
@@ -26,8 +28,6 @@ import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 import org.iobserve.selenium.workloads.handling.AbstractWorkload;
 import org.iobserve.selenium.workloads.registry.WorkloadNotCreatedException;
 import org.iobserve.selenium.workloads.registry.WorkloadRegistry;
-
-import com.beust.jcommander.JCommander;
 
 /**
  * Generates workloads for CoCoME. Designed to be used with the iObserve Experiment. Uses Selenium
@@ -37,6 +37,8 @@ import com.beust.jcommander.JCommander;
  * @author Marc Adolf
  */
 public final class WorkloadGeneration {
+
+    private static final Logger LOGGER = LogManager.getLogger(WorkloadGeneration.class);
 
     /**
      * Empty constructor.
@@ -54,20 +56,16 @@ public final class WorkloadGeneration {
 
         final CommandlineArguments arguments = new CommandlineArguments();
         JCommander.newBuilder().addObject(arguments).build().parse(args);
-        final Logger logger = LogManager.getLogger(WorkloadGeneration.class);
 
         // logger.debug("Webdriver path: " + arguments.getPathPhantomjs());
         // logger.debug("Base URL: " + arguments.getBaseUrl());
         // logger.debug("Number of runs: " + arguments.getNumberOfRuns());
-        if (logger.isDebugEnabled()) {
-            logger.debug("Workloads to execute: " + arguments.getWorkloads());
-        }
+        WorkloadGeneration.LOGGER.debug("Workloads to execute: {}", arguments.getWorkloads());
 
-        if (logger.isInfoEnabled()) {
-            logger.info("Creating the configuration for the workload with the webdriver path: " // NOPMD
-                    + arguments.getPathPhantomjs() + ", base URL: " + arguments.getBaseUrl() + " and will repeating it "
-                    + arguments.getNumberOfRuns() + " times," + " fuzzy?: " + CommandlineArguments.getIsFuzzy());
-        }
+        WorkloadGeneration.LOGGER.info(
+                "Creating the configuration for the workload with the webdriver path '{}', base URL '{}' and will repeating it {} times using fuzzy mode {}", // NOPMD
+                arguments.getPathPhantomjs(), arguments.getBaseUrl(), arguments.getNumberOfRuns(),
+                CommandlineArguments.getIsFuzzy());
 
         if (arguments.getWorkloads().isEmpty() || CommandlineArguments.getPrintWorkloads()) {
             WorkloadGeneration.printAvailableWorkloads();
@@ -83,29 +81,23 @@ public final class WorkloadGeneration {
          * The registry has to be filled beforehand. Better Ideas are welcome.
          */
 
-        if (logger.isInfoEnabled()) {
-            logger.info("Trying to execute following workloads: " + workloads.toString()); // NOPMD
-        }
+        WorkloadGeneration.LOGGER.info("Trying to execute following workloads: {}", workloads.toString());
 
         for (final String name : workloads) {
             try {
                 final AbstractWorkload workload = WorkloadRegistry.getWorkloadInstanceByName(name);
-                if (logger.isInfoEnabled()) {
-                    logger.info("Execute workload: " + workload); // NOPMD
-                }
+                WorkloadGeneration.LOGGER.info("Execute workload: {}", workload); // NOPMD
+
                 workload.assembleWorkloadTasks().execute(config);
 
             } catch (final WorkloadNotCreatedException e) {
-                if (logger.isInfoEnabled()) {
-                    logger.info("Could not create workload '" + name + "'"); // NOPMD
-                }
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Workload " + name + ", Error (resuming): " + e.getMessage(), e);
-                }
+                WorkloadGeneration.LOGGER.info("Could not create workload '{}'", name);
+                WorkloadGeneration.LOGGER.debug("Workload {}, Error (resuming): {}", name, e.getMessage());
             }
         }
 
-        logger.info("Workload execution finished");
+        config.getDriver().quit();
+        WorkloadGeneration.LOGGER.info("Workload execution finished");
     }
 
     private static void printAvailableWorkloads() {

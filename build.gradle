@@ -1,15 +1,19 @@
 apply plugin: 'java'
 apply plugin: 'checkstyle'
-
+apply plugin: 'application'
 
 buildscript {
     repositories {
         maven {url "https://maven.eveoh.nl/content/repositories/releases"}
     }
 }
+
 version = '1.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+mainClassName='org.iobserve.selenium.workloadgeneration.WorkloadGeneration'
+
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -38,15 +42,6 @@ dependencies {
 
     
 }
-
-jar {
-	manifest {
-                attributes 'Main-Class': 'org.iobserve.selenium.workloadgeneration.WorkloadGeneration'
-    }
-    baseName = project.name
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-}
-
 
 checkstyle {
 		int maxWarnings = 0

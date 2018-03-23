@@ -35,6 +35,7 @@ import org.iobserve.selenium.workloads.registry.WorkloadRegistry;
  *
  * @author Christoph Dornieden
  * @author Marc Adolf
+ * @author Reiner Jung
  */
 public final class WorkloadGeneration {
 

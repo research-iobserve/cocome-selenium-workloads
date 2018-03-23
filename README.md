@@ -1,7 +1,8 @@
 <a href="https://travis-ci.org/research-iobserve/selenium-workloads"><img src="https://travis-ci.org/research-iobserve/selenium-workloads.svg?branch=master" alt="Build Status"></a>
 
-# Selenium-experiment-workloads
-This project ist meant to create different workloads for the Websites utilizing Selenium.
+# Experiment Workloads utilizing Selenium
+
+This project is meant to create different workloads for websites utilizing Selenium.
 Currently,  this tool is tailored for the software systems CoCoME and JPetStore which we use as case studies in iObserve.
 
 **This project is work in progress. Please report feature request, bugs etc. as issues in GitHub or to mad@informatik.uni-kiel.de** 
@@ -18,28 +19,28 @@ To use our workload drivers
 1. Have a look in `example_execute_workload.sh` to see whether the script matches your requirements.
 
 # Execution of Workloads
+
 The workloads are meant to be executed within scripts.
 Therefore, the execution is configured with parameters to be able to adapt the workloads to the criteria relevant for our experiments.
 There exist several required and optional parameters.
 
 ### Required Parameters
+
 To execute the different workloads two parameters are required:
 - `-phantomjs` to set the path to the phantomjs browser, <br> 
 e.g. `-phantomjs /usr/lib/phantomjs/phantomjs` <br>
 - `-workloads` to define the workloads that should be executed, <br>
 e.g. `-workloads workload1,workload2` or `-workloads workload1  -workloads workload2` <br>
 
-E.g. to execute the Test workload: <br>
-`java -jar build/libs/selenium-experiment-workloads-1.0.jar -phantomjs
-/usr/lib/phantomjs/phantomjs -workloads Test`
-
 ### Workload Overview
+
 -print_workloads if used, simply prints all available workloads <br> 
 E.g.: `java -jar build/libs/selenium-experiment-workloads-1.0.jar -print_workloads`
 
 ### Optional Parameters
--url sets the url of the tested service, default is https://172.17.0.2:8181 for the CoCoME frontend from our [experiment](https://github.com/research-iobserve/cocome-experiment) <br>
--runs the number of times each workload is repeated to increase statiscal relevance, default is 5 <br> 
+
+- `-url` sets the url of the tested service, default is https://172.17.0.2:8181 for the CoCoME frontend from our [experiment](https://github.com/research-iobserve/cocome-experiment)
+- `-runs` the number of times each workload is repeated, default is 5
 
 # Implementation of new Workloads
 

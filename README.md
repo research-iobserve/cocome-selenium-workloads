@@ -2,21 +2,28 @@
 
 # Selenium-experiment-workloads
 This project ist meant to create different workloads for the Websites utilizing Selenium.
-Currently,  this tool is targeted for CoCoME and the JPetStore.
+Currently,  this tool is tailored for the software systems CoCoME and JPetStore which we use as case studies in iObserve.
 
 **This project is work in progress. Please report feature request, bugs etc. as issues in GitHub or to mad@informatik.uni-kiel.de** 
 
+# Dependencies and Requirements
+
+To use our workload drivers
+1. Download phantom.js (http://phantomjs.org/download.html) Usually, the package in your Linux distribution won't suffice.
+1. Checkout this repository
+1. Build the repository with `./gradlew build`
+
+
 # Execution of Workloads
 The workloads are meant to be executed within scripts.
-Therefore, the execution was planned to be controlled with paramters to be able to adapt the workloads to the needed criteria.
-There exist several necessary and optional parameters.
+Therefore, the execution is configured with parameters to be able to adapt the workloads to the criteria relevant for our experiments.
+There exist several required and optional parameters.
 
 ### Required Parameters
-To execute the different workloads two parameters are needed.
-
--phantomjs to set the path to the phantomjs browser, <br> 
+To execute the different workloads two parameters are required:
+- `-phantomjs` to set the path to the phantomjs browser, <br> 
 e.g. `-phantomjs /usr/lib/phantomjs/phantomjs` <br>
--workloads to define the workloads that should be executed, <br>
+- `-workloads` to define the workloads that should be executed, <br>
 e.g. `-workloads workload1,workload2` or `-workloads workload1  -workloads workload2` <br>
 
 E.g. to execute the Test workload: <br>

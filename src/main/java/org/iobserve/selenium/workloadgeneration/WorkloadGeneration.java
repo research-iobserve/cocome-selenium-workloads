@@ -97,7 +97,6 @@ public final class WorkloadGeneration {
             }
         }
 
-        config.getDriver().quit();
         WorkloadGeneration.LOGGER.info("Workload execution finished");
     }
 

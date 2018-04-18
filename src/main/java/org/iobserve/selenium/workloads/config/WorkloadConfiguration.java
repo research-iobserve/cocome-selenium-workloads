@@ -63,7 +63,7 @@ public class WorkloadConfiguration {
     private void createNewDriver() {
         final DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setJavascriptEnabled(true);
-        capabilities.setCapability("takesScreenshot", true);
+        capabilities.setCapability("takesScreenshot", false);
         capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, this.pathWebDriver);
         capabilities.setCapability("acceptSslCerts", true);
         capabilities.setCapability("webSecurityEnabled", false);

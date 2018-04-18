@@ -37,6 +37,7 @@ public class WorkloadConfiguration {
     private final String pathWebDriver;
     private PhantomJSDriver driver;
     private final Boolean fuzzy;
+    private final Long delay;
 
     /**
      *
@@ -49,14 +50,17 @@ public class WorkloadConfiguration {
      * @param isFuzzy
      *            If true, all tasks in the workloads use the random content of the predefined
      *            {@link ITaskParameter parameters}.
+     * @param delay
+     *            delay between runs
      */
     public WorkloadConfiguration(final String baseUrl, final int numberOfRuns, final String pathWebDriver,
-            final Boolean isFuzzy) {
+            final Boolean isFuzzy, final Long delay) {
         this.baseUrl = baseUrl;
         this.numberOfRuns = numberOfRuns;
         this.pathWebDriver = pathWebDriver;
         this.createNewDriver();
         this.fuzzy = isFuzzy;
+        this.delay = delay;
 
     }
 
@@ -98,6 +102,10 @@ public class WorkloadConfiguration {
 
     public Boolean isFuzzy() {
         return this.fuzzy;
+    }
+
+    public Long getDelay() {
+        return this.delay;
     }
 
 }

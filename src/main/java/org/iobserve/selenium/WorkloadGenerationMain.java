@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.workloadgeneration;
+package org.iobserve.selenium;
 
 import java.util.List;
 import java.util.Map;
@@ -37,14 +37,14 @@ import org.iobserve.selenium.workloads.registry.WorkloadRegistry;
  * @author Marc Adolf
  * @author Reiner Jung
  */
-public final class WorkloadGeneration {
+public final class WorkloadGenerationMain {
 
-    private static final Logger LOGGER = LogManager.getLogger(WorkloadGeneration.class);
+    private static final Logger LOGGER = LogManager.getLogger(WorkloadGenerationMain.class);
 
     /**
      * Empty constructor.
      */
-    private WorkloadGeneration() {
+    private WorkloadGenerationMain() {
     }
 
     /**
@@ -58,23 +58,24 @@ public final class WorkloadGeneration {
         final CommandlineArguments arguments = new CommandlineArguments();
         JCommander.newBuilder().addObject(arguments).build().parse(args);
 
-        // logger.debug("Webdriver path: " + arguments.getPathPhantomjs());
-        // logger.debug("Base URL: " + arguments.getBaseUrl());
-        // logger.debug("Number of runs: " + arguments.getNumberOfRuns());
-        WorkloadGeneration.LOGGER.debug("Workloads to execute: {}", arguments.getWorkloads());
+        WorkloadGenerationMain.LOGGER.debug("Webdriver path: " + arguments.getPathPhantomjs());
+        WorkloadGenerationMain.LOGGER.debug("Base URL: " + arguments.getBaseUrl());
+        WorkloadGenerationMain.LOGGER.debug("Number of runs: " + arguments.getNumberOfRuns());
+        WorkloadGenerationMain.LOGGER.debug("Workloads to execute: {}", arguments.getWorkloads());
 
-        WorkloadGeneration.LOGGER.info(
+        WorkloadGenerationMain.LOGGER.info(
                 "Creating the configuration for the workload with the webdriver path '{}', base URL '{}' and will repeating it {} times using fuzzy mode {}", // NOPMD
                 arguments.getPathPhantomjs(), arguments.getBaseUrl(), arguments.getNumberOfRuns(),
                 CommandlineArguments.getIsFuzzy());
 
         if (arguments.getWorkloads().isEmpty() || CommandlineArguments.getPrintWorkloads()) {
-            WorkloadGeneration.printAvailableWorkloads();
+            WorkloadGenerationMain.printAvailableWorkloads();
             return;
         }
 
         final WorkloadConfiguration config = new WorkloadConfiguration(arguments.getBaseUrl(),
-                arguments.getNumberOfRuns(), arguments.getPathPhantomjs(), CommandlineArguments.getIsFuzzy());
+                arguments.getNumberOfRuns(), arguments.getPathPhantomjs(), CommandlineArguments.getIsFuzzy(),
+                arguments.getDelay());
 
         final List<String> workloads = arguments.getWorkloads();
 
@@ -82,22 +83,22 @@ public final class WorkloadGeneration {
          * The registry has to be filled beforehand. Better Ideas are welcome.
          */
 
-        WorkloadGeneration.LOGGER.info("Trying to execute following workloads: {}", workloads.toString());
+        WorkloadGenerationMain.LOGGER.info("Trying to execute following workloads: {}", workloads.toString());
 
         for (final String name : workloads) {
             try {
                 final AbstractWorkload workload = WorkloadRegistry.getWorkloadInstanceByName(name);
-                WorkloadGeneration.LOGGER.info("Execute workload: {}", workload); // NOPMD
-
+                WorkloadGenerationMain.LOGGER.info("Execute workload: {}", workload); // NOPMD
                 workload.assembleWorkloadTasks().execute(config);
-
             } catch (final WorkloadNotCreatedException e) {
-                WorkloadGeneration.LOGGER.info("Could not create workload '{}'", name);
-                WorkloadGeneration.LOGGER.debug("Workload {}, Error (resuming): {}", name, e.getMessage());
+                WorkloadGenerationMain.LOGGER.info("Could not create workload '{}'", name);
+                WorkloadGenerationMain.LOGGER.debug("Workload {}, Error (resuming): {}", name, e.getMessage());
+            } catch (final InterruptedException e) {
+                WorkloadGenerationMain.LOGGER.info("Sleep period was interrupted while executing '{}'", name);
             }
         }
 
-        WorkloadGeneration.LOGGER.info("Workload execution finished");
+        WorkloadGenerationMain.LOGGER.info("Workload execution finished");
     }
 
     private static void printAvailableWorkloads() {

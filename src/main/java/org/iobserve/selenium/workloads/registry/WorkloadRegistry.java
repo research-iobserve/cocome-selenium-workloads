@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.iobserve.selenium.workloadgeneration.WorkloadGeneration;
+import org.iobserve.selenium.WorkloadGenerationMain;
 import org.iobserve.selenium.workloads.cocome.CocomeCashierCashShoppingWorkload;
 import org.iobserve.selenium.workloads.cocome.CocomeEnterpriseManagerActionWorkload;
 import org.iobserve.selenium.workloads.cocome.TestWorkload;
@@ -35,7 +35,7 @@ import org.iobserve.selenium.workloads.jpetstore.SingleCatBuyerWorkload;
 import org.iobserve.selenium.workloads.jpetstore.SingleReptileBuyerWorkload;
 
 /**
- * Used to (manually) register Workloads. The {@link WorkloadGeneration Workload Generator} looks
+ * Used to (manually) register Workloads. The {@link WorkloadGenerationMain Workload Generator} looks
  * the Workloads up and executes them.
  *
  * @author Marc Adolf

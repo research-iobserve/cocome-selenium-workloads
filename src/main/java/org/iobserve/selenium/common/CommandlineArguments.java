@@ -24,27 +24,33 @@ import com.beust.jcommander.Parameter;
  * Parse command line arguments. Uses JCommander.
  *
  * @author Marc Adolf
+ * @author Reiner Jung
  *
  */
 public class CommandlineArguments {
 
-    @Parameter(names = "-url", description = "Base url for the selenium workloads")
+    @Parameter(names = { "-u", "--url" }, description = "Base url for the selenium workloads")
     private static String baseUrl = "http://172.17.0.2:8080/jpetstore/";
 
-    @Parameter(names = "-fuzzy", description = "Enables fuzzy behavior if defined by the tasks")
+    @Parameter(names = { "-z", "--fuzzy" }, description = "Enables fuzzy behavior if defined by the tasks")
     private static Boolean isFuzzy = false;
 
-    @Parameter(names = "-runs", description = "The number of times a (repeatable) workload is executed")
+    @Parameter(names = { "-r", "--runs" }, description = "The number of times a (repeatable) workload is executed")
     private static int numberOfRuns = 5;
 
-    @Parameter(names = "-print_workloads", description = "The name(s) of the workload(s) that should be executed.", help = true)
+    @Parameter(names = { "-p",
+            "--print-workloads" }, description = "The name(s) of the workload(s) that should be executed.", help = true)
     private static Boolean printWorkloads = false;
 
-    @Parameter(names = "-workloads", description = "The name(s) of the workload(s) that should be executed.", required = true)
+    @Parameter(names = { "-w",
+            "--workloads" }, description = "The name(s) of the workload(s) that should be executed.", required = true)
     private static List<String> workloads = new ArrayList<>();
 
-    @Parameter(names = "-phantomjs", description = "Path to the PhantomJS binaries", required = true)
+    @Parameter(names = { "-j", "--phantomjs" }, description = "Path to the PhantomJS binaries.", required = true)
     private String pathPhantomjs;
+
+    @Parameter(names = { "-d", "--delay" }, description = "Delay between behavior runs.", required = false)
+    private Long delay;
 
     public String getPathPhantomjs() {
         return this.pathPhantomjs;
@@ -68,6 +74,10 @@ public class CommandlineArguments {
 
     public static Boolean getPrintWorkloads() {
         return CommandlineArguments.printWorkloads;
+    }
+
+    public final Long getDelay() {
+        return this.delay;
     }
 
 }

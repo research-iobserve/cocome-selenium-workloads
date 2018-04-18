@@ -12,7 +12,7 @@ version = '1.0'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-mainClassName='org.iobserve.selenium.workloadgeneration.WorkloadGeneration'
+mainClassName='org.iobserve.selenium.WorkloadGenerationMain'
 
 
 // In this section you declare where to find the dependencies of your project

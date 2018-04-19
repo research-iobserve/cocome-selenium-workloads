@@ -17,6 +17,7 @@ package org.iobserve.selenium.tasks;
 
 import java.util.function.Consumer;
 
+import org.iobserve.selenium.tasks.fuzzy.properties.parameter.VariableIntegerTaskParameter;
 import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 
 /**
@@ -26,6 +27,9 @@ import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
  *
  */
 public abstract class AbstractTask implements Consumer<WorkloadConfiguration> {
+
+    // default 1
+    private VariableIntegerTaskParameter repetitions = new VariableIntegerTaskParameter(1, 1, 1);
 
     /**
      *
@@ -45,8 +49,11 @@ public abstract class AbstractTask implements Consumer<WorkloadConfiguration> {
      * @return The computed or initiated amount of repetitions.
      */
     public int getRepetitions(final Boolean fuzzy) {
-        // default 1
-        return 1;
+        return this.repetitions.getParameter(fuzzy);
+    }
+
+    public void setRepetitions(final VariableIntegerTaskParameter repetitions) {
+        this.repetitions = repetitions;
     }
 
 }

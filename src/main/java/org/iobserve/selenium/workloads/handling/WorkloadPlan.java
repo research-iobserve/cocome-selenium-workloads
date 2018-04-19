@@ -42,6 +42,7 @@ public final class WorkloadPlan {
     private static final Logger LOGGER = LogManager.getLogger(WorkloadPlan.class);
     private final List<AbstractTask> plannedTasks = new ArrayList<>();
     private WorkloadConfiguration config;
+    private Boolean repeatable = true;
 
     private WorkloadPlan() {
     }
@@ -60,6 +61,14 @@ public final class WorkloadPlan {
     public static Builder builder() {
         return new Builder();
 
+    }
+
+    public Boolean getRepeatable() {
+        return this.repeatable;
+    }
+
+    public void setRepeatable(final Boolean repeatable) {
+        this.repeatable = repeatable;
     }
 
     /**
@@ -102,8 +111,12 @@ public final class WorkloadPlan {
         //
         // }
         // }
+        int numberOfRuns = usedConfig.getNumberOfRuns();
+        if (!this.repeatable) {
+            numberOfRuns = 1;
+        }
 
-        for (int i = 0; i < usedConfig.getNumberOfRuns(); i++) {
+        for (int i = 0; i < numberOfRuns; i++) {
             tasks.stream().forEach((final AbstractTask t) -> {
                 IntStream.range(1, t.getRepetitions(usedConfig.isFuzzy()) + 1).forEach(idx -> {
                     WorkloadPlan.LOGGER.info(String.format("Executing task: %s in repetition %d ", t.getName(), idx));
@@ -189,6 +202,11 @@ public final class WorkloadPlan {
          */
         public Builder newSession() {
             return this.then(new CreateNewSessionTask());
+        }
+
+        public Builder setNonRepeatable() {
+            this.workloadPlan.setRepeatable(false);
+            return this;
         }
 
     }

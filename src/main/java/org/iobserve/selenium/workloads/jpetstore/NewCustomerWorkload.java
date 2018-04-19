@@ -45,4 +45,9 @@ public class NewCustomerWorkload extends AbstractWorkload {
                 .then(new CheckoutJPetStoreTask()).newSession().build();
     }
 
+    @Override
+    public String getName() {
+        return "JPetStore New Customer Workload, register a new customer and buy one reptile";
+    }
+
 }

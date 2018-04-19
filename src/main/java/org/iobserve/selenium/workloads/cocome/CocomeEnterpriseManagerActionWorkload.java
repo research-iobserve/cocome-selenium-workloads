@@ -68,4 +68,9 @@ public class CocomeEnterpriseManagerActionWorkload extends AbstractWorkload {
                 .then(new EMLogoutTask()).build();
     }
 
+    @Override
+    public String getName() {
+        return "CoCoME Enterprise Manager workload";
+    }
+
 }

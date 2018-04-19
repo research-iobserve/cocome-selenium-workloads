@@ -40,4 +40,9 @@ public class BrowsingUserWorkload extends AbstractWorkload {
                 .fuzzyThen(new ViewProductTask(Category.FISH), 6).newSession().build();
     }
 
+    @Override
+    public String getName() {
+        return "Browsing User Workload";
+    }
+
 }

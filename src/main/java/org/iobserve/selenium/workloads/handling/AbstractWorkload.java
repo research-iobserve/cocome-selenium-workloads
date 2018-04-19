@@ -15,11 +15,19 @@
  ***************************************************************************/
 package org.iobserve.selenium.workloads.handling;
 
+import org.iobserve.selenium.tasks.AbstractTask;
+import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
+
 /**
  * @author Marc Adolf
  *
  */
-public abstract class AbstractWorkload {
+public abstract class AbstractWorkload extends AbstractTask {
+
+    @Override
+    public void accept(final WorkloadConfiguration configuration) {
+        this.assembleWorkloadTasks().execute(configuration);
+    }
 
     /**
      * Creates a specific workload which is defined with and build as an {@link WorkloadPlan}.

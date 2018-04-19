@@ -45,4 +45,9 @@ public class AccountManagerWorkload extends AbstractWorkload {
                 .fuzzyThen(new ViewOrderTask(), 20).newSession().build();
     }
 
+    @Override
+    public String getName() {
+        return "JPetStore account manager workload to change address";
+    }
+
 }

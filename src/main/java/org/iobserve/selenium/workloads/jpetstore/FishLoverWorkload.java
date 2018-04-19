@@ -47,4 +47,9 @@ public class FishLoverWorkload extends AbstractWorkload {
                 .build();
     }
 
+    @Override
+    public String getName() {
+        return "JPetStore Fish Lover Workload, buy several fishes (9)";
+    }
+
 }

@@ -48,4 +48,9 @@ public class CatLoverWorkload extends AbstractWorkload {
                 .build();
     }
 
+    @Override
+    public String getName() {
+        return "JPetStore Cat Lover Workload, buy several (9) cats";
+    }
+
 }

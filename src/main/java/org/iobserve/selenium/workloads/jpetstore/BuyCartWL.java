@@ -15,38 +15,31 @@
  ***************************************************************************/
 package org.iobserve.selenium.workloads.jpetstore;
 
-import org.iobserve.selenium.tasks.jpetstore.buy.AddCatsToCartTask;
 import org.iobserve.selenium.tasks.jpetstore.common.CheckoutJPetStoreTask;
 import org.iobserve.selenium.tasks.jpetstore.common.LoginJPetStoreTask;
 import org.iobserve.selenium.workloads.handling.AbstractWorkload;
 import org.iobserve.selenium.workloads.handling.WorkloadPlan;
 
 /**
- * A buyer that buys one cat, if fuzzy the product is random.
  *
- * @author Marc Adolf
+ * @author mad
  *
  */
-public class SingleCatBuyerWorkload extends AbstractWorkload {
+public class BuyCartWL extends AbstractWorkload {
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.iobserve.selenium.workloads.handling.AbstractWorkload#assembleWorkloadTasks()
-     */
     @Override
     public WorkloadPlan assembleWorkloadTasks() {
+
         final String username = "j2ee";
         final String password = "j2ee";
 
-        return WorkloadPlan.builder().fuzzyThen(new AddCatsToCartTask(1, 1), 1)
-                .then(new LoginJPetStoreTask(username, password)).then(new CheckoutJPetStoreTask()).newSession()
-                .build();
+        return WorkloadPlan.builder().then(new LoginJPetStoreTask(username, password)).then(new CheckoutJPetStoreTask())
+                .setNonRepeatable().build();
     }
 
     @Override
     public String getName() {
-        return "JPetStore Single Cat Buyer Workload, buy one cat";
+        return "";
     }
 
 }

@@ -44,4 +44,8 @@ public class SingleReptileBuyerWorkload extends AbstractWorkload {
                 .build();
     }
 
+    @Override
+    public String getName() {
+        return "JPetStore Single Reptile Buyer Workload, buy one reptile";
+    }
 }

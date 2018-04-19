@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2017 iObserve Project (https://www.iobserve-devops.net)
+ * Copyright (C) 2018 iObserve Project (https://www.iobserve-devops.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.workloads.cocome;
+package org.iobserve.selenium.workloads.jpetstore;
 
-import org.iobserve.selenium.tasks.cocome.enterprisemanager.EMLoginTask;
+import org.iobserve.selenium.tasks.jpetstore.buy.AddCatsToCartTask;
 import org.iobserve.selenium.workloads.handling.AbstractWorkload;
 import org.iobserve.selenium.workloads.handling.WorkloadPlan;
 
 /**
- *
- * @author Marc Adolf
+ * @author mad
  *
  */
-public class TestWorkload extends AbstractWorkload {
+public class CatToCartWl extends AbstractWorkload {
 
     @Override
     public WorkloadPlan assembleWorkloadTasks() {
-        return WorkloadPlan.builder().then(EMLoginTask.create()).newSession().then(new EMLoginTask()).build();
+        final int amountOfCat = 9;
+        final int catPosition = 0;
+
+        return WorkloadPlan.builder().fuzzyThen(new AddCatsToCartTask(amountOfCat, catPosition), 10).build();
+    }
+
+    @Override
+    public String getName() {
+        return "";
     }
 
 }

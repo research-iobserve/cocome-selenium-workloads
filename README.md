@@ -16,13 +16,18 @@ To use our workload drivers
 1. Checkout this repository alongside of `phantomjs-2.1.1-linux-x86_64`
 1. Change into the workload directory `cd selenium-workloads`
 1. Build the repository with `./gradlew build`
-1. Have a look in `example_execute_workload.sh` to see whether the script matches your requirements.
+1. After the build you find a completed package of the software in ` build/distributions/selenium-experiment-workloads-1.0.tar|zip`
+1. Unzip the package in your preferred location `$BASE` with `tar` or `unzip`
 
 # Execution of Workloads
 
 The workloads are meant to be executed within scripts.
 Therefore, the execution is configured with parameters to be able to adapt the workloads to the criteria relevant for our experiments.
 There exist several required and optional parameters.
+
+To run the application call: `$BASE/bin/
+
+
 
 ### Required Parameters
 

@@ -15,14 +15,10 @@
  ***************************************************************************/
 package org.iobserve.selenium.workloads.config;
 
-import java.util.concurrent.TimeUnit;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.iobserve.selenium.tasks.fuzzy.properties.parameter.ITaskParameter;
 import org.iobserve.selenium.workloads.handling.WorkloadPlan;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
-import org.openqa.selenium.phantomjs.PhantomJSDriverService;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 /**
  * Contains basic informations for a {@link WorkloadPlan}.
@@ -32,80 +28,32 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  */
 public class WorkloadConfiguration {
 
-    private final String baseUrl;
-    private final int numberOfRuns;
-    private final String pathWebDriver;
-    private PhantomJSDriver driver;
-    private final Boolean fuzzy;
-    private final Long delay;
-
-    /**
-     *
-     * @param baseUrl
-     *            The base URL of the used webservice.
-     * @param numberOfRuns
-     *            The number of repetitions of the {@link WorkloadPlan}.
-     * @param pathWebDriver
-     *            Path to the PhantomJS binaries
-     * @param isFuzzy
-     *            If true, all tasks in the workloads use the random content of the predefined
-     *            {@link ITaskParameter parameters}.
-     * @param delay
-     *            delay between runs
-     */
-    public WorkloadConfiguration(final String baseUrl, final int numberOfRuns, final String pathWebDriver,
-            final Boolean isFuzzy, final Long delay) {
-        this.baseUrl = baseUrl;
-        this.numberOfRuns = numberOfRuns;
-        this.pathWebDriver = pathWebDriver;
-        this.createNewDriver();
-        this.fuzzy = isFuzzy;
-        this.delay = delay;
-
-    }
-
-    private void createNewDriver() {
-        final DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setJavascriptEnabled(true);
-        capabilities.setCapability("takesScreenshot", false);
-        capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, this.pathWebDriver);
-        capabilities.setCapability("acceptSslCerts", true);
-        capabilities.setCapability("webSecurityEnabled", false);
-        final String[] phantomJsArgs = { "--web-security=no", "--ignore-ssl-errors=yes" };
-        capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, phantomJsArgs);
-        this.driver = new PhantomJSDriver(capabilities);
-        // this.driver.setLogLevel(Level.INFO);
-        // this.driver = new HtmlUnitDriver();
-        this.driver.manage().timeouts().implicitlyWait(10, TimeUnit.MILLISECONDS);
-        this.driver.manage().window().setSize(new Dimension(800, 600));
-    }
-
-    /**
-     * Delete old driver and create a new one therefore creating a new session.
-     */
-    public final void newSession() {
-        // maybe to much, is there an easier way?
-        this.createNewDriver();
-    }
+    private String baseUrl;
+    private String pathWebDriver;
+    private Map<String, Workload> workloads = new HashMap<>();
 
     public final String getBaseUrl() {
         return this.baseUrl;
     }
 
-    public final int getNumberOfRuns() {
-        return this.numberOfRuns;
+    public void setBaseUrl(final String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
-    public final PhantomJSDriver getDriver() {
-        return this.driver;
+    public final String getPathWebDriver() {
+        return this.pathWebDriver;
     }
 
-    public Boolean isFuzzy() {
-        return this.fuzzy;
+    public final void setPathWebDriver(final String pathWebDriver) {
+        this.pathWebDriver = pathWebDriver;
     }
 
-    public Long getDelay() {
-        return this.delay;
+    public final Map<String, Workload> getWorkloads() {
+        return this.workloads;
+    }
+
+    public final void setWorkloads(final Map<String, Workload> workloads) {
+        this.workloads = workloads;
     }
 
 }

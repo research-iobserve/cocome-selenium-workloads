@@ -21,11 +21,11 @@ import java.util.stream.IntStream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.iobserve.selenium.WorkloadGenerationMain;
 import org.iobserve.selenium.tasks.AbstractTask;
 import org.iobserve.selenium.tasks.AbstractUserTask;
 import org.iobserve.selenium.tasks.UserTaskWrapper;
 import org.iobserve.selenium.tasks.systemtasks.CreateNewSessionTask;
+import org.iobserve.selenium.workloads.config.IBehaviorModel;
 import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 
 /**
@@ -54,7 +54,7 @@ public final class WorkloadPlan {
     /**
      * Creates a new {@link Builder} which is used to assemble the {@link WorkloadPlan}. A standard
      * {@link WorkloadConfiguration} is used if the plan is executed by the
-     * {@link WorkloadGenerationMain}
+     * {@link WorkloadGeneration}
      *
      * @return A new {@link Builder}.
      */
@@ -93,10 +93,8 @@ public final class WorkloadPlan {
      *            The {@link WorkloadConfiguration} that defines the base URL of the used web
      *            service, the used driver and the number of repetitions. It will NOT be used if the
      *            Object already has an existing configuration.
-     * @throws InterruptedException
-     *             when the thread sleep is interrupted
      */
-    public void execute(final WorkloadConfiguration configuration) throws InterruptedException {
+    public void execute(final IBehaviorModel model) {
         final WorkloadConfiguration usedConfig;
         if (this.config != null) {
             usedConfig = this.config;
@@ -125,9 +123,6 @@ public final class WorkloadPlan {
                     t.accept(usedConfig);
                 });
             });
-            if (configuration.getDelay() != null) {
-                Thread.sleep(configuration.getDelay() * 1000);
-            }
 
         }
     }

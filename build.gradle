@@ -39,6 +39,11 @@ dependencies {
     
 	//JCommander, command line arguments
 	compile "com.beust:jcommander:1.71"
+	
+	// jackson/yaml
+	compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0'
+	compile 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
+	compile 'org.apache.commons:commons-lang3:3.4'
 
     
 }

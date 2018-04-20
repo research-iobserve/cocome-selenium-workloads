@@ -15,10 +15,10 @@
  ***************************************************************************/
 package org.iobserve.selenium.common;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.converters.FileConverter;
 
 /**
  * Parse command line arguments. Uses JCommander.
@@ -32,52 +32,31 @@ public class CommandlineArguments {
     @Parameter(names = { "-u", "--url" }, description = "Base url for the selenium workloads")
     private static String baseUrl = "http://172.17.0.2:8080/jpetstore/";
 
-    @Parameter(names = { "-z", "--fuzzy" }, description = "Enables fuzzy behavior if defined by the tasks")
-    private static Boolean isFuzzy = false;
-
-    @Parameter(names = { "-r", "--runs" }, description = "The number of times a (repeatable) workload is executed")
-    private static int numberOfRuns = 5;
-
     @Parameter(names = { "-p",
             "--print-workloads" }, description = "The name(s) of the workload(s) that should be executed.", help = true)
     private static Boolean printWorkloads = false;
 
-    @Parameter(names = { "-w",
-            "--workloads" }, description = "The name(s) of the workload(s) that should be executed.", required = true)
-    private static List<String> workloads = new ArrayList<>();
+    @Parameter(names = { "-c",
+            "--workload-characterization" }, description = "Configuration file for the workload characterization.", required = true, converter = FileConverter.class)
+    private File configuration;
 
-    @Parameter(names = { "-j", "--phantomjs" }, description = "Path to the PhantomJS binaries.", required = true)
-    private String pathPhantomjs;
-
-    @Parameter(names = { "-d", "--delay" }, description = "Delay between behavior runs.", required = false)
-    private Long delay;
-
-    public String getPathPhantomjs() {
-        return this.pathPhantomjs;
-    }
+    @Parameter(names = { "-d", "--web-driver" }, description = "Path to the Phantom JS driver", required = false)
+    private String pathWebDriver;
 
     public String getBaseUrl() {
         return CommandlineArguments.baseUrl;
     }
 
-    public int getNumberOfRuns() {
-        return CommandlineArguments.numberOfRuns;
-    }
-
-    public final List<String> getWorkloads() {
-        return CommandlineArguments.workloads;
-    }
-
-    public static Boolean getIsFuzzy() {
-        return CommandlineArguments.isFuzzy;
+    public final File getConfigurationFile() {
+        return this.configuration;
     }
 
     public static Boolean getPrintWorkloads() {
         return CommandlineArguments.printWorkloads;
     }
 
-    public final Long getDelay() {
-        return this.delay;
+    public String getPathWebDriver() {
+        return this.pathWebDriver;
     }
 
 }

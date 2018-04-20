@@ -1,0 +1,25 @@
+# Example configuration
+---
+baseUrl: http://1.2.3.4:8080
+pathWebDriver: some
+workloads:
+  wiz:
+    behaviorModel: 
+      type: org.iobserve.selenium.workloads.config.BehaviorModel
+      name: BrowsingUser
+      fuzzy: false
+    intensity:
+      type: org.iobserve.selenium.workloads.config.ConstantWorkloadIntensity
+      name: example
+      spawnPerSecond: 1
+      duration: 100
+  other:
+    behaviorModel:
+      type: org.iobserve.selenium.workloads.config.BehaviorModel
+      name: AccountManager
+      fuzzy: false
+    intensity:
+      type: org.iobserve.selenium.workloads.config.ConstantWorkloadIntensity
+      name: second
+      spawnPerSecond: 2
+      duration: 200

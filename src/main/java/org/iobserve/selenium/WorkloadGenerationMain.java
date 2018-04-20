@@ -15,18 +15,30 @@
  ***************************************************************************/
 package org.iobserve.selenium;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.beust.jcommander.JCommander;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.iobserve.selenium.common.CommandlineArguments;
+import org.iobserve.selenium.workloads.config.ConstantWorkloadIntensity;
+import org.iobserve.selenium.workloads.config.IWorkloadIntensity;
+import org.iobserve.selenium.workloads.config.Workload;
 import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 import org.iobserve.selenium.workloads.handling.AbstractWorkload;
-import org.iobserve.selenium.workloads.registry.WorkloadNotCreatedException;
+import org.iobserve.selenium.workloads.handling.BehaviorModelRunner;
+import org.iobserve.selenium.workloads.intensity.ConstantWorkloadState;
+import org.iobserve.selenium.workloads.intensity.IWorkloadState;
 import org.iobserve.selenium.workloads.registry.WorkloadRegistry;
 
 /**
@@ -58,47 +70,106 @@ public final class WorkloadGenerationMain {
         final CommandlineArguments arguments = new CommandlineArguments();
         JCommander.newBuilder().addObject(arguments).build().parse(args);
 
-        WorkloadGenerationMain.LOGGER.debug("Webdriver path: " + arguments.getPathPhantomjs());
-        WorkloadGenerationMain.LOGGER.debug("Base URL: " + arguments.getBaseUrl());
-        WorkloadGenerationMain.LOGGER.debug("Number of runs: " + arguments.getNumberOfRuns());
-        WorkloadGenerationMain.LOGGER.debug("Workloads to execute: {}", arguments.getWorkloads());
-
-        WorkloadGenerationMain.LOGGER.info(
-                "Creating the configuration for the workload with the webdriver path '{}', base URL '{}' and will repeating it {} times using fuzzy mode {}", // NOPMD
-                arguments.getPathPhantomjs(), arguments.getBaseUrl(), arguments.getNumberOfRuns(),
-                CommandlineArguments.getIsFuzzy());
-
-        if (arguments.getWorkloads().isEmpty() || CommandlineArguments.getPrintWorkloads()) {
+        if (CommandlineArguments.getPrintWorkloads()) {
             WorkloadGenerationMain.printAvailableWorkloads();
-            return;
-        }
+        } else {
 
-        final WorkloadConfiguration config = new WorkloadConfiguration(arguments.getBaseUrl(),
-                arguments.getNumberOfRuns(), arguments.getPathPhantomjs(), CommandlineArguments.getIsFuzzy(),
-                arguments.getDelay());
+            final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
-        final List<String> workloads = arguments.getWorkloads();
-
-        /*
-         * The registry has to be filled beforehand. Better Ideas are welcome.
-         */
-
-        WorkloadGenerationMain.LOGGER.info("Trying to execute following workloads: {}", workloads.toString());
-
-        for (final String name : workloads) {
+            WorkloadConfiguration configuration;
             try {
-                final AbstractWorkload workload = WorkloadRegistry.getWorkloadInstanceByName(name);
-                WorkloadGenerationMain.LOGGER.info("Execute workload: {}", workload); // NOPMD
-                workload.assembleWorkloadTasks().execute(config);
-            } catch (final WorkloadNotCreatedException e) {
-                WorkloadGenerationMain.LOGGER.info("Could not create workload '{}'", name);
-                WorkloadGenerationMain.LOGGER.debug("Workload {}, Error (resuming): {}", name, e.getMessage());
-            } catch (final InterruptedException e) {
-                WorkloadGenerationMain.LOGGER.info("Sleep period was interrupted while executing '{}'", name);
+                configuration = mapper.readValue(arguments.getConfigurationFile(), WorkloadConfiguration.class);
+                if (configuration.getBaseUrl() == null) {
+                    configuration.setBaseUrl(arguments.getBaseUrl());
+                }
+                if (configuration.getPathWebDriver() == null) {
+                    configuration.setPathWebDriver(arguments.getPathWebDriver());
+                }
+
+                /** evaluate configuration. */
+                if (configuration.getWorkloads() != null) {
+                    WorkloadGenerationMain.LOGGER.info("Trying to execute following workloads: {}",
+                            configuration.getWorkloads().keySet());
+                    WorkloadGenerationMain.runWorkloads(WorkloadGenerationMain.setupWorkloads(configuration));
+                }
+
+                WorkloadGenerationMain.LOGGER.info("Workload execution finished.");
+            } catch (final IOException e) {
+                WorkloadGenerationMain.LOGGER.error("Execution failed due to {} error.", e.getMessage());
+            }
+        }
+    }
+
+    private static List<IWorkloadState> setupWorkloads(final WorkloadConfiguration configuration) {
+        final long presentTime = new Date().getTime(); // time in ms
+
+        final List<IWorkloadState> workloads = new ArrayList<>();
+
+        for (final Workload workload : configuration.getWorkloads().values()) {
+            final IWorkloadIntensity intensity = workload.getIntensity();
+            if (intensity instanceof ConstantWorkloadIntensity) {
+                final IWorkloadState state = new ConstantWorkloadState((ConstantWorkloadIntensity) intensity);
+                state.startWorkloadProfile(presentTime);
+                state.setBehavioModel(workload.getBehaviorModel());
+                workloads.add(state);
+            } else {
+                WorkloadGenerationMain.LOGGER.error("Unknown workload intensity type: {}",
+                        intensity.getClass().getCanonicalName());
             }
         }
 
-        WorkloadGenerationMain.LOGGER.info("Workload execution finished");
+        return workloads;
+    }
+
+    private static void runWorkloads(final List<IWorkloadState> workloads) {
+        final ExecutorService executor = Executors.newFixedThreadPool(10);
+
+        boolean repeat = false;
+
+        do {
+            repeat = false;
+            long trigger = Long.MAX_VALUE;
+            for (final IWorkloadState state : workloads) {
+                WorkloadGenerationMain.LOGGER.debug("work on {}", state.getBehaviorModel().getName());
+                final long presentTime = new Date().getTime();
+                WorkloadGenerationMain.LOGGER.debug("time {}", presentTime);
+                if (!state.isWorkloadProfileComplete(presentTime)) {
+                    while (state.startBehavior(presentTime)) {
+                        executor.submit(new BehaviorModelRunner(state.getBehaviorModel(), null));
+                    }
+                    final long potentialTrigger = state.getNextTrigger(presentTime);
+                    if (trigger > potentialTrigger) {
+                        trigger = potentialTrigger;
+                    }
+                    repeat = true;
+                }
+            }
+            try {
+                if (repeat) {
+                    Thread.sleep(trigger - new Date().getTime());
+                }
+            } catch (final InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } while (repeat);
+
+        for (final IWorkloadState state : workloads) {
+            WorkloadGenerationMain.LOGGER.debug("{} had {} executions", state.getBehaviorModel().getName(),
+                    state.getCount());
+        }
+
+        /*
+         * for (final String name : workloads) { try { final AbstractWorkload workload =
+         * WorkloadRegistry.getWorkloadInstanceByName(name);
+         * WorkloadGenerationMain.LOGGER.info("Execute workload: {}", workload); // NOPMD
+         * workload.assembleWorkloadTasks().execute(config); } catch (final
+         * WorkloadNotCreatedException e) {
+         * WorkloadGenerationMain.LOGGER.info("Could not create workload '{}'", name);
+         * WorkloadGenerationMain.LOGGER.debug("Workload {}, Error (resuming): {}", name,
+         * e.getMessage()); } } }
+         */
+
     }
 
     private static void printAvailableWorkloads() {

@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2017 iObserve Project (https://www.iobserve-devops.net)
+ * Copyright (C) 2018 iObserve Project (https://www.iobserve-devops.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.tasks;
-
-import java.util.function.Consumer;
-
-import org.iobserve.selenium.workloads.config.IBehaviorModel;
+package org.iobserve.selenium.workloads.config;
 
 /**
- * A basic task in a workload plan.
- *
- * @author Marc Adolf
+ * @author Reiner Jung
  *
  */
-public abstract class AbstractTask implements Consumer<IBehaviorModel> {
+public class BehaviorModel implements IBehaviorModel {
 
-    /**
-     *
-     * @return The name of the task.
-     */
-    public abstract String getName();
+    private String name;
+    private boolean fuzzy;
 
-    @Override
-    public abstract void accept(final IBehaviorModel mode);
+    public BehaviorModel() {
+        // empty bean constructor
+    }
+
+    public final String getName() {
+        return this.name;
+    }
+
+    public final void setName(final String name) {
+        this.name = name;
+    }
+
+    public final boolean isFuzzy() {
+        return this.fuzzy;
+    }
+
+    public final void setFuzzy(final boolean fuzzy) {
+        this.fuzzy = fuzzy;
+    }
 
 }

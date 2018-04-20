@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2017 iObserve Project (https://www.iobserve-devops.net)
+ * Copyright (C) 2018 iObserve Project (https://www.iobserve-devops.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,37 @@
  ***************************************************************************/
 package org.iobserve.selenium.workloads.handling;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.iobserve.selenium.tasks.AbstractTask;
 import org.iobserve.selenium.workloads.config.IBehaviorModel;
 
 /**
- * @author Marc Adolf
+ * @author Reiner Jung
  *
  */
-public abstract class AbstractWorkload extends AbstractTask {
+public class BehaviorModelRunner implements Runnable {
 
-    @Override
-    public void accept(final IBehaviorModel model) {
-        this.assembleWorkloadTasks().execute(model);
+    private static final Logger LOGGER = LogManager.getLogger(BehaviorModelRunner.class);
+
+    private final IBehaviorModel model;
+    private final AbstractTask task;
+
+    public BehaviorModelRunner(final IBehaviorModel model, final AbstractTask task) {
+        this.model = model;
+        this.task = task;
     }
 
-    /**
-     * Creates a specific workload which is defined with and build as an {@link WorkloadPlan}.
+    /*
+     * (non-Javadoc)
      *
-     * @return A {@link WorkloadPlan} ready to be executed.
+     * @see java.lang.Runnable#run()
      */
-    public abstract WorkloadPlan assembleWorkloadTasks();
+    @Override
+    public void run() {
+        BehaviorModelRunner.LOGGER.debug("Running behavior {}", this.model.getName());
+        // this.task.accept(this.model);
+        BehaviorModelRunner.LOGGER.debug("done.");
+    }
 
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright (C) 2017 iObserve Project (https://www.iobserve-devops.net)
+ * Copyright (C) 2018 iObserve Project (https://www.iobserve-devops.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.tasks;
-
-import java.util.function.Consumer;
-
-import org.iobserve.selenium.workloads.config.IBehaviorModel;
+package org.iobserve.selenium.workloads.config;
 
 /**
- * A basic task in a workload plan.
- *
- * @author Marc Adolf
+ * @author Reiner Jung
  *
  */
-public abstract class AbstractTask implements Consumer<IBehaviorModel> {
+public interface IBehaviorModel {
 
-    /**
-     *
-     * @return The name of the task.
-     */
-    public abstract String getName();
-
-    @Override
-    public abstract void accept(final IBehaviorModel mode);
+    String getName();
 
 }

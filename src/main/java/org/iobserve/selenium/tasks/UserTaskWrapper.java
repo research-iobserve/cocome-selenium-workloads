@@ -16,7 +16,7 @@
 package org.iobserve.selenium.tasks;
 
 import org.iobserve.selenium.tasks.fuzzy.properties.parameter.VariableIntegerTaskParameter;
-import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
+import org.iobserve.selenium.workloads.config.IBehaviorModel;
 
 /**
  * Wraps {@link AbstractUserTask UserTasks}. Enables the system to use func(config) and
@@ -67,9 +67,9 @@ public class UserTaskWrapper extends AbstractTask {
      * WorkloadConfiguration)
      */
     @Override
-    public void accept(final WorkloadConfiguration config) {
-        this.userTask.setConfiguration(config);
-        this.userTask.executeTask(config.getDriver(), config.getBaseUrl());
+    public void accept(final IBehaviorModel model) {
+        this.userTask.setBehaviorModel(model);
+        this.userTask.executeTask(model.getDriver(), model.getBaseUrl());
     }
 
     @Override

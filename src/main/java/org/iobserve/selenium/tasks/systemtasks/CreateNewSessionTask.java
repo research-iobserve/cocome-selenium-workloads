@@ -16,6 +16,7 @@
 package org.iobserve.selenium.tasks.systemtasks;
 
 import org.iobserve.selenium.tasks.AbstractTask;
+import org.iobserve.selenium.workloads.config.IBehaviorModel;
 import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
 
 /**
@@ -30,8 +31,8 @@ public class CreateNewSessionTask extends AbstractTask {
     private static final String NAME = "Create new session";
 
     @Override
-    public void accept(final WorkloadConfiguration t) {
-        t.newSession();
+    public void accept(final IBehaviorModel model) {
+        createDriver();
 
     }
 

@@ -44,7 +44,7 @@ public class BehaviorModelRunner implements Runnable {
     @Override
     public void run() {
         BehaviorModelRunner.LOGGER.debug("Running behavior {}", this.model.getName());
-        // this.task.accept(this.model);
+        this.task.accept(this.model);
         BehaviorModelRunner.LOGGER.debug("done.");
     }
 

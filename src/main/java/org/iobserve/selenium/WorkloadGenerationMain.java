@@ -23,23 +23,29 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 
 import com.beust.jcommander.JCommander;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.iobserve.selenium.beahvior.BehaviorModelRunner;
+import org.iobserve.selenium.beahvior.ComposedBehavior;
+import org.iobserve.selenium.beahvior.PhantomJSFactory;
+import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.TaskRegistry;
 import org.iobserve.selenium.common.CommandlineArguments;
-import org.iobserve.selenium.workloads.config.ConstantWorkloadIntensity;
-import org.iobserve.selenium.workloads.config.IWorkloadIntensity;
-import org.iobserve.selenium.workloads.config.Workload;
-import org.iobserve.selenium.workloads.config.WorkloadConfiguration;
-import org.iobserve.selenium.workloads.handling.AbstractWorkload;
-import org.iobserve.selenium.workloads.handling.BehaviorModelRunner;
-import org.iobserve.selenium.workloads.intensity.ConstantWorkloadState;
-import org.iobserve.selenium.workloads.intensity.IWorkloadState;
-import org.iobserve.selenium.workloads.registry.WorkloadRegistry;
+import org.iobserve.selenium.configuration.BehaviorModel;
+import org.iobserve.selenium.configuration.ConstantWorkloadIntensity;
+import org.iobserve.selenium.configuration.IWorkloadIntensity;
+import org.iobserve.selenium.configuration.Workload;
+import org.iobserve.selenium.configuration.WorkloadConfiguration;
+import org.iobserve.selenium.workload.intensity.ConstantWorkloadState;
+import org.iobserve.selenium.workload.intensity.IWorkloadState;
+import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Generates workloads for CoCoME. Designed to be used with the iObserve Experiment. Uses Selenium
@@ -51,7 +57,7 @@ import org.iobserve.selenium.workloads.registry.WorkloadRegistry;
  */
 public final class WorkloadGenerationMain {
 
-    private static final Logger LOGGER = LogManager.getLogger(WorkloadGenerationMain.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkloadGenerationMain.class);
 
     /**
      * Empty constructor.
@@ -66,7 +72,6 @@ public final class WorkloadGenerationMain {
      *            The parameters to be parsed by {@link CommandlineArguments JCommander}.
      */
     public static void main(final String[] args) {
-
         final CommandlineArguments arguments = new CommandlineArguments();
         JCommander.newBuilder().addObject(arguments).build().parse(args);
 
@@ -88,9 +93,23 @@ public final class WorkloadGenerationMain {
 
                 /** evaluate configuration. */
                 if (configuration.getWorkloads() != null) {
-                    WorkloadGenerationMain.LOGGER.info("Trying to execute following workloads: {}",
-                            configuration.getWorkloads().keySet());
-                    WorkloadGenerationMain.runWorkloads(WorkloadGenerationMain.setupWorkloads(configuration));
+                    final Function<Workload, String> f = new Function<Workload, String>() {
+                        @Override
+                        public String apply(final Workload t) {
+                            return t.getName();
+                        }
+                    };
+                    final BinaryOperator<String> op = new BinaryOperator<String>() {
+                        @Override
+                        public String apply(final String t, final String u) {
+                            return t + ", " + u;
+                        }
+                    };
+                    final String names = configuration.getWorkloads().stream().map(f).reduce(op).get();
+                    WorkloadGenerationMain.LOGGER.info("Trying to execute following workloads: {}", names);
+                    WorkloadGenerationMain.runWorkloads(WorkloadGenerationMain.setupWorkloads(configuration),
+                            PhantomJSFactory.createNewDriver(configuration.getPathWebDriver()),
+                            configuration.getBaseUrl());
                 }
 
                 WorkloadGenerationMain.LOGGER.info("Workload execution finished.");
@@ -105,12 +124,17 @@ public final class WorkloadGenerationMain {
 
         final List<IWorkloadState> workloads = new ArrayList<>();
 
-        for (final Workload workload : configuration.getWorkloads().values()) {
+        for (final Workload workload : configuration.getWorkloads()) {
             final IWorkloadIntensity intensity = workload.getIntensity();
             if (intensity instanceof ConstantWorkloadIntensity) {
                 final IWorkloadState state = new ConstantWorkloadState((ConstantWorkloadIntensity) intensity);
                 state.startWorkloadProfile(presentTime);
-                state.setBehavioModel(workload.getBehaviorModel());
+
+                final BehaviorModel behaviorModel = configuration.getBehaviors().get(workload.getName());
+                if (behaviorModel == null) {
+                    WorkloadGenerationMain.LOGGER.error("Behavior {} cannot be found.", workload.getName());
+                }
+                state.setBehavioModel(behaviorModel);
                 workloads.add(state);
             } else {
                 WorkloadGenerationMain.LOGGER.error("Unknown workload intensity type: {}",
@@ -121,7 +145,8 @@ public final class WorkloadGenerationMain {
         return workloads;
     }
 
-    private static void runWorkloads(final List<IWorkloadState> workloads) {
+    private static void runWorkloads(final List<IWorkloadState> workloads, final WebDriver driver,
+            final String baseUrl) {
         final ExecutorService executor = Executors.newFixedThreadPool(10);
 
         boolean repeat = false;
@@ -135,7 +160,8 @@ public final class WorkloadGenerationMain {
                 WorkloadGenerationMain.LOGGER.debug("time {}", presentTime);
                 if (!state.isWorkloadProfileComplete(presentTime)) {
                     while (state.startBehavior(presentTime)) {
-                        executor.submit(new BehaviorModelRunner(state.getBehaviorModel(), null));
+                        executor.submit(new BehaviorModelRunner(state.getBehaviorModel(),
+                                new ComposedBehavior(driver, baseUrl, state.getBehaviorModel())));
                     }
                     final long potentialTrigger = state.getNextTrigger(presentTime);
                     if (trigger > potentialTrigger) {
@@ -158,27 +184,15 @@ public final class WorkloadGenerationMain {
             WorkloadGenerationMain.LOGGER.debug("{} had {} executions", state.getBehaviorModel().getName(),
                     state.getCount());
         }
-
-        /*
-         * for (final String name : workloads) { try { final AbstractWorkload workload =
-         * WorkloadRegistry.getWorkloadInstanceByName(name);
-         * WorkloadGenerationMain.LOGGER.info("Execute workload: {}", workload); // NOPMD
-         * workload.assembleWorkloadTasks().execute(config); } catch (final
-         * WorkloadNotCreatedException e) {
-         * WorkloadGenerationMain.LOGGER.info("Could not create workload '{}'", name);
-         * WorkloadGenerationMain.LOGGER.debug("Workload {}, Error (resuming): {}", name,
-         * e.getMessage()); } } }
-         */
-
     }
 
     private static void printAvailableWorkloads() {
-        final Map<String, Class<? extends AbstractWorkload>> registeredWorkloads = WorkloadRegistry
+        final Map<String, Class<? extends AbstractUserTask>> registeredWorkloads = TaskRegistry
                 .getRegisteredWorkloads();
 
         String output = "Following workloads are registered:";
 
-        for (final Entry<String, Class<? extends AbstractWorkload>> e : registeredWorkloads.entrySet()) {
+        for (final Entry<String, Class<? extends AbstractUserTask>> e : registeredWorkloads.entrySet()) {
             output += "\n";
             output += "Workload name: ";
             output += e.getKey();

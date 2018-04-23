@@ -25,20 +25,24 @@ repositories {
 dependencies {
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
-   // implementation 'com.google.guava:guava:20.0'
+    // implementation 'com.google.guava:guava:20.0'
 
     // Use JUnit test framework
     compile 'junit:junit:4.12'
     
     //Selenium
     compile 'org.seleniumhq.selenium:selenium-java:3.4.0'
-    
-    //log4J
-    compile 'org.apache.logging.log4j:log4j-api:2.6.2'
-	compile 'org.apache.logging.log4j:log4j-core:2.6.2'
+
     
 	//JCommander, command line arguments
 	compile "com.beust:jcommander:1.71"
+	
+    // logging
+	compile 'org.slf4j:slf4j-api:1.7.25'
+	compile 'org.slf4j:slf4j-log4j12:1.7.25'
+	
+	// reflection
+	compile 'org.reflections:reflections:0.9.11'
 	
 	// jackson/yaml
 	compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0'

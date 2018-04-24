@@ -1,0 +1,55 @@
+# Example configuration
+---
+baseUrl: http://172.17.0.2:8080
+pathWebDriver: some
+behaviors:
+  CocomeCashierCashShoppingBehavior:
+    name: CocomeCashierCashShoppingBehavior
+    subbehaviors:
+      CSLoginTask:
+        name: CSLoginTask
+      CSBuySingleItemNTimesWithCashTask:
+        name: CSBuySingleItemNTimesWithCashTask
+        parameters:
+          productBarCode: 12345678
+          numberOfItems: 4
+          cashToPay: 50
+      CSBuySingleItemNTimesWithCashTask:
+        name: CSBuySingleItemNTimesWithCashTask
+        parameters:
+          productBarCode: 12345678
+          numberOfItems: 7
+          cashToPay: 100
+      CSLogoutTask:
+        name: CSLogoutTask
+    
+  CocomeEnterpriseManagerActionBehavior:
+    name: CocomeEnterpriseManagerActionBehavior
+    subbehaviors:
+      EMLoginTask:
+        name: EMLoginTask
+      EMCreateNewEnterpriseTask:
+        name: EMCreateNewEnterpriseTask
+        parameters:
+          enterpriseName: SuperCatz
+      EMCreateNewProductTask:
+        name: EMCreateNewProductTask
+        parameters:
+          productName: "SuperCatz Catfood"
+          productBarCode: 6666
+          productPrice: 6
+      EMCreateNewStoreTask:
+        name: EMCreateNewStoreTask
+        parameters:
+          storeName: Auntie Cat
+          storeLocation: Flensburg Main Station
+      EMAddSecondProductToFirstStoreOfSecondEnterpriseTask:
+        name: EMAddSecondProductToFirstStoreOfSecondEnterpriseTask
+        parameters:
+          shopPrice: 12
+          stockMin: 20
+          stockMax: 500
+          stockCurrent: 300
+      EMLogoutTask:
+        name: EMLogoutTask
+ 

@@ -29,6 +29,9 @@ import org.openqa.selenium.WebDriver;
  */
 public class CheckoutJPetStoreTask extends AbstractTask {
 
+    /**
+     * Default constructor. Necessary to annotate parameter names.
+     */
     @Parameters(names = {})
     public CheckoutJPetStoreTask() {
         // empty constructor

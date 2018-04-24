@@ -24,9 +24,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 public class Workload {
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type")
-    IWorkloadIntensity intensity;
-    String name;
+    private IWorkloadIntensity intensity;
 
+    private String name;
+
+    /**
+     * Default bean constructor.
+     */
     public Workload() {
     }
 

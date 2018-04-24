@@ -30,6 +30,9 @@ import org.openqa.selenium.WebDriver;
 public final class EMLoginTask extends AbstractTask {
     private static final String NAME = "Enterprise manager - Login";
 
+    /**
+     * Default constructor. Necessary to annotate parameter names.
+     */
     @Parameters(names = {})
     public EMLoginTask() {
         // empty constructor

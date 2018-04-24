@@ -29,9 +29,12 @@ import java.util.Map;
 public class WorkloadConfiguration {
 
     private PhantomConfiguration phantom;
+
     private List<Workload> workloads = new ArrayList<>();
+
     private Map<String, BehaviorModel> behaviors = new HashMap<>();
-    double activityDelay; // in seconds
+
+    private double activityDelay; // in seconds
 
     public final double getActivityDelay() {
         return this.activityDelay;

@@ -41,6 +41,14 @@ public class ConstantWorkloadBalance implements IWorkloadBalance {
     private long endPoint;
     private boolean wait = true;
 
+    /**
+     * Create new constant workload balance.
+     *
+     * @param intensity
+     *            constant workload intensity to use
+     * @throws ConfigurationException
+     *             on configuration errors
+     */
     public ConstantWorkloadBalance(final ConstantWorkloadIntensity intensity) throws ConfigurationException {
         if (intensity.getDelays() == null) {
             this.durations = new long[1];
@@ -116,7 +124,7 @@ public class ConstantWorkloadBalance implements IWorkloadBalance {
     }
 
     @Override
-    public void setBehavioModel(final BehaviorModel behaviorModel) {
+    public void setBehaviorModel(final BehaviorModel behaviorModel) {
         this.behaviorModel = behaviorModel;
     }
 

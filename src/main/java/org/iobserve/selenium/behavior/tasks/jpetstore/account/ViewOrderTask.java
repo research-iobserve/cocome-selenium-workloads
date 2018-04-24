@@ -31,6 +31,9 @@ import org.openqa.selenium.WebElement;
  */
 public class ViewOrderTask extends AbstractTask {
 
+    /**
+     * Default constructor. Necessary to annotate parameter names.
+     */
     @Parameters(names = {})
     public ViewOrderTask() {
         // empty constructor

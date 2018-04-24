@@ -43,6 +43,18 @@ public class ComposedBehavior {
 
     private final String name;
 
+    /**
+     * Composed behavior executor.
+     *
+     * @param driver
+     *            web driver to use
+     * @param baseUrl
+     *            base url
+     * @param activityDelay
+     *            activity delay
+     * @param model
+     *            behavior model to execute
+     */
     public ComposedBehavior(final WebDriver driver, final String baseUrl, final double activityDelay,
             final BehaviorModel model) {
         this.driver = driver;
@@ -69,11 +81,22 @@ public class ComposedBehavior {
         return this.model;
     }
 
+    /**
+     * Returns the number of repetitions for this behavior.
+     *
+     * @return repetition
+     */
     public int getRepetitions() {
         final Repetition repetition = this.model.getRepetition();
         return RandomGenerator.getRandomNumber(repetition.getMin(), repetition.getMax());
     }
 
+    /**
+     * Execute the behavior.
+     *
+     * @throws ConfigurationException
+     *             on configuration errors
+     */
     public void execute() throws ConfigurationException {
         /** start with new session. */
         ComposedBehavior.LOGGER.debug("delete all cookies -> new session");
@@ -83,9 +106,9 @@ public class ComposedBehavior {
                 this.getActivityDelay(this.activityDelay, this.model.getActivityDelay()));
     }
 
-    private void iterateBehavior(final BehaviorModel model, final double localActivityDelay)
+    private void iterateBehavior(final BehaviorModel localModel, final double localActivityDelay)
             throws ConfigurationException {
-        ComposedBehavior.LOGGER.debug("part {}", model.getName());
+        ComposedBehavior.LOGGER.debug("part {}", localModel.getName());
         for (final BehaviorModel behavior : this.getBehaviorModel().getSubbehaviors()) {
             if (behavior.getRepetition() != null) {
                 final int repetitions = RandomGenerator.getRandomNumber(behavior.getRepetition().getMin(),
@@ -113,11 +136,11 @@ public class ComposedBehavior {
         }
     }
 
-    private double getActivityDelay(final double activityDelay, final Double localActivityDelay) {
+    private double getActivityDelay(final double parentActivityDelay, final Double localActivityDelay) {
         if (localActivityDelay != null) {
             return localActivityDelay;
         } else {
-            return activityDelay;
+            return parentActivityDelay;
         }
     }
 

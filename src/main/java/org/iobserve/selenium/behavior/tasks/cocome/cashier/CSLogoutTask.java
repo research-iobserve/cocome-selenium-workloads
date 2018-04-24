@@ -28,6 +28,9 @@ import org.openqa.selenium.WebDriver;
  */
 public class CSLogoutTask extends AbstractTask {
 
+    /**
+     * Default constructor. Necessary to annotate parameter names.
+     */
     @Parameters(names = {})
     public CSLogoutTask() {
         // empty constructor

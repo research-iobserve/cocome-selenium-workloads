@@ -34,6 +34,12 @@ public class ConfigurationException extends Exception {
         super(string);
     }
 
+    /**
+     * New {@link ConfigurationException}.
+     *
+     * @param e
+     *            parent exception
+     */
     public ConfigurationException(final Exception e) {
         super(e);
     }

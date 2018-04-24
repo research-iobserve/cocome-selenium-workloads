@@ -32,7 +32,7 @@ public abstract class AbstractTask {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractTask.class);
 
-    protected BehaviorModel model;
+    protected BehaviorModel behaviorModel;
 
     /**
      * Executes the defined task.
@@ -53,13 +53,19 @@ public abstract class AbstractTask {
     public abstract String getName();
 
     public BehaviorModel getBehaviorModel() {
-        return this.model;
+        return this.behaviorModel;
     }
 
-    public void setBehaviorModel(final BehaviorModel model) {
-        this.model = model;
+    public void setBehaviorModel(final BehaviorModel behaviorModel) {
+        this.behaviorModel = behaviorModel;
     }
 
+    /**
+     * Delay the execution by @{link activityDelay} milliseconds.
+     *
+     * @param activityDelay
+     *            sleep time
+     */
     protected void sleep(final long activityDelay) {
         try {
             AbstractTask.LOGGER.debug("Sleep {} ms.", activityDelay);

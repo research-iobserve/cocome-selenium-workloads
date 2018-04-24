@@ -29,15 +29,15 @@ import java.util.Map;
  */
 public class BehaviorModel {
 
-    String name;
+    private String name;
 
-    Repetition repetition;
+    private Repetition repetition;
 
-    Double activityDelay; // in seconds
+    private Double activityDelay; // in seconds
 
-    Map<String, Object> parameters = new HashMap<>();
+    private Map<String, Object> parameters = new HashMap<>();
 
-    List<BehaviorModel> subbehaviors = new ArrayList<>();
+    private List<BehaviorModel> subbehaviors = new ArrayList<>();
 
     public final String getName() {
         return this.name;

@@ -20,11 +20,11 @@ package org.iobserve.selenium.configuration;
  *
  */
 public class PhantomConfiguration {
-    String baseUrl;
+    private String baseUrl;
 
-    String path;
+    private String path;
 
-    long timeout; // in milliseconds
+    private long timeout; // in milliseconds
 
     public final String getBaseUrl() {
         return this.baseUrl;

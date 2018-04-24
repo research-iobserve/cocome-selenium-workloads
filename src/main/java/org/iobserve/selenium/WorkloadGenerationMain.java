@@ -23,8 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
 
 import com.beust.jcommander.JCommander;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -82,7 +80,7 @@ public final class WorkloadGenerationMain {
 
             final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
-            WorkloadConfiguration configuration;
+            final WorkloadConfiguration configuration;
             try {
                 configuration = mapper.readValue(arguments.getConfigurationFile(), WorkloadConfiguration.class);
                 if (configuration.getPhantom() == null) {
@@ -99,23 +97,13 @@ public final class WorkloadGenerationMain {
 
                 /** evaluate configuration. */
                 if (configuration.getWorkloads() != null) {
-                    final Function<Workload, String> f = new Function<Workload, String>() {
-                        @Override
-                        public String apply(final Workload t) {
-                            return t.getName();
-                        }
-                    };
-                    final BinaryOperator<String> op = new BinaryOperator<String>() {
-                        @Override
-                        public String apply(final String t, final String u) {
-                            return t + ", " + u;
-                        }
-                    };
-                    final String names = configuration.getWorkloads().stream().map(f).reduce(op).get();
-                    WorkloadGenerationMain.LOGGER.info("Trying to execute following workloads: {}", names);
+                    final String names = configuration.getWorkloads().stream().map(w -> w.getName())
+                            .reduce((a, b) -> a + ", " + b).get();
+                    WorkloadGenerationMain.LOGGER.info("Executing workloads: {}", names);
                     WorkloadGenerationMain.runWorkloads(WorkloadGenerationMain.setupWorkloads(configuration),
                             configuration);
-
+                } else {
+                    WorkloadGenerationMain.LOGGER.error("Configuration does not contain any workloads.");
                 }
 
                 WorkloadGenerationMain.LOGGER.info("Workload execution finished.");
@@ -141,7 +129,7 @@ public final class WorkloadGenerationMain {
                     if (behaviorModel == null) {
                         WorkloadGenerationMain.LOGGER.error("Behavior {} cannot be found.", workload.getName());
                     }
-                    state.setBehavioModel(behaviorModel);
+                    state.setBehaviorModel(behaviorModel);
                     workloads.add(state);
                 } catch (final ConfigurationException e) {
                     WorkloadGenerationMain.LOGGER.error("Configuration error in workload intensity for Behavior {}.",
@@ -187,8 +175,7 @@ public final class WorkloadGenerationMain {
                     Thread.sleep(trigger - new Date().getTime());
                 }
             } catch (final InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                WorkloadGenerationMain.LOGGER.info("Sleep interrupted in main workload scheduler.");
             }
         } while (repeat);
 
@@ -198,7 +185,7 @@ public final class WorkloadGenerationMain {
         driver.quit();
 
         for (final IWorkloadBalance state : workloads) {
-            WorkloadGenerationMain.LOGGER.debug("{} had {} executions", state.getBehaviorModel().getName(),
+            WorkloadGenerationMain.LOGGER.info("{} had {} executions", state.getBehaviorModel().getName(),
                     state.getCount());
         }
     }

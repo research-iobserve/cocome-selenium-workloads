@@ -54,6 +54,8 @@ public final class InstantiationFactory { // NOPMD
      *
      * @param <C>
      *            The type of the returned class.
+     * @throws ConfigurationException
+     *             on errors with the configuration
      */
     public static <C> C create(final Class<C> implementedInterface, final String className,
             final Class<?>[] parameterTypes, final Object... parameters) throws ConfigurationException {

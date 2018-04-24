@@ -54,7 +54,7 @@ public final class TaskRegistry {
      *
      * @return all {@link AbstractBehavior workloads} known by the registry
      */
-    public synchronized static Map<String, Class<? extends AbstractTask>> getRegisteredWorkloads() {
+    public static synchronized Map<String, Class<? extends AbstractTask>> getRegisteredWorkloads() {
         if (TaskRegistry.registeredWorkloads == null) {
             LoggerFactory.getLogger(TaskRegistry.class).debug("Filling the registry");
             TaskRegistry.registeredWorkloads = new HashMap<>();
@@ -77,6 +77,8 @@ public final class TaskRegistry {
      *
      * @param name
      *            The registered name of the workload
+     * @param parameters
+     *            parameters for the behavior to instantiate
      * @return new Instance of the {@link AbstractBehavior Workload}
      * @throws ConfigurationException
      *             If the workload was not found or could not be created.
@@ -106,16 +108,7 @@ public final class TaskRegistry {
                                     break;
                                 } else {
                                     parameterTypes.add(parameterType);
-                                    if (parameterType.isEnum()) {
-                                        final Object[] items = parameterType.getEnumConstants();
-                                        for (final Object item : items) {
-                                            if (item.toString().equals(value)) {
-                                                parameterValues.add(item);
-                                            }
-                                        }
-                                    } else {
-                                        parameterValues.add(value);
-                                    }
+                                    TaskRegistry.addParameterValues(parameterType, parameterValues, value);
                                 }
                             }
                             if (parameterTypes.size() == parameters.size()) {
@@ -139,5 +132,30 @@ public final class TaskRegistry {
                 throw new ConfigurationException("Workload '" + name + "' could not be instantiated"); // NOPMD
             }
         }
+    }
+
+    /**
+     * Add a value of defined type to the parameterValues.
+     *
+     * @param parameterType
+     *            type
+     * @param parameterValues
+     *            list of values
+     * @param value
+     *            value to be added
+     */
+    private static void addParameterValues(final Class<?> parameterType, final List<Object> parameterValues,
+            final Object value) {
+        if (parameterType.isEnum()) {
+            final Object[] items = parameterType.getEnumConstants();
+            for (final Object item : items) {
+                if (item.toString().equals(value)) {
+                    parameterValues.add(item);
+                }
+            }
+        } else {
+            parameterValues.add(value);
+        }
+
     }
 }

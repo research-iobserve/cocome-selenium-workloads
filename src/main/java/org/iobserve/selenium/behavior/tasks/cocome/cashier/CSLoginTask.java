@@ -29,6 +29,9 @@ import org.openqa.selenium.support.ui.Select;
  */
 public class CSLoginTask extends AbstractTask {
 
+    /**
+     * Default constructor. Necessary to annotate parameter names.
+     */
     @Parameters(names = {})
     public CSLoginTask() {
         // empty constructor

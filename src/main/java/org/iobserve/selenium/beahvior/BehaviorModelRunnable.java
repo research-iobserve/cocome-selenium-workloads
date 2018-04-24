@@ -31,6 +31,12 @@ public class BehaviorModelRunnable implements Runnable {
 
     private final ComposedBehavior behavior;
 
+    /**
+     * Create an runnable to execute the behavior.
+     *
+     * @param behavior
+     *            behavior executor
+     */
     public BehaviorModelRunnable(final ComposedBehavior behavior) {
         this.behavior = behavior;
     }

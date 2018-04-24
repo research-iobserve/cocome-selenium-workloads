@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright 2018 iObserve Project (https://www.iobserve-devops.net)
+ * Copyright (C) 2018 iObserve Project (https://www.iobserve-devops.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,17 @@ package org.iobserve.selenium.configuration;
  *
  */
 public class Repetition {
-    int min;
-    int max;
+
+    private int min;
+
+    private int max;
+
+    /**
+     * Default bean constructor.
+     */
+    public Repetition() {
+        // empty constructor
+    }
 
     public final int getMin() {
         return this.min;
@@ -39,10 +48,6 @@ public class Repetition {
 
     public final void setMax(final int max) {
         this.max = max;
-    }
-
-    public Repetition() {
-        // empty constructor
     }
 
 }

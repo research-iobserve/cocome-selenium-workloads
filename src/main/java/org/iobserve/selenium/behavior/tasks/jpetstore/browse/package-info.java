@@ -13,33 +13,4 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.common;
-
-import java.util.Random;
-
-/**
- * @author Reiner Jung
- *
- */
-public final class RandomGenerator {
-
-    private static Random random = new Random();
-
-    private RandomGenerator() {
-        // factory, therefore private
-    }
-
-    /**
-     * Generate random number between {@link lower} and {@link upper}.
-     *
-     * @param lower
-     *            lower boundary
-     * @param upper
-     *            upper boundary
-     * @return random number
-     */
-    public static int getRandomNumber(final int lower, final int upper) {
-        final double value = RandomGenerator.random.nextDouble() * (upper - lower);
-        return (int) (Math.round(value) + lower);
-    }
-}
+package org.iobserve.selenium.behavior.tasks.jpetstore.browse;

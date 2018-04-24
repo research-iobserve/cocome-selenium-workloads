@@ -27,8 +27,19 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  * @author Reiner Jung
  *
  */
-public class PhantomJSFactory {
+public final class PhantomJSFactory {
 
+    private PhantomJSFactory() {
+        // empty, private factory constructor
+    }
+
+    /**
+     * Create a new @{link PhantomJSDriver}.
+     *
+     * @param configuration
+     *            configuration for phatomJS
+     * @return returns a configured @{link PhantomJSDriver}
+     */
     public static PhantomJSDriver createNewDriver(final PhantomConfiguration configuration) {
         final PhantomJSDriver driver;
 

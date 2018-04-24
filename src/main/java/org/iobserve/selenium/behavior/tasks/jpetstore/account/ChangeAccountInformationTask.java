@@ -76,18 +76,18 @@ public class ChangeAccountInformationTask extends AbstractTask {
     }
 
     private String getDropDownOption() {
-        String value = this.value;
+        String localValue = this.value;
 
         if (this.attribute.equals(Attribute.CATEGORY)
-                && !ChangeAccountInformationTask.allowedFavoriteCategories.contains(value)) {
+                && !ChangeAccountInformationTask.allowedFavoriteCategories.contains(localValue)) {
             // default is cats.. maybe change in the future
-            value = "CATS";
+            localValue = "CATS";
         } else if (this.attribute.equals(Attribute.LANGUAGE) && !"english".equals(this.value)) {
             // default is japanese
-            value = "japanese";
+            localValue = "japanese";
         }
 
-        return value;
+        return localValue;
 
     }
 

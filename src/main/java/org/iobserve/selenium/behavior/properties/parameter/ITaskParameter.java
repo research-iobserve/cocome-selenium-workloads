@@ -29,8 +29,8 @@ public interface ITaskParameter<T> {
     /**
      * Retrieves a value of this parameter depending if it should be fuzzy or not.
      *
-     * @param fuzzy
-     *            True, if the value should be fuzzy.
+     * True, if the value should be fuzzy.
+     * 
      * @return The computed value for this parameter.
      */
     T getParameter();

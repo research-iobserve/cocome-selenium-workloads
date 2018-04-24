@@ -26,6 +26,9 @@ public class ConstantWorkloadIntensity implements IWorkloadIntensity {
     private long[] delays; // time in seconds
     private String name;
 
+    /**
+     * Default bean constructor.
+     */
     public ConstantWorkloadIntensity() {
         // empty, bean constructor
     }

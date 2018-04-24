@@ -28,6 +28,9 @@ import org.openqa.selenium.WebDriver;
  */
 public class SearchAndClickFishTask extends AbstractTask {
 
+    /**
+     * Default constructor. Necessary to annotate parameter names.
+     */
     @Parameters(names = {})
     public SearchAndClickFishTask() {
         // empty constructor

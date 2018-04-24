@@ -53,7 +53,12 @@ dependencies {
 }
 
 checkstyle {
+        toolVersion = 8.8
+        ignoreFailures = true
+        showViolations = false
+        
 		int maxWarnings = 0
+    	
     	configFile = rootProject.file('iobserve-checkstyle-rules.xml')
     	configDir = file("${rootDir}")
     }

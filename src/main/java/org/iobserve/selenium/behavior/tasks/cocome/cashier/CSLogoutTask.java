@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.cocome.cashier;
 
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -26,7 +26,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class CSLogoutTask extends AbstractUserTask {
+public class CSLogoutTask extends AbstractTask {
 
     @Parameters(names = {})
     public CSLogoutTask() {
@@ -40,9 +40,10 @@ public class CSLogoutTask extends AbstractUserTask {
      * java.lang.String)
      */
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         driver.get(baseUrl + "/cloud-web-frontend/faces/store/start_sale.xhtml");
         driver.findElement(By.linkText("Logout")).click();
+        this.sleep(activityDelay);
     }
 
     /*

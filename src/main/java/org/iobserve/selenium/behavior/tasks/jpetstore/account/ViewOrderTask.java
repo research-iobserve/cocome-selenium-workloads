@@ -17,7 +17,7 @@ package org.iobserve.selenium.behavior.tasks.jpetstore.account;
 
 import java.util.List;
 
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -29,7 +29,7 @@ import org.openqa.selenium.WebElement;
  * @author Marc Adolf
  *
  */
-public class ViewOrderTask extends AbstractUserTask {
+public class ViewOrderTask extends AbstractTask {
 
     @Parameters(names = {})
     public ViewOrderTask() {
@@ -43,14 +43,16 @@ public class ViewOrderTask extends AbstractUserTask {
      * java.lang.String)
      */
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         final String orderToClick = "1000";
         driver.get(baseUrl + "actions/Account.action?editAccountForm=");
         driver.findElement(By.linkText("My Orders")).click();
+        this.sleep(activityDelay);
         final List<WebElement> foundOrders = driver.findElements(By.linkText(orderToClick));
         if (!foundOrders.isEmpty()) {
             foundOrders.get(0).click();
         }
+        this.sleep(activityDelay);
     }
 
     /*

@@ -17,6 +17,7 @@ package org.iobserve.selenium.beahvior;
 
 import java.util.concurrent.TimeUnit;
 
+import org.iobserve.selenium.configuration.PhantomConfiguration;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -28,21 +29,23 @@ import org.openqa.selenium.remote.DesiredCapabilities;
  */
 public class PhantomJSFactory {
 
-    public static PhantomJSDriver createNewDriver(final String pathWebDriver) {
+    public static PhantomJSDriver createNewDriver(final PhantomConfiguration configuration) {
         final PhantomJSDriver driver;
 
         final DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setJavascriptEnabled(true);
         capabilities.setCapability("takesScreenshot", false);
-        capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, pathWebDriver);
+        capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_EXECUTABLE_PATH_PROPERTY, configuration.getPath());
         capabilities.setCapability("acceptSslCerts", true);
         capabilities.setCapability("webSecurityEnabled", false);
         final String[] phantomJsArgs = { "--web-security=no", "--ignore-ssl-errors=yes" };
+        // "--debug=true"
+        // "--webdriver-loglevel=DEBUG"
         capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, phantomJsArgs);
         driver = new PhantomJSDriver(capabilities);
-        // this.driver.setLogLevel(Level.INFO);
+        // driver.setLogLevel(Level.ALL);
         // this.driver = new HtmlUnitDriver();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.MILLISECONDS);
+        driver.manage().timeouts().implicitlyWait(configuration.getTimeout(), TimeUnit.MILLISECONDS);
         driver.manage().window().setSize(new Dimension(800, 600));
 
         return driver;

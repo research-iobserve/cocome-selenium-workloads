@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.cocome.cashier;
 
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -27,7 +27,7 @@ import org.openqa.selenium.support.ui.Select;
  * @author Marc Adolf
  *
  */
-public class CSLoginTask extends AbstractUserTask {
+public class CSLoginTask extends AbstractTask {
 
     @Parameters(names = {})
     public CSLoginTask() {
@@ -41,10 +41,11 @@ public class CSLoginTask extends AbstractUserTask {
      * java.lang.String)
      */
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         driver.get(baseUrl + "/cloud-web-frontend/faces/login.xhtml");
         new Select(driver.findElement(By.id("j_idt10"))).selectByVisibleText("Cashier");
         driver.findElement(By.cssSelector("option[value=\"CASHIER\"]")).click();
+        this.sleep(activityDelay);
         driver.findElement(By.name("j_idt21")).clear();
         driver.findElement(By.name("j_idt21")).sendKeys("2");
         driver.findElement(By.name("j_idt24")).clear();
@@ -53,7 +54,9 @@ public class CSLoginTask extends AbstractUserTask {
         driver.findElement(By.name("j_idt27")).sendKeys("cashier");
         driver.findElement(By.name("j_idt29")).click();
         driver.findElement(By.linkText("Cashdesk")).click();
+        this.sleep(activityDelay);
         driver.findElement(By.name("j_idt37:j_idt40")).click();
+        this.sleep(activityDelay);
     }
 
     /*

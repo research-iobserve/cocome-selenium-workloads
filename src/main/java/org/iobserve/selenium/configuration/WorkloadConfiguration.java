@@ -28,25 +28,25 @@ import java.util.Map;
  */
 public class WorkloadConfiguration {
 
-    private String baseUrl;
-    private String pathWebDriver;
+    private PhantomConfiguration phantom;
     private List<Workload> workloads = new ArrayList<>();
     private Map<String, BehaviorModel> behaviors = new HashMap<>();
+    double activityDelay; // in seconds
 
-    public final String getBaseUrl() {
-        return this.baseUrl;
+    public final double getActivityDelay() {
+        return this.activityDelay;
     }
 
-    public void setBaseUrl(final String baseUrl) {
-        this.baseUrl = baseUrl;
+    public final void setActivityDelay(final double activityDelay) {
+        this.activityDelay = activityDelay;
     }
 
-    public final String getPathWebDriver() {
-        return this.pathWebDriver;
+    public final PhantomConfiguration getPhantom() {
+        return this.phantom;
     }
 
-    public final void setPathWebDriver(final String pathWebDriver) {
-        this.pathWebDriver = pathWebDriver;
+    public final void setPhantom(final PhantomConfiguration phantom) {
+        this.phantom = phantom;
     }
 
     public final List<Workload> getWorkloads() {

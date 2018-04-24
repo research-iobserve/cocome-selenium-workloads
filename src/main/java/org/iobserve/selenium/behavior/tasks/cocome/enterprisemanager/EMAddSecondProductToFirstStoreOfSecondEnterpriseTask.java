@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.cocome.enterprisemanager;
 
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -27,7 +27,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class EMAddSecondProductToFirstStoreOfSecondEnterpriseTask extends AbstractUserTask {
+public class EMAddSecondProductToFirstStoreOfSecondEnterpriseTask extends AbstractTask {
     private final float shopPrice;
     private final int stockMin;
     private final int stockMax;
@@ -63,12 +63,16 @@ public class EMAddSecondProductToFirstStoreOfSecondEnterpriseTask extends Abstra
      * java.lang.String)
      */
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         driver.get(baseUrl + "/cloud-web-frontend/faces/enterprise/show_stores.xhtml");
         driver.findElement(By.linkText("Enterprises")).click();
+        this.sleep(activityDelay);
         driver.findElement(By.xpath("//tr[2]/td[3]/a/img")).click();
+        this.sleep(activityDelay);
         driver.findElement(By.xpath("//form[@id='j_idt37']/table/tbody/tr/td[4]/a[3]/img")).click();
+        this.sleep(activityDelay);
         driver.findElement(By.cssSelector("input[type=\"button\"]")).click();
+        this.sleep(activityDelay);
         driver.findElement(
                 By.cssSelector("tr.product-table-even-row > td..product-table-number-col > a.button > img.button"))
                 .click();
@@ -82,6 +86,7 @@ public class EMAddSecondProductToFirstStoreOfSecondEnterpriseTask extends Abstra
         driver.findElement(By.name("j_idt37:j_idt38:0:j_idt60")).clear();
         driver.findElement(By.name("j_idt37:j_idt38:0:j_idt60")).sendKeys(Float.toString(this.shopPrice));
         driver.findElement(By.cssSelector("img.button")).click();
+        this.sleep(activityDelay);
     }
 
     /*

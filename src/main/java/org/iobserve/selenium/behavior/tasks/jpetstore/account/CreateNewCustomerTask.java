@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.jpetstore.account;
 
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -26,7 +26,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class CreateNewCustomerTask extends AbstractUserTask {
+public class CreateNewCustomerTask extends AbstractTask {
     private final String userName;
     private final String password;
 
@@ -52,11 +52,13 @@ public class CreateNewCustomerTask extends AbstractUserTask {
      * java.lang.String)
      */
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         // TODO maybe parameterize me
         driver.get(baseUrl + "actions/Catalog.action");
         driver.findElement(By.linkText("Sign In")).click();
+        this.sleep(activityDelay);
         driver.findElement(By.linkText("Register Now!")).click();
+        this.sleep(activityDelay);
         driver.findElement(By.name("username")).clear();
         driver.findElement(By.name("username")).sendKeys(this.userName);
         driver.findElement(By.name("password")).clear();
@@ -84,7 +86,7 @@ public class CreateNewCustomerTask extends AbstractUserTask {
         driver.findElement(By.name("account.country")).clear();
         driver.findElement(By.name("account.country")).sendKeys("Germany");
         driver.findElement(By.name("newAccount")).click();
-
+        this.sleep(activityDelay);
     }
 
     /*

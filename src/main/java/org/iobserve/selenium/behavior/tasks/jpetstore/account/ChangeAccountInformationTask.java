@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -30,37 +30,37 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class ChangeAccountInformationTask extends AbstractUserTask {
+public class ChangeAccountInformationTask extends AbstractTask {
     private static Set<String> allowedFavoriteCategories = new HashSet<>(
             Arrays.asList("DOGS", "CATS", "REPTILES", "BIRDS", "FISH"));
     private final Attribute attribute;
-    private String newValue;
+    private String value;
     private final String buttonToClick;
 
     /**
      * Creates a new task to change information of an already logged in user.
      *
-     * @param attributToChange
+     * @param attribute
      *            The field that should be changed.
-     * @param newValue
+     * @param value
      *            The new value for the changed field.
      */
-    @Parameters(names = { "attributToChange", "newValue" })
-    public ChangeAccountInformationTask(final Attribute attributToChange, final String newValue) {
-        this.attribute = attributToChange;
+    @Parameters(names = { "attribute", "value" })
+    public ChangeAccountInformationTask(final Attribute attribute, final String value) {
+        this.attribute = attribute;
         this.buttonToClick = this.attribute.getAttributeName();
-        this.newValue = newValue;
+        this.value = value;
     }
 
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
 
         final String attributeString = this.attribute.getAttributeName();
         driver.get(baseUrl + "actions/Account.action?editAccountForm");
 
         if (this.attribute.equals(Attribute.LANGUAGE) || this.attribute.equals(Attribute.CATEGORY)) {
             // default is japanese.. maybe change for the future
-            this.newValue = this.getDropDownOption();
+            this.value = this.getDropDownOption();
             this.useDropDown(driver, attributeString);
         } else if (!(this.attribute.equals(Attribute.LIST_OPTION) || this.attribute.equals(Attribute.BANNER_OPTION))) {
             // the remaining options are only fields.
@@ -70,18 +70,19 @@ public class ChangeAccountInformationTask extends AbstractUserTask {
         // checkBox is just to click the button with the attribute string
 
         driver.findElement(By.name(this.buttonToClick)).click();
+        this.sleep(activityDelay);
         driver.findElement(By.name("editAccount")).click();
-
+        this.sleep(activityDelay);
     }
 
     private String getDropDownOption() {
-        String value = this.newValue;
+        String value = this.value;
 
         if (this.attribute.equals(Attribute.CATEGORY)
                 && !ChangeAccountInformationTask.allowedFavoriteCategories.contains(value)) {
             // default is cats.. maybe change in the future
             value = "CATS";
-        } else if (this.attribute.equals(Attribute.LANGUAGE) && !"english".equals(this.newValue)) {
+        } else if (this.attribute.equals(Attribute.LANGUAGE) && !"english".equals(this.value)) {
             // default is japanese
             value = "japanese";
         }
@@ -92,17 +93,17 @@ public class ChangeAccountInformationTask extends AbstractUserTask {
 
     private void fillAttributeFields(final WebDriver driver, final String attributeString) {
         driver.findElement(By.name(attributeString)).clear();
-        driver.findElement(By.name(attributeString)).sendKeys(this.newValue);
+        driver.findElement(By.name(attributeString)).sendKeys(this.value);
     }
 
     private void useDropDown(final WebDriver driver, final String attributeString) {
         driver.findElement(By.name(attributeString)).click();
-        driver.findElement(By.xpath("//option[@value='" + this.newValue + "']")).click();
+        driver.findElement(By.xpath("//option[@value='" + this.value + "']")).click();
     }
 
     @Override
     public String getName() {
-        return "Set (or toggle) account information" + this.attribute + " to: " + this.newValue;
+        return "Set (or toggle) account information" + this.attribute + " to: " + this.value;
     }
 
     /**

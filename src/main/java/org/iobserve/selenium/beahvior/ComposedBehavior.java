@@ -16,61 +16,108 @@
 package org.iobserve.selenium.beahvior;
 
 import org.iobserve.selenium.behavior.tasks.AbstractTask;
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
 import org.iobserve.selenium.behavior.tasks.TaskRegistry;
 import org.iobserve.selenium.common.ConfigurationException;
+import org.iobserve.selenium.common.RandomGenerator;
 import org.iobserve.selenium.configuration.BehaviorModel;
-import org.iobserve.selenium.configuration.RandomGenerator;
+import org.iobserve.selenium.configuration.Repetition;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Execution processor for a composed behavior.
+ *
  * @author Reiner Jung
  *
  */
-public class ComposedBehavior extends AbstractTask {
+public class ComposedBehavior {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComposedBehavior.class);
 
-    public ComposedBehavior(final WebDriver driver, final String baseUrl, final BehaviorModel model) {
-        super(driver, baseUrl, model);
+    private final WebDriver driver;
+    private final String baseUrl;
+    private final BehaviorModel model;
+
+    private final double activityDelay;
+
+    private final String name;
+
+    public ComposedBehavior(final WebDriver driver, final String baseUrl, final double activityDelay,
+            final BehaviorModel model) {
+        this.driver = driver;
+        this.baseUrl = baseUrl;
+        this.model = model;
+        this.activityDelay = activityDelay;
+
+        this.name = model.getName();
     }
 
-    private String name;
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.iobserve.selenium.tasks.AbstractTask#getName()
-     */
-    @Override
     public String getName() {
         return this.name;
     }
 
-    @Override
-    public void execute() throws ConfigurationException {
-        /** start with new session. */
-        ComposedBehavior.LOGGER.debug("execute new session");
-        this.getDriver().manage().deleteAllCookies();
-        ComposedBehavior.LOGGER.debug("execute model");
-        this.iterateBehavior(this.getBehaviorModel());
+    protected WebDriver getDriver() {
+        return this.driver;
     }
 
-    private void iterateBehavior(final BehaviorModel model) throws ConfigurationException {
-        ComposedBehavior.LOGGER.debug("executing {}", model.getName());
+    protected String getBaseUrl() {
+        return this.baseUrl;
+    }
+
+    protected BehaviorModel getBehaviorModel() {
+        return this.model;
+    }
+
+    public int getRepetitions() {
+        final Repetition repetition = this.model.getRepetition();
+        return RandomGenerator.getRandomNumber(repetition.getMin(), repetition.getMax());
+    }
+
+    public void execute() throws ConfigurationException {
+        /** start with new session. */
+        ComposedBehavior.LOGGER.debug("delete all cookies -> new session");
+        this.getDriver().manage().deleteAllCookies();
+        ComposedBehavior.LOGGER.debug("execute {}", this.name);
+        this.iterateBehavior(this.getBehaviorModel(),
+                this.getActivityDelay(this.activityDelay, this.model.getActivityDelay()));
+    }
+
+    private void iterateBehavior(final BehaviorModel model, final double localActivityDelay)
+            throws ConfigurationException {
+        ComposedBehavior.LOGGER.debug("part {}", model.getName());
         for (final BehaviorModel behavior : this.getBehaviorModel().getSubbehaviors()) {
-            for (int i = 1; i < RandomGenerator.getRandomNumber(behavior.getRepetition().getMin(),
-                    behavior.getRepetition().getMax()); i++) {
-                if (behavior.getSubbehaviors().isEmpty()) {
-                    final AbstractUserTask type = TaskRegistry.getWorkloadInstanceByName(behavior.getName(),
-                            behavior.getParameters());
-                    type.executeTask(this.getDriver(), this.getBaseUrl());
-                } else {
-                    this.iterateBehavior(behavior);
+            if (behavior.getRepetition() != null) {
+                final int repetitions = RandomGenerator.getRandomNumber(behavior.getRepetition().getMin(),
+                        behavior.getRepetition().getMax());
+                for (int i = 0; i < repetitions; i++) {
+                    this.executeBehavior(behavior, localActivityDelay);
                 }
+            } else {
+                this.executeBehavior(behavior, localActivityDelay);
             }
+        }
+    }
+
+    private void executeBehavior(final BehaviorModel behavior, final double localActivityDelay)
+            throws ConfigurationException {
+        if (behavior.getSubbehaviors().isEmpty()) {
+            final AbstractTask type = TaskRegistry.getWorkloadInstanceByName(behavior.getName(),
+                    behavior.getParameters());
+            ComposedBehavior.LOGGER.debug("delay {}",
+                    this.getActivityDelay(localActivityDelay, behavior.getActivityDelay()));
+            type.executeTask(this.getDriver(), this.getBaseUrl(),
+                    (long) (this.getActivityDelay(localActivityDelay, behavior.getActivityDelay()) * 1000));
+        } else {
+            this.iterateBehavior(behavior, localActivityDelay);
+        }
+    }
+
+    private double getActivityDelay(final double activityDelay, final Double localActivityDelay) {
+        if (localActivityDelay != null) {
+            return localActivityDelay;
+        } else {
+            return activityDelay;
         }
     }
 

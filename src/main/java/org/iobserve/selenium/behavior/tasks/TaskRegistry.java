@@ -38,6 +38,10 @@ import org.slf4j.LoggerFactory;
  */
 public final class TaskRegistry {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskRegistry.class);
+
+    private static Map<String, Class<? extends AbstractTask>> registeredWorkloads = null;
+
     /**
      * Empty Constructor.
      */
@@ -50,19 +54,21 @@ public final class TaskRegistry {
      *
      * @return all {@link AbstractBehavior workloads} known by the registry
      */
-    public static Map<String, Class<? extends AbstractUserTask>> getRegisteredWorkloads() {
-        LoggerFactory.getLogger(TaskRegistry.class).debug("Filling the registry");
-        final Map<String, Class<? extends AbstractUserTask>> registeredWorkloads = new HashMap<>();
+    public synchronized static Map<String, Class<? extends AbstractTask>> getRegisteredWorkloads() {
+        if (TaskRegistry.registeredWorkloads == null) {
+            LoggerFactory.getLogger(TaskRegistry.class).debug("Filling the registry");
+            TaskRegistry.registeredWorkloads = new HashMap<>();
 
-        final Reflections reflections = new Reflections("org.iobserve.selenium.behavior.tasks");
+            final Reflections reflections = new Reflections(TaskRegistry.class.getPackage().getName());
 
-        final Set<Class<? extends AbstractUserTask>> types = reflections.getSubTypesOf(AbstractUserTask.class);
+            final Set<Class<? extends AbstractTask>> types = reflections.getSubTypesOf(AbstractTask.class);
 
-        for (final Class<? extends AbstractUserTask> type : types) {
-            registeredWorkloads.put(type.getSimpleName(), type);
+            for (final Class<? extends AbstractTask> type : types) {
+                TaskRegistry.registeredWorkloads.put(type.getSimpleName(), type);
+            }
         }
 
-        return registeredWorkloads;
+        return TaskRegistry.registeredWorkloads;
     }
 
     /**
@@ -75,16 +81,12 @@ public final class TaskRegistry {
      * @throws ConfigurationException
      *             If the workload was not found or could not be created.
      */
-    public static AbstractUserTask getWorkloadInstanceByName(final String name, final Map<String, Object> parameters)
+    public static AbstractTask getWorkloadInstanceByName(final String name, final Map<String, Object> parameters)
             throws ConfigurationException {
-        final Logger logger = LoggerFactory.getLogger(TaskRegistry.class);
-
-        logger.debug("Looking for workload with name: {}", name);
-
-        final Class<? extends AbstractUserTask> searchedWorkload = TaskRegistry.getRegisteredWorkloads().get(name);
+        final Class<? extends AbstractTask> searchedWorkload = TaskRegistry.getRegisteredWorkloads().get(name);
         if (searchedWorkload == null) {
-            logger.debug("'{}' was not found in the registry.", name);
-            throw new ConfigurationException("Workload " + name + " was not found in the (internal) registry");
+            TaskRegistry.LOGGER.debug("'{}' was not found in the registry.", name);
+            throw new ConfigurationException("Workload '" + name + "' was not found in the registry.");
         } else {
 
             try {
@@ -117,7 +119,7 @@ public final class TaskRegistry {
                                 }
                             }
                             if (parameterTypes.size() == parameters.size()) {
-                                return (AbstractUserTask) constructor.newInstance(parameterValues.toArray());
+                                return (AbstractTask) constructor.newInstance(parameterValues.toArray());
                             } else {
                                 parameterTypes.clear();
                                 parameterValues.clear();
@@ -126,15 +128,15 @@ public final class TaskRegistry {
                     }
                 }
 
-                throw new ConfigurationException("Workload " + name + " could not be instantiated");
+                TaskRegistry.LOGGER.error("Workload '{}' could not be instantiated. No matching constructor found.",
+                        name);
+                throw new ConfigurationException(
+                        "Workload '" + name + "' could not be instantiated.  No matching constructor found.");
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                     | InvocationTargetException e) {
-                logger.error("{} could not be instantiated.", name, e);
-                throw new ConfigurationException("Workload " + name + " could not be instantiated"); // NOPMD
-                                                                                                     // stacktrace
-                                                                                                     // in
-                                                                                                     // error
-                                                                                                     // log
+                TaskRegistry.LOGGER.error("Workload '{}' could not be instantiated. Due to {}", name, e.getMessage(),
+                        e);
+                throw new ConfigurationException("Workload '" + name + "' could not be instantiated"); // NOPMD
             }
         }
     }

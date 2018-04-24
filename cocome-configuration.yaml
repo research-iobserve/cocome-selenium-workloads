@@ -1,6 +1,6 @@
 # Example configuration
 ---
-baseUrl: http://1.2.3.4:8080
+baseUrl: http://172.17.0.2:8080
 pathWebDriver: some
 behaviors:
   CocomeCashierCashShoppingBehavior:

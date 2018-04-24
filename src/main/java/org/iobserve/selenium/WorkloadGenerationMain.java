@@ -30,20 +30,21 @@ import com.beust.jcommander.JCommander;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-import org.iobserve.selenium.beahvior.BehaviorModelRunner;
+import org.iobserve.selenium.beahvior.BehaviorModelRunnable;
 import org.iobserve.selenium.beahvior.ComposedBehavior;
 import org.iobserve.selenium.beahvior.PhantomJSFactory;
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.TaskRegistry;
 import org.iobserve.selenium.common.CommandlineArguments;
+import org.iobserve.selenium.common.ConfigurationException;
 import org.iobserve.selenium.configuration.BehaviorModel;
 import org.iobserve.selenium.configuration.ConstantWorkloadIntensity;
 import org.iobserve.selenium.configuration.IWorkloadIntensity;
 import org.iobserve.selenium.configuration.Workload;
 import org.iobserve.selenium.configuration.WorkloadConfiguration;
-import org.iobserve.selenium.workload.intensity.ConstantWorkloadState;
-import org.iobserve.selenium.workload.intensity.IWorkloadState;
-import org.openqa.selenium.WebDriver;
+import org.iobserve.selenium.workload.intensity.ConstantWorkloadBalance;
+import org.iobserve.selenium.workload.intensity.IWorkloadBalance;
+import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,11 +85,16 @@ public final class WorkloadGenerationMain {
             WorkloadConfiguration configuration;
             try {
                 configuration = mapper.readValue(arguments.getConfigurationFile(), WorkloadConfiguration.class);
-                if (configuration.getBaseUrl() == null) {
-                    configuration.setBaseUrl(arguments.getBaseUrl());
+                if (configuration.getPhantom() == null) {
+                    WorkloadGenerationMain.LOGGER.error("Missing webdriver configuration");
+                    return;
                 }
-                if (configuration.getPathWebDriver() == null) {
-                    configuration.setPathWebDriver(arguments.getPathWebDriver());
+
+                if (configuration.getPhantom().getBaseUrl() == null) {
+                    configuration.getPhantom().setBaseUrl(arguments.getBaseUrl());
+                }
+                if (configuration.getPhantom().getPath() == null) {
+                    configuration.getPhantom().setPath(arguments.getPathWebDriver());
                 }
 
                 /** evaluate configuration. */
@@ -108,8 +114,8 @@ public final class WorkloadGenerationMain {
                     final String names = configuration.getWorkloads().stream().map(f).reduce(op).get();
                     WorkloadGenerationMain.LOGGER.info("Trying to execute following workloads: {}", names);
                     WorkloadGenerationMain.runWorkloads(WorkloadGenerationMain.setupWorkloads(configuration),
-                            PhantomJSFactory.createNewDriver(configuration.getPathWebDriver()),
-                            configuration.getBaseUrl());
+                            configuration);
+
                 }
 
                 WorkloadGenerationMain.LOGGER.info("Workload execution finished.");
@@ -119,23 +125,28 @@ public final class WorkloadGenerationMain {
         }
     }
 
-    private static List<IWorkloadState> setupWorkloads(final WorkloadConfiguration configuration) {
+    private static List<IWorkloadBalance> setupWorkloads(final WorkloadConfiguration configuration) {
         final long presentTime = new Date().getTime(); // time in ms
 
-        final List<IWorkloadState> workloads = new ArrayList<>();
+        final List<IWorkloadBalance> workloads = new ArrayList<>();
 
         for (final Workload workload : configuration.getWorkloads()) {
             final IWorkloadIntensity intensity = workload.getIntensity();
             if (intensity instanceof ConstantWorkloadIntensity) {
-                final IWorkloadState state = new ConstantWorkloadState((ConstantWorkloadIntensity) intensity);
-                state.startWorkloadProfile(presentTime);
+                try {
+                    final IWorkloadBalance state = new ConstantWorkloadBalance((ConstantWorkloadIntensity) intensity);
+                    state.startWorkloadProfile(presentTime);
 
-                final BehaviorModel behaviorModel = configuration.getBehaviors().get(workload.getName());
-                if (behaviorModel == null) {
-                    WorkloadGenerationMain.LOGGER.error("Behavior {} cannot be found.", workload.getName());
+                    final BehaviorModel behaviorModel = configuration.getBehaviors().get(workload.getName());
+                    if (behaviorModel == null) {
+                        WorkloadGenerationMain.LOGGER.error("Behavior {} cannot be found.", workload.getName());
+                    }
+                    state.setBehavioModel(behaviorModel);
+                    workloads.add(state);
+                } catch (final ConfigurationException e) {
+                    WorkloadGenerationMain.LOGGER.error("Configuration error in workload intensity for Behavior {}.",
+                            workload.getName(), e);
                 }
-                state.setBehavioModel(behaviorModel);
-                workloads.add(state);
             } else {
                 WorkloadGenerationMain.LOGGER.error("Unknown workload intensity type: {}",
                         intensity.getClass().getCanonicalName());
@@ -145,8 +156,10 @@ public final class WorkloadGenerationMain {
         return workloads;
     }
 
-    private static void runWorkloads(final List<IWorkloadState> workloads, final WebDriver driver,
-            final String baseUrl) {
+    private static void runWorkloads(final List<IWorkloadBalance> workloads,
+            final WorkloadConfiguration configuration) {
+        final PhantomJSDriver driver = PhantomJSFactory.createNewDriver(configuration.getPhantom());
+
         final ExecutorService executor = Executors.newFixedThreadPool(10);
 
         boolean repeat = false;
@@ -154,14 +167,13 @@ public final class WorkloadGenerationMain {
         do {
             repeat = false;
             long trigger = Long.MAX_VALUE;
-            for (final IWorkloadState state : workloads) {
-                WorkloadGenerationMain.LOGGER.debug("work on {}", state.getBehaviorModel().getName());
+            for (final IWorkloadBalance state : workloads) {
                 final long presentTime = new Date().getTime();
-                WorkloadGenerationMain.LOGGER.debug("time {}", presentTime);
                 if (!state.isWorkloadProfileComplete(presentTime)) {
                     while (state.startBehavior(presentTime)) {
-                        executor.submit(new BehaviorModelRunner(state.getBehaviorModel(),
-                                new ComposedBehavior(driver, baseUrl, state.getBehaviorModel())));
+                        executor.submit(new BehaviorModelRunnable(
+                                new ComposedBehavior(driver, configuration.getPhantom().getBaseUrl(),
+                                        configuration.getActivityDelay(), state.getBehaviorModel())));
                     }
                     final long potentialTrigger = state.getNextTrigger(presentTime);
                     if (trigger > potentialTrigger) {
@@ -180,24 +192,28 @@ public final class WorkloadGenerationMain {
             }
         } while (repeat);
 
-        for (final IWorkloadState state : workloads) {
+        WorkloadGenerationMain.LOGGER.debug("Run complete. Waiting for executor shutdown.");
+        executor.shutdown();
+        WorkloadGenerationMain.LOGGER.debug("Run complete. Waiting for web driver termination.");
+        driver.quit();
+
+        for (final IWorkloadBalance state : workloads) {
             WorkloadGenerationMain.LOGGER.debug("{} had {} executions", state.getBehaviorModel().getName(),
                     state.getCount());
         }
     }
 
     private static void printAvailableWorkloads() {
-        final Map<String, Class<? extends AbstractUserTask>> registeredWorkloads = TaskRegistry
-                .getRegisteredWorkloads();
+        final Map<String, Class<? extends AbstractTask>> registeredWorkloads = TaskRegistry.getRegisteredWorkloads();
 
         String output = "Following workloads are registered:";
 
-        for (final Entry<String, Class<? extends AbstractUserTask>> e : registeredWorkloads.entrySet()) {
+        for (final Entry<String, Class<? extends AbstractTask>> e : registeredWorkloads.entrySet()) {
             output += "\n";
-            output += "Workload name: ";
+            output += "Task name: ";
             output += e.getKey();
             output += ", Corresponding class: ";
-            output += e.getValue().getSimpleName();
+            output += e.getValue().getCanonicalName();
         }
         System.out.println(output); // NOPMD -> creates output for command line
     }

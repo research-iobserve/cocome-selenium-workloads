@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.iobserve.selenium.behavior.properties.parameter.ListTaskParameter;
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -33,7 +33,7 @@ import org.openqa.selenium.WebElement;
  * @author Marc Adolf
  *
  */
-public class ViewProductTask extends AbstractUserTask {
+public class ViewProductTask extends AbstractTask {
 
     private final ListTaskParameter<Category> category;
 
@@ -56,15 +56,17 @@ public class ViewProductTask extends AbstractUserTask {
      * java.lang.String)
      */
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         final Category curentCategory = this.category.getParameter();
         final String categoryString = curentCategory.getCategoryString();
         final String productString = curentCategory.getProducts().getParameter();
         driver.get(baseUrl + "actions/Catalog.action");
         driver.findElement(By.xpath("//div[@id='QuickLinks']/" + categoryString + "/img")).click();
+        this.sleep(activityDelay);
         driver.findElement(By.linkText(productString)).click();
+        this.sleep(activityDelay);
         // since the item ids have a special pattern we can just iterate until we find the first one
-        this.clickItemElement(driver);
+        this.clickItemElement(driver, activityDelay);
     }
 
     /*
@@ -77,18 +79,19 @@ public class ViewProductTask extends AbstractUserTask {
         return "View category " + this.category.getParameter().toString() + " and one of its products: ";
     }
 
-    private void clickItemElement(final WebDriver driver) {
+    private void clickItemElement(final WebDriver driver, final long activityDelay) {
         final String baseString = "EST-";
         for (int i = 1; i < 30; i++) {
-            if (AbstractUserTask.LOGGER.isDebugEnabled()) {
-                AbstractUserTask.LOGGER.debug("Try to find " + baseString + i);
+            if (AbstractTask.LOGGER.isDebugEnabled()) {
+                AbstractTask.LOGGER.debug("Try to find " + baseString + i);
             }
             final List<WebElement> elements = driver.findElements(By.linkText(baseString + i));
             if (!elements.isEmpty()) {
-                if (AbstractUserTask.LOGGER.isDebugEnabled()) {
-                    AbstractUserTask.LOGGER.debug("Found element and will click on it: " + elements);
+                if (AbstractTask.LOGGER.isDebugEnabled()) {
+                    AbstractTask.LOGGER.debug("Found element and will click on it: " + elements);
                 }
                 elements.get(0).click();
+                this.sleep(activityDelay);
                 return;
             }
 

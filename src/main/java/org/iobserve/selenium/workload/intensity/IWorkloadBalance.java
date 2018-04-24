@@ -21,7 +21,7 @@ import org.iobserve.selenium.configuration.BehaviorModel;
  * @author Reiner Jung
  *
  */
-public interface IWorkloadState {
+public interface IWorkloadBalance {
 
     /**
      * Remember the time when this workload was started.

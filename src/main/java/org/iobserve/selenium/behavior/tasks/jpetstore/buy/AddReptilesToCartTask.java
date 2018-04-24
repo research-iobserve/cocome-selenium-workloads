@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.iobserve.selenium.behavior.properties.parameter.ListTaskParameter;
 import org.iobserve.selenium.behavior.properties.parameter.VariableIntegerTaskParameter;
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -31,7 +31,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class AddReptilesToCartTask extends AbstractUserTask {
+public class AddReptilesToCartTask extends AbstractTask {
 
     private final VariableIntegerTaskParameter amount;
     private final ListTaskParameter<String> items;
@@ -64,17 +64,20 @@ public class AddReptilesToCartTask extends AbstractUserTask {
      * java.lang.String)
      */
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         driver.get(baseUrl + "actions/Catalog.action");
         final String item = this.items.getParameter();
         final int currentAmount = this.amount.getParameter();
 
-        AbstractUserTask.LOGGER.info(String.format("%s: item: %s amount: %d ", this.getName(), item, currentAmount));
+        AbstractTask.LOGGER.info(String.format("%s: item: %s amount: %d ", this.getName(), item, currentAmount));
 
         for (int j = 0; j < currentAmount; j++) {
             driver.findElement(By.xpath("//div[@id='QuickLinks']/a[3]/img")).click();
+            this.sleep(activityDelay);
             driver.findElement(By.linkText(item)).click();
+            this.sleep(activityDelay);
             driver.findElement(By.linkText("Add to Cart")).click();
+            this.sleep(activityDelay);
         }
     }
 

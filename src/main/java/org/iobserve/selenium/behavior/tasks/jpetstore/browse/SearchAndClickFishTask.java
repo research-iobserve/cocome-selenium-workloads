@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.jpetstore.browse;
 
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -26,7 +26,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class SearchAndClickFishTask extends AbstractUserTask {
+public class SearchAndClickFishTask extends AbstractTask {
 
     @Parameters(names = {})
     public SearchAndClickFishTask() {
@@ -34,18 +34,20 @@ public class SearchAndClickFishTask extends AbstractUserTask {
     }
 
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         final String searchKey = "Fish";
         // TODO read Table and select one element.
         final String productToClick = "Fresh Water fish from China";
 
         driver.get(baseUrl + "actions/Catalog.action");
         driver.findElement(By.name("keyword")).click();
+        this.sleep(activityDelay);
         driver.findElement(By.name("keyword")).clear();
         driver.findElement(By.name("keyword")).sendKeys(searchKey);
         driver.findElement(By.name("searchProducts")).click();
+        this.sleep(activityDelay);
         driver.findElement(By.linkText(productToClick)).click();
-
+        this.sleep(activityDelay);
     }
 
     @Override

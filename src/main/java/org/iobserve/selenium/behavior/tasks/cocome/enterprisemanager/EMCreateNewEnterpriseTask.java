@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.cocome.enterprisemanager;
 
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -26,7 +26,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class EMCreateNewEnterpriseTask extends AbstractUserTask {
+public class EMCreateNewEnterpriseTask extends AbstractTask {
 
     private final String enterpriseName;
 
@@ -47,13 +47,14 @@ public class EMCreateNewEnterpriseTask extends AbstractUserTask {
      * @see java.util.function.BiConsumer#accept(java.lang.Object, java.lang.Object)
      */
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         driver.get(baseUrl + "/cloud-web-frontend/faces/enterprise/show_enterprises.xhtml");
         driver.findElement(By.linkText("New Enterprise")).click();
+        this.sleep(activityDelay);
         driver.findElement(By.name("j_idt36:j_idt40")).clear();
         driver.findElement(By.name("j_idt36:j_idt40")).sendKeys(this.enterpriseName);
         driver.findElement(By.name("j_idt36:j_idt42")).click();
-
+        this.sleep(activityDelay);
     }
 
     /*

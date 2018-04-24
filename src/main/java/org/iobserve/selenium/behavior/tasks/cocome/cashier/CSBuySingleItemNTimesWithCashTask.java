@@ -16,7 +16,7 @@
 package org.iobserve.selenium.behavior.tasks.cocome.cashier;
 
 import org.iobserve.selenium.behavior.properties.parameter.VariableIntegerTaskParameter;
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -27,7 +27,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class CSBuySingleItemNTimesWithCashTask extends AbstractUserTask {
+public class CSBuySingleItemNTimesWithCashTask extends AbstractTask {
     private final int productBarCode;
     private final VariableIntegerTaskParameter numberOfItems;
     private final int cashToPay;
@@ -59,7 +59,7 @@ public class CSBuySingleItemNTimesWithCashTask extends AbstractUserTask {
      * java.lang.String)
      */
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
 
         driver.get(baseUrl + "/cloud-web-frontend/faces/store/start_sale.xhtml");
         // add all items to the "shopping cart"
@@ -67,12 +67,14 @@ public class CSBuySingleItemNTimesWithCashTask extends AbstractUserTask {
             driver.findElement(By.id("j_idt42:barcodetext")).clear();
             driver.findElement(By.id("j_idt42:barcodetext")).sendKeys(Integer.toString(this.productBarCode));
             driver.findElement(By.name("j_idt42:j_idt66")).click();
+            this.sleep(activityDelay);
         }
         // pay
         driver.findElement(By.cssSelector("input[name=\"j_idt42:j_idt53\"]")).clear();
         driver.findElement(By.cssSelector("input[name=\"j_idt42:j_idt53\"]"))
                 .sendKeys(Integer.toString(this.cashToPay));
         driver.findElement(By.cssSelector("input[name=\"j_idt42:j_idt98\"]")).click();
+        this.sleep(activityDelay);
     }
 
     /*

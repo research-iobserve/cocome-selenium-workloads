@@ -15,22 +15,39 @@
  ***************************************************************************/
 package org.iobserve.selenium.configuration;
 
-import java.util.Random;
-
 /**
  * @author Reiner Jung
  *
  */
-public class RandomGenerator {
+public class PhantomConfiguration {
+    String baseUrl;
 
-    private static Random random = new Random();
+    String path;
 
-    private RandomGenerator() {
-        // factory
+    long timeout; // in milliseconds
+
+    public final String getBaseUrl() {
+        return this.baseUrl;
     }
 
-    public static int getRandomNumber(final int lower, final int upper) {
-        final double value = RandomGenerator.random.nextDouble() * (upper - lower);
-        return (int) (Math.round(value) + lower);
+    public final void setBaseUrl(final String baseUrl) {
+        this.baseUrl = baseUrl;
     }
+
+    public final String getPath() {
+        return this.path;
+    }
+
+    public final void setPath(final String path) {
+        this.path = path;
+    }
+
+    public final long getTimeout() {
+        return this.timeout;
+    }
+
+    public final void setTimeout(final long timeout) {
+        this.timeout = timeout;
+    }
+
 }

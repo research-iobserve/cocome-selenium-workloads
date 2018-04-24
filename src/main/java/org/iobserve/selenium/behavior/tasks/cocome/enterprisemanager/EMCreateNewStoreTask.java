@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.cocome.enterprisemanager;
 
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -26,7 +26,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class EMCreateNewStoreTask extends AbstractUserTask {
+public class EMCreateNewStoreTask extends AbstractTask {
     private final String storeName;
     private final String storeLocation;
 
@@ -52,16 +52,18 @@ public class EMCreateNewStoreTask extends AbstractUserTask {
      * java.lang.String)
      */
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         driver.get(baseUrl + "/cloud-web-frontend/faces/enterprise/create_product.xhtml");
         driver.findElement(By.linkText("Enterprises")).click();
+        this.sleep(activityDelay);
         driver.findElement(By.xpath("//tr[2]/td[3]/a[2]/img")).click();
+        this.sleep(activityDelay);
         driver.findElement(By.name("j_idt37:j_idt41")).clear();
         driver.findElement(By.name("j_idt37:j_idt41")).sendKeys(this.storeName);
         driver.findElement(By.name("j_idt37:j_idt45")).clear();
         driver.findElement(By.name("j_idt37:j_idt45")).sendKeys(this.storeLocation);
         driver.findElement(By.name("j_idt37:j_idt47")).click();
-
+        this.sleep(activityDelay);
     }
 
     /*

@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.jpetstore.common;
 
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -26,7 +26,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class LoginJPetStoreTask extends AbstractUserTask {
+public class LoginJPetStoreTask extends AbstractTask {
     private final String username;
     private final String password;
 
@@ -52,7 +52,7 @@ public class LoginJPetStoreTask extends AbstractUserTask {
      * java.lang.String)
      */
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         driver.get(baseUrl + "actions/Catalog.action");
         driver.findElement(By.linkText("Sign In")).click();
         driver.findElement(By.name("username")).clear();
@@ -60,6 +60,7 @@ public class LoginJPetStoreTask extends AbstractUserTask {
         driver.findElement(By.name("password")).clear();
         driver.findElement(By.name("password")).sendKeys(this.password);
         driver.findElement(By.name("signon")).click();
+        this.sleep(activityDelay);
     }
 
     /*

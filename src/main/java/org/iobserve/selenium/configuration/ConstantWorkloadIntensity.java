@@ -21,8 +21,9 @@ package org.iobserve.selenium.configuration;
  */
 public class ConstantWorkloadIntensity implements IWorkloadIntensity {
 
-    private int spawnPerSecond;
-    private long duration; // time in seconds
+    private double spawnPerSecond;
+    private long[] durations; // time in seconds
+    private long[] delays; // time in seconds
     private String name;
 
     public ConstantWorkloadIntensity() {
@@ -37,20 +38,28 @@ public class ConstantWorkloadIntensity implements IWorkloadIntensity {
         this.name = name;
     }
 
-    public final int getSpawnPerSecond() {
+    public final double getSpawnPerSecond() {
         return this.spawnPerSecond;
     }
 
-    public final void setSpawnPerSecond(final int spawnPerSecond) {
+    public final void setSpawnPerSecond(final double spawnPerSecond) {
         this.spawnPerSecond = spawnPerSecond;
     }
 
-    public final long getDuration() {
-        return this.duration;
+    public final long[] getDurations() {
+        return this.durations;
     }
 
-    public final void setDuration(final long duration) {
-        this.duration = duration;
+    public final void setDurations(final long[] durations) {
+        this.durations = durations;
+    }
+
+    public final long[] getDelays() {
+        return this.delays;
+    }
+
+    public final void setDelays(final long[] delays) {
+        this.delays = delays;
     }
 
 }

@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.cocome.enterprisemanager;
 
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -26,7 +26,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class EMCreateNewProductTask extends AbstractUserTask {
+public class EMCreateNewProductTask extends AbstractTask {
     private final String productName;
     private final int productBarCode;
     private final float productPrice;
@@ -55,9 +55,10 @@ public class EMCreateNewProductTask extends AbstractUserTask {
      * @see java.util.function.BiConsumer#accept(java.lang.Object, java.lang.Object)
      */
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         driver.get(baseUrl + "/cloud-web-frontend/faces/enterprise/show_enterprises.xhtml");
         driver.findElement(By.linkText("New Product")).click();
+        this.sleep(activityDelay);
         driver.findElement(By.name("j_idt36:j_idt40")).clear();
         driver.findElement(By.name("j_idt36:j_idt40")).sendKeys(this.productName);
         driver.findElement(By.name("j_idt36:j_idt44")).clear();
@@ -65,6 +66,7 @@ public class EMCreateNewProductTask extends AbstractUserTask {
         driver.findElement(By.name("j_idt36:j_idt48")).clear();
         driver.findElement(By.name("j_idt36:j_idt48")).sendKeys(Float.toString(this.productPrice));
         driver.findElement(By.name("j_idt36:j_idt50")).click();
+        this.sleep(activityDelay);
     }
 
     /*

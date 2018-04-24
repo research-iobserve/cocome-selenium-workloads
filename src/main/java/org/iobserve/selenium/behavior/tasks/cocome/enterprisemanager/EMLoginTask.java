@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.cocome.enterprisemanager;
 
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -27,7 +27,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public final class EMLoginTask extends AbstractUserTask {
+public final class EMLoginTask extends AbstractTask {
     private static final String NAME = "Enterprise manager - Login";
 
     @Parameters(names = {})
@@ -36,13 +36,14 @@ public final class EMLoginTask extends AbstractUserTask {
     }
 
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         driver.get(baseUrl + "/cloud-web-frontend/faces/login.xhtml");
         driver.findElement(By.name("j_idt27")).clear();
         driver.findElement(By.name("j_idt27")).sendKeys("enterprise");
         driver.findElement(By.name("j_idt24")).clear();
         driver.findElement(By.name("j_idt24")).sendKeys("enterprisemanager");
         driver.findElement(By.name("j_idt29")).click();
+        this.sleep(activityDelay);
     }
 
     /**
@@ -50,7 +51,7 @@ public final class EMLoginTask extends AbstractUserTask {
      *
      * @return A single use instance of the Task.
      */
-    public static AbstractUserTask create() {
+    public static AbstractTask create() {
         return new EMLoginTask();
     }
 

@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.jpetstore.common;
 
-import org.iobserve.selenium.behavior.tasks.AbstractUserTask;
+import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -27,7 +27,7 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class CheckoutJPetStoreTask extends AbstractUserTask {
+public class CheckoutJPetStoreTask extends AbstractTask {
 
     @Parameters(names = {})
     public CheckoutJPetStoreTask() {
@@ -41,16 +41,20 @@ public class CheckoutJPetStoreTask extends AbstractUserTask {
      * java.lang.String)
      */
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         driver.get(baseUrl + "actions/Catalog.action");
 
         driver.findElement(By.cssSelector("img[name=\"img_cart\"]")).click();
+        this.sleep(activityDelay);
 
         driver.findElement(By.linkText("Proceed to Checkout")).click();
+        this.sleep(activityDelay);
 
         driver.findElement(By.name("newOrder")).click();
+        this.sleep(activityDelay);
 
         driver.findElement(By.linkText("Confirm")).click();
+        this.sleep(activityDelay);
     }
 
     /*

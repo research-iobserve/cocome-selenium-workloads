@@ -33,6 +33,8 @@ public class BehaviorModel {
 
     Repetition repetition;
 
+    Double activityDelay; // in seconds
+
     Map<String, Object> parameters = new HashMap<>();
 
     List<BehaviorModel> subbehaviors = new ArrayList<>();
@@ -67,6 +69,14 @@ public class BehaviorModel {
 
     public final void setSubbehaviors(final List<BehaviorModel> subbehaviors) {
         this.subbehaviors = subbehaviors;
+    }
+
+    public void setActivityDelay(final double activityDelay) {
+        this.activityDelay = activityDelay;
+    }
+
+    public Double getActivityDelay() {
+        return this.activityDelay;
     }
 
 }

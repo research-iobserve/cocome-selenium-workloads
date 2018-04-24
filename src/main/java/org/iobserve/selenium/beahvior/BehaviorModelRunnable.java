@@ -16,23 +16,22 @@
 package org.iobserve.selenium.beahvior;
 
 import org.iobserve.selenium.common.ConfigurationException;
-import org.iobserve.selenium.configuration.BehaviorModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Runnable used to represent one behavior execution.
+ *
  * @author Reiner Jung
  *
  */
-public class BehaviorModelRunner implements Runnable {
+public class BehaviorModelRunnable implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BehaviorModelRunner.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BehaviorModelRunnable.class);
 
-    private final BehaviorModel model;
     private final ComposedBehavior behavior;
 
-    public BehaviorModelRunner(final BehaviorModel model, final ComposedBehavior behavior) {
-        this.model = model;
+    public BehaviorModelRunnable(final ComposedBehavior behavior) {
         this.behavior = behavior;
     }
 
@@ -43,14 +42,14 @@ public class BehaviorModelRunner implements Runnable {
      */
     @Override
     public void run() {
-        BehaviorModelRunner.LOGGER.debug("Running behavior {}", this.model.getName());
+        BehaviorModelRunnable.LOGGER.debug("Running behavior {}", this.behavior.getName());
         try {
             this.behavior.execute();
         } catch (final ConfigurationException e) {
-            BehaviorModelRunner.LOGGER.error("Behavior execution for '{}' failed. Cause: {}", this.model.getName(),
+            BehaviorModelRunnable.LOGGER.error("Behavior execution for '{}' failed. Cause: {}", this.behavior.getName(),
                     e.getMessage());
         }
-        BehaviorModelRunner.LOGGER.debug("done.");
+        BehaviorModelRunnable.LOGGER.debug("done.");
     }
 
 }

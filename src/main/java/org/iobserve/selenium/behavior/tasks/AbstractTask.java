@@ -13,31 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
+
 package org.iobserve.selenium.behavior.tasks;
 
-import org.iobserve.selenium.common.ConfigurationException;
 import org.iobserve.selenium.configuration.BehaviorModel;
-import org.iobserve.selenium.configuration.RandomGenerator;
-import org.iobserve.selenium.configuration.Repetition;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * A basic task in a workload plan.
+ * Abstract class for the distinction between task of users.
  *
  * @author Marc Adolf
+ * @author Sören Henning
  *
  */
-public abstract class AbstractTask { // implements Consumer<IBehaviorModel> {
+public abstract class AbstractTask {
 
-    private final WebDriver driver;
-    private final String baseUrl;
-    private final BehaviorModel model;
+    protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractTask.class);
 
-    public AbstractTask(final WebDriver driver, final String baseUrl, final BehaviorModel model) {
-        this.driver = driver;
-        this.baseUrl = baseUrl;
-        this.model = model;
-    }
+    protected BehaviorModel model;
+
+    /**
+     * Executes the defined task.
+     *
+     * @param driver
+     *            the driver for the web browser.
+     * @param baseUrl
+     *            the URL where the side is hosted.
+     * @param activityDelay
+     *            delay between actions in milliseconds.
+     */
+    public abstract void executeTask(WebDriver driver, String baseUrl, long activityDelay);
 
     /**
      *
@@ -45,22 +52,21 @@ public abstract class AbstractTask { // implements Consumer<IBehaviorModel> {
      */
     public abstract String getName();
 
-    protected WebDriver getDriver() {
-        return this.driver;
-    }
-
-    protected String getBaseUrl() {
-        return this.baseUrl;
-    }
-
-    protected BehaviorModel getBehaviorModel() {
+    public BehaviorModel getBehaviorModel() {
         return this.model;
     }
 
-    public int getRepetitions() {
-        final Repetition repetition = this.model.getRepetition();
-        return RandomGenerator.getRandomNumber(repetition.getMin(), repetition.getMax());
+    public void setBehaviorModel(final BehaviorModel model) {
+        this.model = model;
     }
 
-    public abstract void execute() throws ConfigurationException;
+    protected void sleep(final long activityDelay) {
+        try {
+            AbstractTask.LOGGER.debug("Sleep {} ms.", activityDelay);
+            Thread.sleep(activityDelay);
+        } catch (final InterruptedException e) {
+            AbstractTask.LOGGER.info("Thread sleep was interrupted.");
+        }
+    }
+
 }

@@ -573,13 +573,6 @@
 				value="java.lang.Math.*,org.junit.Assert.*,org.hamcrest.MatcherAssert.*,org.hamcrest.Matchers.*" />
 		</module>
 
-		<!-- Checks for imports from a set of illegal packages. ! -->
-		<!-- See http://checkstyle.sf.net/config_import.html ! -->
-		<module name="IllegalImport">
-			<property name="illegalPkgs"
-				value="junit.framework,sun,org.apache.commons.logging,java.util.logging" />
-		</module>
-
 		<!-- Controls what can be imported in each package. Useful for ensuring 
 			that application layering rules ! -->
 		<!-- are not violated, especially on large projects. ! -->

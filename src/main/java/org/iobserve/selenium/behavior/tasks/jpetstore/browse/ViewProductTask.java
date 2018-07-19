@@ -23,6 +23,7 @@ import org.iobserve.selenium.behavior.properties.parameter.ListTaskParameter;
 import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -57,16 +58,48 @@ public class ViewProductTask extends AbstractTask {
      */
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
+        AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: %s %d", baseUrl, activityDelay));
+
         final Category curentCategory = this.category.getParameter();
         final String categoryString = curentCategory.getCategoryString();
         final String productString = curentCategory.getProducts().getParameter();
-        driver.get(baseUrl + "actions/Catalog.action");
-        driver.findElement(By.xpath("//div[@id='QuickLinks']/" + categoryString + "/img")).click();
-        this.sleep(activityDelay);
-        driver.findElement(By.linkText(productString)).click();
-        this.sleep(activityDelay);
-        // since the item ids have a special pattern we can just iterate until we find the first one
-        this.clickItemElement(driver, activityDelay);
+
+        AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: categoryString=%s productString=%s",
+                categoryString, productString));
+
+        driver.get(baseUrl + "/actions/Catalog.action");
+
+        AbstractTask.LOGGER.debug(String.format("current url %s", driver.getCurrentUrl()));
+
+        try {
+            AbstractTask.LOGGER
+                    .debug(String.format("execute ViewProductTask: findElement categoryString=%s", categoryString));
+
+            driver.findElement(By.xpath("//div[@id='QuickLinks']/" + categoryString + "/img")).click();
+
+            AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: sleep %d", activityDelay));
+
+            this.sleep(activityDelay);
+
+            AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: findElement productString=%d"),
+                    productString);
+
+            driver.findElement(By.linkText(productString)).click();
+
+            AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: sleep %d", activityDelay));
+
+            this.sleep(activityDelay);
+
+            AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: clickItemElement"));
+
+            // since the item ids have a special pattern we can just iterate until we find the first
+            // one
+            this.clickItemElement(driver, activityDelay);
+
+            AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: done"));
+        } catch (final NoSuchElementException ex) {
+            AbstractTask.LOGGER.error(String.format("Element could not be found: %s", ex.getLocalizedMessage()));
+        }
     }
 
     /*
@@ -82,14 +115,12 @@ public class ViewProductTask extends AbstractTask {
     private void clickItemElement(final WebDriver driver, final long activityDelay) {
         final String baseString = "EST-";
         for (int i = 1; i < 30; i++) {
-            if (AbstractTask.LOGGER.isDebugEnabled()) {
-                AbstractTask.LOGGER.debug("Try to find " + baseString + i);
-            }
+            AbstractTask.LOGGER.debug(String.format("Try to find %s %d", baseString, i));
+
             final List<WebElement> elements = driver.findElements(By.linkText(baseString + i));
             if (!elements.isEmpty()) {
-                if (AbstractTask.LOGGER.isDebugEnabled()) {
-                    AbstractTask.LOGGER.debug("Found element and will click on it: " + elements);
-                }
+                AbstractTask.LOGGER.debug("Found element and will click on it: {}", elements);
+
                 elements.get(0).click();
                 this.sleep(activityDelay);
                 return;

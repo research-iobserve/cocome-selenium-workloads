@@ -19,8 +19,8 @@
 	<allow pkg="org.powermock"/>
     <allow pkg="org.slf4j"/>
     <allow pkg="org.reflections"/>
-
-    
+    <allow class="java.util.logging.Level"/>
+        
     <!--  own application -->
     <allow pkg="org.iobserve"/>
 	<!--  disallow -->
@@ -28,4 +28,7 @@
     <!-- enforce the use of slf4j -->
     <disallow class="org.apache.logging.log4j.LogManager"/>
     <disallow class="org.apache.logging.log4j.Logger"/>
+    <disallow pkg="junit.framework"/>
+    <disallow pkg="sun"/>
+    <disallow pkg="org.apache.commons.logging"/>
 </import-control>

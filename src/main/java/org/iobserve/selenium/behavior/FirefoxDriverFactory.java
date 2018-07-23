@@ -49,8 +49,7 @@ public final class FirefoxDriverFactory implements IDriverFactory {
         options.setLogLevel(FirefoxDriverLogLevel.DEBUG);
         options.setCapability("binary", configuration.getDriver());
 
-        final WebDriver driver = new FirefoxDriver(options);
+        return new FirefoxDriver(options);
 
-        return driver;
     }
 }

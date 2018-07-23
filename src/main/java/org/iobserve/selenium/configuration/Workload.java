@@ -28,11 +28,6 @@ public class Workload {
 
     private String name;
 
-    /**
-     * Default bean constructor.
-     */
-    public Workload() {
-    }
 
     public final String getName() {
         return this.name;

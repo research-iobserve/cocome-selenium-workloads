@@ -80,5 +80,5 @@ public interface IWorkloadBalance {
      *
      * @return number of behaviors processed
      */
-    public long getCount();
+    long getCount();
 }

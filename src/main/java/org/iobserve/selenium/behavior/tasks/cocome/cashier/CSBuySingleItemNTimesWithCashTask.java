@@ -15,7 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.cocome.cashier;
 
-import org.iobserve.selenium.behavior.properties.parameter.VariableIntegerTaskParameter;
+
 import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
@@ -29,7 +29,7 @@ import org.openqa.selenium.WebDriver;
  */
 public class CSBuySingleItemNTimesWithCashTask extends AbstractTask {
     private final int productBarCode;
-    private final VariableIntegerTaskParameter numberOfItems;
+    private final int numberOfItems;
     private final int cashToPay;
 
     /**
@@ -47,8 +47,7 @@ public class CSBuySingleItemNTimesWithCashTask extends AbstractTask {
     @Parameters(names = { "productBarCode", "numberOfItems", "cashToPay" })
     public CSBuySingleItemNTimesWithCashTask(final int productBarCode, final int numberOfItems, final int cashToPay) {
         this.productBarCode = productBarCode;
-        final int max = numberOfItems > 100 ? numberOfItems : 100;
-        this.numberOfItems = new VariableIntegerTaskParameter(1, max, numberOfItems);
+        this.numberOfItems = numberOfItems;
         this.cashToPay = cashToPay;
     }
 
@@ -63,7 +62,7 @@ public class CSBuySingleItemNTimesWithCashTask extends AbstractTask {
 
         driver.get(baseUrl + "/cloud-web-frontend/faces/store/start_sale.xhtml");
         // add all items to the "shopping cart"
-        for (int i = 0; i < this.numberOfItems.getParameter(); i++) {
+        for (int i = 0; i < this.numberOfItems; i++) {
             driver.findElement(By.id("j_idt42:barcodetext")).clear();
             driver.findElement(By.id("j_idt42:barcodetext")).sendKeys(Integer.toString(this.productBarCode));
             driver.findElement(By.name("j_idt42:j_idt66")).click();

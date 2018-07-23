@@ -29,7 +29,7 @@ import org.iobserve.selenium.configuration.ConstantWorkloadIntensity;
 public class ConstantWorkloadBalance implements IWorkloadBalance {
 
     private static final long TIME_FRAME_FOR_INTENSITY = 1000; // one second
-    private Long startTimestamp = null;
+    private Long startTimestamp;
     private final long[] durations;
     private final long[] startMark;
     private final double intensity;

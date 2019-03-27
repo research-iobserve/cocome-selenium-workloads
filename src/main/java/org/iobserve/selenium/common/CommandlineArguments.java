@@ -29,12 +29,12 @@ import com.beust.jcommander.converters.FileConverter;
  */
 public class CommandlineArguments {
 
-    @Parameter(names = { "-u", "--url" }, description = "Base url for the selenium workloads")
-    private static String baseUrl = "http://172.17.0.2:8080/jpetstore/";
-
     @Parameter(names = { "-p",
             "--print-workloads" }, description = "The name(s) of the workload(s) that should be executed.", help = true)
     private static Boolean printWorkloads = false;
+
+    @Parameter(names = { "-u", "--url" }, description = "Base url for the selenium workloads")
+    private String baseUrl;
 
     @Parameter(names = { "-c",
             "--workload-characterization" }, description = "Configuration file for the workload characterization.", required = true, converter = FileConverter.class)
@@ -44,7 +44,7 @@ public class CommandlineArguments {
     private String pathWebDriver;
 
     public String getBaseUrl() {
-        return CommandlineArguments.baseUrl;
+        return this.baseUrl;
     }
 
     public final File getConfigurationFile() {

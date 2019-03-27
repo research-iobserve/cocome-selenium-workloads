@@ -28,9 +28,9 @@ import com.beust.jcommander.JCommander;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-import org.iobserve.selenium.beahvior.BehaviorModelRunnable;
-import org.iobserve.selenium.beahvior.ComposedBehavior;
-import org.iobserve.selenium.beahvior.PhantomJSFactory;
+import org.iobserve.selenium.behavior.BehaviorModelRunnable;
+import org.iobserve.selenium.behavior.ComposedBehavior;
+import org.iobserve.selenium.behavior.IDriverFactory;
 import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.TaskRegistry;
 import org.iobserve.selenium.common.CommandlineArguments;
@@ -42,7 +42,7 @@ import org.iobserve.selenium.configuration.Workload;
 import org.iobserve.selenium.configuration.WorkloadConfiguration;
 import org.iobserve.selenium.workload.intensity.ConstantWorkloadBalance;
 import org.iobserve.selenium.workload.intensity.IWorkloadBalance;
-import org.openqa.selenium.phantomjs.PhantomJSDriver;
+import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,16 +83,16 @@ public final class WorkloadGenerationMain {
             final WorkloadConfiguration configuration;
             try {
                 configuration = mapper.readValue(arguments.getConfigurationFile(), WorkloadConfiguration.class);
-                if (configuration.getPhantom() == null) {
+                if (configuration.getWebDriverConfiguration() == null) {
                     WorkloadGenerationMain.LOGGER.error("Missing webdriver configuration");
                     return;
                 }
 
-                if (configuration.getPhantom().getBaseUrl() == null) {
-                    configuration.getPhantom().setBaseUrl(arguments.getBaseUrl());
+                if (arguments.getBaseUrl() != null) {
+                    configuration.getWebDriverConfiguration().setBaseUrl(arguments.getBaseUrl());
                 }
-                if (configuration.getPhantom().getPath() == null) {
-                    configuration.getPhantom().setPath(arguments.getPathWebDriver());
+                if (arguments.getPathWebDriver() != null) {
+                    configuration.getWebDriverConfiguration().setDriver(arguments.getPathWebDriver());
                 }
 
                 /** evaluate configuration. */
@@ -146,8 +146,32 @@ public final class WorkloadGenerationMain {
 
     private static void runWorkloads(final List<IWorkloadBalance> workloads,
             final WorkloadConfiguration configuration) {
-        final PhantomJSDriver driver = PhantomJSFactory.createNewDriver(configuration.getPhantom());
 
+        try {
+            final Class<?>[] parameters = null;
+            final IDriverFactory driverFactory = InstantiationFactory.create(IDriverFactory.class,
+                    configuration.getWebDriverConfiguration().getType(), parameters);
+            final WebDriver driver = driverFactory.createNewDriver(configuration.getWebDriverConfiguration());
+
+            WorkloadGenerationMain.runWorkloadsWithDriver(driver, workloads, configuration);
+        } catch (final ConfigurationException e) {
+            WorkloadGenerationMain.LOGGER.error("Instanitation error for the driver {}",
+                    configuration.getWebDriverConfiguration().getType());
+        }
+    }
+
+    /**
+     * run workload with the specified driver.
+     *
+     * @param driver
+     *            the driver object
+     * @param workloads
+     *            the workload
+     * @param configuration
+     *            the configuration
+     */
+    private static void runWorkloadsWithDriver(final WebDriver driver, final List<IWorkloadBalance> workloads,
+            final WorkloadConfiguration configuration) {
         final ExecutorService executor = Executors.newFixedThreadPool(10);
 
         boolean repeat = false;
@@ -160,7 +184,7 @@ public final class WorkloadGenerationMain {
                 if (!state.isWorkloadProfileComplete(presentTime)) {
                     while (state.startBehavior(presentTime)) {
                         executor.submit(new BehaviorModelRunnable(
-                                new ComposedBehavior(driver, configuration.getPhantom().getBaseUrl(),
+                                new ComposedBehavior(driver, configuration.getWebDriverConfiguration().getBaseUrl(),
                                         configuration.getActivityDelay(), state.getBehaviorModel())));
                     }
                     final long potentialTrigger = state.getNextTrigger(presentTime);
@@ -172,7 +196,7 @@ public final class WorkloadGenerationMain {
             }
             try {
                 if (repeat) {
-                    Thread.sleep(trigger - new Date().getTime());
+                    Thread.sleep(WorkloadGenerationMain.calculateDelay(trigger, new Date().getTime()));
                 }
             } catch (final InterruptedException e) {
                 WorkloadGenerationMain.LOGGER.info("Sleep interrupted in main workload scheduler.");
@@ -187,6 +211,15 @@ public final class WorkloadGenerationMain {
         for (final IWorkloadBalance state : workloads) {
             WorkloadGenerationMain.LOGGER.info("{} had {} executions", state.getBehaviorModel().getName(),
                     state.getCount());
+        }
+    }
+
+    private static long calculateDelay(final long trigger, final long time) {
+        final long result = trigger - time;
+        if (result > 0) {
+            return result;
+        } else {
+            return 0;
         }
     }
 

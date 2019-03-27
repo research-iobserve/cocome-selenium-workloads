@@ -19,10 +19,12 @@ package org.iobserve.selenium.configuration;
  * @author Reiner Jung
  *
  */
-public class PhantomConfiguration {
+public class WebDriverConfiguration {
     private String baseUrl;
 
-    private String path;
+    private String driver;
+
+    private String type;
 
     private long timeout; // in milliseconds
 
@@ -34,12 +36,20 @@ public class PhantomConfiguration {
         this.baseUrl = baseUrl;
     }
 
-    public final String getPath() {
-        return this.path;
+    public final String getDriver() {
+        return this.driver;
     }
 
-    public final void setPath(final String path) {
-        this.path = path;
+    public final void setDriver(final String driver) {
+        this.driver = driver;
+    }
+
+    public final String getType() {
+        return this.type;
+    }
+
+    public final void setType(final String type) {
+        this.type = type;
     }
 
     public final long getTimeout() {

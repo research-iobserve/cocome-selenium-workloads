@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.beahvior;
+package org.iobserve.selenium.behavior;
 
 import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.TaskRegistry;
@@ -99,16 +99,16 @@ public class ComposedBehavior {
      */
     public void execute() throws ConfigurationException {
         /** start with new session. */
-        ComposedBehavior.LOGGER.debug("delete all cookies -> new session");
+        ComposedBehavior.LOGGER.debug("behavior {}: delete all cookies -> new session", this.name);
         this.getDriver().manage().deleteAllCookies();
-        ComposedBehavior.LOGGER.debug("execute {}", this.name);
+        ComposedBehavior.LOGGER.debug("behavior {}: execute", this.name);
         this.iterateBehavior(this.getBehaviorModel(),
                 this.getActivityDelay(this.activityDelay, this.model.getActivityDelay()));
     }
 
     private void iterateBehavior(final BehaviorModel localModel, final double localActivityDelay)
             throws ConfigurationException {
-        ComposedBehavior.LOGGER.debug("part {}", localModel.getName());
+        ComposedBehavior.LOGGER.debug("behavior {}: part {}", this.name, localModel.getName());
         for (final BehaviorModel behavior : this.getBehaviorModel().getSubbehaviors()) {
             if (behavior.getRepetition() != null) {
                 final int repetitions = RandomGenerator.getRandomNumber(behavior.getRepetition().getMin(),
@@ -127,8 +127,9 @@ public class ComposedBehavior {
         if (behavior.getSubbehaviors().isEmpty()) {
             final AbstractTask type = TaskRegistry.getWorkloadInstanceByName(behavior.getName(),
                     behavior.getParameters());
-            ComposedBehavior.LOGGER.debug("delay {}",
+            ComposedBehavior.LOGGER.debug("behavior {}: delay {}", this.name,
                     this.getActivityDelay(localActivityDelay, behavior.getActivityDelay()));
+            ComposedBehavior.LOGGER.debug("behavior {}: task {}", this.name, type.getName());
             type.executeTask(this.getDriver(), this.getBaseUrl(),
                     (long) (this.getActivityDelay(localActivityDelay, behavior.getActivityDelay()) * 1000));
         } else {

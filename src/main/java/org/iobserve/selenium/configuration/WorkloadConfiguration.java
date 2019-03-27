@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class WorkloadConfiguration {
 
-    private PhantomConfiguration phantom;
+    private WebDriverConfiguration webDriverConfiguration;
 
     private List<Workload> workloads = new ArrayList<>();
 
@@ -44,12 +44,12 @@ public class WorkloadConfiguration {
         this.activityDelay = activityDelay;
     }
 
-    public final PhantomConfiguration getPhantom() {
-        return this.phantom;
+    public final WebDriverConfiguration getWebDriverConfiguration() {
+        return this.webDriverConfiguration;
     }
 
-    public final void setPhantom(final PhantomConfiguration phantom) {
-        this.phantom = phantom;
+    public final void setWebDriverConfiguration(final WebDriverConfiguration webDriverConfiguration) {
+        this.webDriverConfiguration = webDriverConfiguration;
     }
 
     public final List<Workload> getWorkloads() {

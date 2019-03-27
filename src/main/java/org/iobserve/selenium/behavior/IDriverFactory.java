@@ -13,36 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.configuration;
+package org.iobserve.selenium.behavior;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.iobserve.selenium.configuration.WebDriverConfiguration;
+import org.openqa.selenium.WebDriver;
 
 /**
  * @author Reiner Jung
  *
  */
-public class Workload {
+public interface IDriverFactory {
 
-    @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type")
-    private IWorkloadIntensity intensity;
-
-    private String name;
-
-
-    public final String getName() {
-        return this.name;
-    }
-
-    public final void setName(final String name) {
-        this.name = name;
-    }
-
-    public final IWorkloadIntensity getIntensity() {
-        return this.intensity;
-    }
-
-    public final void setIntensity(final IWorkloadIntensity intensity) {
-        this.intensity = intensity;
-    }
-
+    /**
+     * Create a new @{link WebDriver}.
+     *
+     * @param configuration
+     *            configuration for phatomJS
+     * @return returns a configured @{link PhantomJSDriver}
+     */
+    WebDriver createNewDriver(final WebDriverConfiguration configuration);
 }

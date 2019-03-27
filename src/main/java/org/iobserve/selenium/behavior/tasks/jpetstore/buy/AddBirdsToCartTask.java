@@ -19,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.iobserve.selenium.behavior.properties.parameter.ListTaskParameter;
-import org.iobserve.selenium.behavior.properties.parameter.VariableIntegerTaskParameter;
 import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
@@ -33,7 +32,7 @@ import org.openqa.selenium.WebDriver;
  */
 public class AddBirdsToCartTask extends AbstractTask {
 
-    private final VariableIntegerTaskParameter amount;
+    private final int amount;
     private final ListTaskParameter<String> items;
 
     /**
@@ -47,7 +46,7 @@ public class AddBirdsToCartTask extends AbstractTask {
      */
     @Parameters(names = { "amount", "itemPosition" })
     public AddBirdsToCartTask(final int amount, final int itemPosition) {
-        this.amount = new VariableIntegerTaskParameter(1, 10, amount);
+        this.amount = amount;
 
         final List<String> givenItems = new LinkedList<>();
         givenItems.add("AV-CB-01");
@@ -67,7 +66,7 @@ public class AddBirdsToCartTask extends AbstractTask {
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         driver.get(baseUrl + "actions/Catalog.action");
         final String item = this.items.getParameter();
-        final int currentAmount = this.amount.getParameter();
+        final int currentAmount = this.amount;
 
         AbstractTask.LOGGER.info(String.format("%s: item: %s amount: %d ", this.getName(), item, currentAmount));
 

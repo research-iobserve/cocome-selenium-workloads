@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.beahvior;
+package org.iobserve.selenium.behavior;
 
 import org.iobserve.selenium.common.ConfigurationException;
 import org.slf4j.Logger;

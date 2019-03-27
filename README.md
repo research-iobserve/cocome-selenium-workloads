@@ -3,64 +3,55 @@
 # Experiment Workloads utilizing Selenium
 
 This project is meant to create different workloads for websites utilizing Selenium.
-Currently,  this tool is tailored for the software systems CoCoME and JPetStore which we use as case studies in iObserve.
+Currently,  this tool is tailored for the software systems PetStore which we use as case studies in iObserve.
 
-**This project is work in progress. Please report feature request, bugs etc. as issues in GitHub or to mad@informatik.uni-kiel.de** 
+**This project is work in progress. Please report feature request, bugs etc. as issues in GitHub**
 
 # Dependencies and Requirements
 
-To use our workload drivers
-1. Create a experiment setup directory `mkdir experiment`
-1. Download phantom.js (http://phantomjs.org/download.html) Usually, the package in your Linux distribution won't suffice.
-1. Extract the package, e.g., with `tar -xvjpf phantomjs-2.1.1-linux-x86_64.tar.bz2` in experiment
-1. Checkout this repository alongside of `phantomjs-2.1.1-linux-x86_64`
-1. Change into the workload directory `cd selenium-workloads`
+Our workload driver is considered to be used alongside the JPetStore in experiments. We usually set up our experiments with one experiment main directory (here `experiment`), a `tools` directory for all parts of software, and a `workloads` directory for the workloads.
+
+Currently, we use the chrome driver for selenium. If you want to can use other drivers (e.g. phantomjs which we used previously).
+
+# Installation
+
+Install the chrome driver for Selenium:
+* Download it from `http://chromedriver.chromium.org/downloads`
+* Copy it into your `tools` directory
+
+To use our workload driver directly from this git repository:
+1. Clone the repository `git clone https://github.com/research-iobserve/selenium-workloads.git`
+1. Switch to the repository `cd selenium-workloads`
 1. Build the repository with `./gradlew build`
-1. After the build you find a completed package of the software in ` build/distributions/selenium-experiment-workloads-1.0.tar|zip`
-1. Unzip the package in your preferred location `$BASE` with `tar` or `unzip`
+1. After the build you find a completed package of the software in `build/distributions/selenium-experiment-workloads-1.0.tar|zip`
+1. Unzip or untar the package in your preferred location, e.g., `experiment/tools`, with `tar` or `unzip`
+
+# Preparation
+
+You find a in the root directory of `selenium-workloads` an example workload configuration. You can make of copy of it and start using this for your workloads. Before first execution, you have to set up the web driver parameters. They look like this:
+```
+webDriverConfiguration:
+  baseUrl: http://172.18.0.5:8080/jpetstore-frontend/
+  type: org.iobserve.selenium.behavior.ChromeDriverFactory
+  driver: experiments/tools/chromedriver
+  timeout: 60000
+```
+
+1. The `baseUrl` is the URL of your JPetStore. The path `jpetstore-frontend` is the name used for the distributed variants of the JPetStore. The single service variants use `jpetstore`
+1. The `type` of webdriver should be `ChromeDriverFactory` if you want to go with the Chrome driver (recommended).
+1. The `driver` parameter must contain the path to the `chromedriver` executable.
+
+In case you want to setup logging, use the following in your bash script or command line:
+```
+SELENIUM_EXPERIMENT_WORKLOADS_OPTS=-Dlog4j.configuration=file:///$BASE_DIR/log4j.cfg
+```
+Two log4j configurations are provided in this repository.
 
 # Execution of Workloads
 
-The workloads are meant to be executed within scripts.
-Therefore, the execution is configured with parameters to be able to adapt the workloads to the criteria relevant for our experiments.
-There exist several required and optional parameters.
+Execute the script with: `experiment/tools/selenium-experiment-workloads-1.0/bin/selenium-workloads -c your-workload.yaml`
+Or in Windows: `experiment/tools/selenium-experiment-workloads-1.0/bin/selenium-workloads.bat -c your-workload.yaml`
 
-To run the application call: `$BASE/bin/
-
-
-
-### Required Parameters
-
-To execute the different workloads two parameters are required:
-- `-phantomjs` to set the path to the phantomjs browser, <br> 
-e.g. `-phantomjs /usr/lib/phantomjs/phantomjs` <br>
-- `-workloads` to define the workloads that should be executed, <br>
-e.g. `-workloads workload1,workload2` or `-workloads workload1  -workloads workload2` <br>
-
-### Workload Overview
-
--print_workloads if used, simply prints all available workloads <br> 
-E.g.: `java -jar build/libs/selenium-experiment-workloads-1.0.jar -print_workloads`
-
-### Optional Parameters
-
-- `-url` sets the url of the tested service, default is https://172.17.0.2:8181 for the CoCoME frontend from our [experiment](https://github.com/research-iobserve/cocome-experiment)
-- `-runs` the number of times each workload is repeated, default is 5
-
-# Implementation of new Workloads
-
-Each workload consists of several tasks that are build in the builder pattern.
-Thereby, every task implements the implements the Java (Bi-)Consumer Interface and can be reused.
-New user and system tasks ( like creating a new session) can easily be implemented.
-The workloads contain these tasks and are designed to represent one complete run of the defined user actions.
-Each new workload has to be put in the [WorkloadRegistry](https://github.com/research-iobserve/cocome-selenium-workloads/blob/master/src/main/java/org/iobserve/selenium/workloads/registry/WorkloadRegistry.java) to be able to be used!
-Multiple workloads can be called at the application start.
-
-## WorkloadConfiguration
-Each Workload is executed with a certain configuartion.
-In most cases, the configuration is build from the (default) parameters and set for each application call.
-For special cases, like for static websites, the configuration can be manually set in the implementation of the workload. 
-Preset configurations can currently not be overwritten by the parameters.
 
 
 

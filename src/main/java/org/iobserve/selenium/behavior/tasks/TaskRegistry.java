@@ -90,7 +90,6 @@ public final class TaskRegistry {
             TaskRegistry.LOGGER.debug("'{}' was not found in the registry.", name);
             throw new ConfigurationException("Workload '" + name + "' was not found in the registry.");
         } else {
-
             try {
                 final List<Class<?>> parameterTypes = new ArrayList<>();
                 final List<Object> parameterValues = new ArrayList<>();
@@ -105,7 +104,9 @@ public final class TaskRegistry {
                                 final Class<?> parameterType = constructor.getParameters()[i].getType();
                                 final Object value = parameters.get(parameterName);
                                 if (value == null) {
-                                    break;
+                                    TaskRegistry.LOGGER.error(
+                                            "No parameter with the name '{}' found in the list of specified parameters.",
+                                            parameterName);
                                 } else {
                                     parameterTypes.add(parameterType);
                                     TaskRegistry.addParameterValues(parameterType, parameterValues, value);

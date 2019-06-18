@@ -27,7 +27,7 @@ import org.openqa.selenium.WebDriver;
  *
  */
 public class CreateNewCustomerTask extends AbstractTask {
-    private final String userName;
+    private final String username;
     private final String password;
 
     /**
@@ -39,9 +39,9 @@ public class CreateNewCustomerTask extends AbstractTask {
      * @param password
      *            The password used for the new account.
      */
-    @Parameters(names = { "userName", "password" })
+    @Parameters(names = { "username", "password" })
     public CreateNewCustomerTask(final String userName, final String password) {
-        this.userName = userName;
+        this.username = userName;
         this.password = password;
     }
 
@@ -60,7 +60,7 @@ public class CreateNewCustomerTask extends AbstractTask {
         driver.findElement(By.linkText("Register Now!")).click();
         this.sleep(activityDelay);
         driver.findElement(By.name("username")).clear();
-        driver.findElement(By.name("username")).sendKeys(this.userName);
+        driver.findElement(By.name("username")).sendKeys(this.username);
         driver.findElement(By.name("password")).clear();
         driver.findElement(By.name("password")).sendKeys(this.password);
         driver.findElement(By.name("repeatedPassword")).clear();

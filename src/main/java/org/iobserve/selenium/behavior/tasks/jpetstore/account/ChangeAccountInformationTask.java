@@ -56,7 +56,7 @@ public class ChangeAccountInformationTask extends AbstractTask {
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
 
         final String attributeString = this.attribute.getAttributeName();
-        driver.get(baseUrl + "actions/Account.action?editAccountForm");
+        driver.get(baseUrl + "/actions/Account.action?editAccountForm");
 
         if (this.attribute.equals(Attribute.LANGUAGE) || this.attribute.equals(Attribute.CATEGORY)) {
             // default is japanese.. maybe change for the future

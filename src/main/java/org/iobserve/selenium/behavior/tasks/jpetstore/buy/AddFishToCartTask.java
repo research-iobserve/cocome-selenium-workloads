@@ -32,7 +32,7 @@ import org.openqa.selenium.WebDriver;
  */
 public class AddFishToCartTask extends AbstractTask {
 
-    private final int  amount;
+    private final int amount;
     private final ListTaskParameter<String> items;
 
     /**
@@ -46,7 +46,7 @@ public class AddFishToCartTask extends AbstractTask {
      */
     @Parameters(names = { "amount", "itemPosition" })
     public AddFishToCartTask(final int amount, final int itemPosition) {
-        this.amount =  amount;
+        this.amount = amount;
 
         final List<String> givenItems = new LinkedList<>();
         givenItems.add("FI-SW-01");
@@ -66,7 +66,7 @@ public class AddFishToCartTask extends AbstractTask {
      */
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
-        driver.get(baseUrl + "actions/Catalog.action");
+        driver.get(baseUrl + "/actions/Catalog.action");
         final String item = this.items.getParameter();
         final int currentAmount = this.amount;
 

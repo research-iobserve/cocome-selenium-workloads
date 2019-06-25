@@ -32,7 +32,7 @@ import org.openqa.selenium.WebDriver;
  */
 public class AddDogsToCartTask extends AbstractTask {
 
-    private final int  amount;
+    private final int amount;
     private final ListTaskParameter<String> items;
 
     /**
@@ -68,7 +68,7 @@ public class AddDogsToCartTask extends AbstractTask {
      */
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
-        driver.get(baseUrl + "actions/Catalog.action");
+        driver.get(baseUrl + "/actions/Catalog.action");
         final String item = this.items.getParameter();
         final int currentAmount = this.amount;
 

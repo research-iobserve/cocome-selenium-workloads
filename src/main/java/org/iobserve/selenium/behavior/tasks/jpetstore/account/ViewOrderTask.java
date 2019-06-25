@@ -48,7 +48,7 @@ public class ViewOrderTask extends AbstractTask {
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         final String orderToClick = "1000";
-        driver.get(baseUrl + "actions/Account.action?editAccountForm=");
+        driver.get(baseUrl + "/actions/Account.action?editAccountForm=");
         driver.findElement(By.linkText("My Orders")).click();
         this.sleep(activityDelay);
         final List<WebElement> foundOrders = driver.findElements(By.linkText(orderToClick));

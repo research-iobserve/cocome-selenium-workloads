@@ -42,7 +42,7 @@ public class SearchAndClickFishTask extends AbstractTask {
         // TODO read Table and select one element.
         final String productToClick = "Fresh Water fish from China";
 
-        driver.get(baseUrl + "actions/Catalog.action");
+        driver.get(baseUrl + "/actions/Catalog.action");
         driver.findElement(By.name("keyword")).click();
         this.sleep(activityDelay);
         driver.findElement(By.name("keyword")).clear();

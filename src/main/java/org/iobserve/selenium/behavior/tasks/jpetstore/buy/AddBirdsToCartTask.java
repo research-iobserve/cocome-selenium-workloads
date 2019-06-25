@@ -64,7 +64,7 @@ public class AddBirdsToCartTask extends AbstractTask {
      */
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
-        driver.get(baseUrl + "actions/Catalog.action");
+        driver.get(baseUrl + "/actions/Catalog.action");
         final String item = this.items.getParameter();
         final int currentAmount = this.amount;
 

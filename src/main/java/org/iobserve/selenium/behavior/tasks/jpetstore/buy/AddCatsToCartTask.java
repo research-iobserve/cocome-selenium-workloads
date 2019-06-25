@@ -46,7 +46,7 @@ public class AddCatsToCartTask extends AbstractTask {
      */
     @Parameters(names = { "amount", "itemPosition" })
     public AddCatsToCartTask(final int amount, final int itemPosition) {
-        this.amount =amount;
+        this.amount = amount;
 
         final List<String> givenItems = new LinkedList<>();
         givenItems.add("FL-DSH-01");
@@ -64,9 +64,9 @@ public class AddCatsToCartTask extends AbstractTask {
      */
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
-        driver.get(baseUrl + "actions/Catalog.action");
+        driver.get(baseUrl + "/actions/Catalog.action");
         final String item = this.items.getParameter();
-        final int currentAmount = amount;
+        final int currentAmount = this.amount;
 
         AbstractTask.LOGGER.info(String.format("%s: item: %s amount: %d ", this.getName(), item, currentAmount));
 

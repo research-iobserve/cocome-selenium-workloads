@@ -53,7 +53,7 @@ public class LoginJPetStoreTask extends AbstractTask {
      */
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
-        driver.get(baseUrl + "actions/Catalog.action");
+        driver.get(baseUrl + "/actions/Catalog.action");
         driver.findElement(By.linkText("Sign In")).click();
         driver.findElement(By.name("username")).clear();
         driver.findElement(By.name("username")).sendKeys(this.username);

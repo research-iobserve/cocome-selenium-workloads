@@ -15,12 +15,10 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.jpetstore.buy;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.iobserve.selenium.behavior.properties.parameter.ListTaskParameter;
 import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
+import org.iobserve.selenium.behavior.tasks.jpetstore.ECategory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -29,7 +27,9 @@ import org.openqa.selenium.WebDriver;
  *
  * @author Marc Adolf
  *
+ * @deprecated 1.1.0
  */
+@Deprecated
 public class AddReptilesToCartTask extends AbstractTask {
 
     private final int amount;
@@ -48,12 +48,8 @@ public class AddReptilesToCartTask extends AbstractTask {
     public AddReptilesToCartTask(final int amount, final int itemPosition) {
         this.amount = amount;
 
-        final List<String> givenItems = new LinkedList<>();
-        givenItems.add("RP-SN-01");
-        givenItems.add("RP-LI-02");
-
-        this.items = new ListTaskParameter<>(givenItems, itemPosition);
-
+        this.items = ECategory.REPTILES.getProducts();
+        this.items.setItemPosition(itemPosition);
     }
 
     /*
@@ -65,7 +61,7 @@ public class AddReptilesToCartTask extends AbstractTask {
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         driver.get(baseUrl + "/actions/Catalog.action");
-        final String item = this.items.getParameter();
+        final String item = this.items.getSelectedParameter();
         final int currentAmount = this.amount;
 
         AbstractTask.LOGGER.info(String.format("%s: item: %s amount: %d ", this.getName(), item, currentAmount));

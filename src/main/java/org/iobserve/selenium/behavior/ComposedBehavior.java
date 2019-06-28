@@ -21,6 +21,7 @@ import org.iobserve.selenium.common.ConfigurationException;
 import org.iobserve.selenium.common.RandomGenerator;
 import org.iobserve.selenium.configuration.BehaviorModel;
 import org.iobserve.selenium.configuration.Repetition;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,28 +99,36 @@ public class ComposedBehavior {
      *             on configuration errors
      */
     public void execute() throws ConfigurationException {
+        ComposedBehavior.LOGGER.debug("behavior {} [{}]: start behavior", this.name, Thread.currentThread().getId());
         /** start with new session. */
-        ComposedBehavior.LOGGER.debug("behavior {}: delete all cookies -> new session", this.name);
         this.getDriver().manage().deleteAllCookies();
-        ComposedBehavior.LOGGER.debug("behavior {}: execute", this.name);
         this.iterateBehavior(this.getBehaviorModel(),
                 this.getActivityDelay(this.activityDelay, this.model.getActivityDelay()));
+        ComposedBehavior.LOGGER.debug("behavior {} [{}]: stop behavior", this.name, Thread.currentThread().getId());
     }
 
     private void iterateBehavior(final BehaviorModel localModel, final double localActivityDelay)
             throws ConfigurationException {
-        ComposedBehavior.LOGGER.debug("behavior {}: part {}", this.name, localModel.getName());
+        ComposedBehavior.LOGGER.debug("behavior {} [{}]: iterating", this.name, Thread.currentThread().getId());
         for (final BehaviorModel behavior : this.getBehaviorModel().getSubbehaviors()) {
+            ComposedBehavior.LOGGER.debug("behavior {} [{}]: sub {}", this.name, Thread.currentThread().getId(),
+                    behavior.getName());
             if (behavior.getRepetition() != null) {
                 final int repetitions = RandomGenerator.getRandomNumber(behavior.getRepetition().getMin(),
                         behavior.getRepetition().getMax());
+                ComposedBehavior.LOGGER.debug("behavior {} [{}]: sub {} [{},{}]", this.name,
+                        Thread.currentThread().getId(), behavior.getName(), behavior.getRepetition().getMin(),
+                        behavior.getRepetition().getMax());
                 for (int i = 0; i < repetitions; i++) {
+                    ComposedBehavior.LOGGER.debug("behavior {} [{}]: sub {} i {}", this.name,
+                            Thread.currentThread().getId(), behavior.getName(), i);
                     this.executeBehavior(behavior, localActivityDelay);
                 }
             } else {
                 this.executeBehavior(behavior, localActivityDelay);
             }
         }
+        ComposedBehavior.LOGGER.debug("behavior {} [{}]: end iterating", this.name, Thread.currentThread().getId());
     }
 
     private void executeBehavior(final BehaviorModel behavior, final double localActivityDelay)
@@ -127,11 +136,17 @@ public class ComposedBehavior {
         if (behavior.getSubbehaviors().isEmpty()) {
             final AbstractTask type = TaskRegistry.getWorkloadInstanceByName(behavior.getName(),
                     behavior.getParameters());
-            ComposedBehavior.LOGGER.debug("behavior {}: delay {}", this.name,
-                    this.getActivityDelay(localActivityDelay, behavior.getActivityDelay()));
-            ComposedBehavior.LOGGER.debug("behavior {}: task {}", this.name, type.getName());
-            type.executeTask(this.getDriver(), this.getBaseUrl(),
-                    (long) (this.getActivityDelay(localActivityDelay, behavior.getActivityDelay()) * 1000));
+            ComposedBehavior.LOGGER.debug("behavior {} [{}]: delay {} task {}", this.name,
+                    Thread.currentThread().getId(),
+                    this.getActivityDelay(localActivityDelay, behavior.getActivityDelay()), type.getName());
+
+            try {
+                type.executeTask(this.getDriver(), this.getBaseUrl(),
+                        (long) (this.getActivityDelay(localActivityDelay, behavior.getActivityDelay()) * 1000));
+            } catch (final NoSuchSessionException ex) {
+                ComposedBehavior.LOGGER.error("behavior {} [{}]: Session is missing in task {}.", this.name,
+                        Thread.currentThread().getId(), type.getName());
+            }
         } else {
             this.iterateBehavior(behavior, localActivityDelay);
         }

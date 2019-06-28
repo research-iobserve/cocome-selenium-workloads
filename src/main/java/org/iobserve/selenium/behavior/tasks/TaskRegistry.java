@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.iobserve.selenium.WorkloadGenerationMain;
 import org.iobserve.selenium.common.ConfigurationException;
+import org.iobserve.selenium.common.RandomGenerator;
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,7 +156,27 @@ public final class TaskRegistry {
                 }
             }
         } else {
-            parameterValues.add(value);
+            if (parameterType.isAssignableFrom(value.getClass())) {
+                parameterValues.add(value);
+            } else if (Map.class.isAssignableFrom(value.getClass())) {
+                /** this indicates a specified range. */
+                @SuppressWarnings("unchecked")
+                final Map<String, Integer> map = (Map<String, Integer>) value;
+                final Integer lower = map.get("min");
+                final Integer upper = map.get("max");
+                if (lower != null && upper != null) {
+                    if (lower < upper) {
+                        parameterValues.add(RandomGenerator.getRandomNumber(lower, upper));
+                    } else {
+                        TaskRegistry.LOGGER.error("Min value must be lower than max value, but found min: {} max: {}",
+                                lower, upper);
+                    }
+                } else {
+                    TaskRegistry.LOGGER.error("Need one min and one max value.");
+                }
+            } else {
+                TaskRegistry.LOGGER.error("Value type {} cannot be handled.", value.getClass().getCanonicalName());
+            }
         }
 
     }

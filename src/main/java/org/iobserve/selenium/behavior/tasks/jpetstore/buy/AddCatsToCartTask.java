@@ -29,7 +29,9 @@ import org.openqa.selenium.WebDriver;
  *
  * @author Marc Adolf
  *
+ * @deprecated 1.1.0
  */
+@Deprecated
 public class AddCatsToCartTask extends AbstractTask {
 
     private final int amount;
@@ -65,7 +67,7 @@ public class AddCatsToCartTask extends AbstractTask {
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         driver.get(baseUrl + "/actions/Catalog.action");
-        final String item = this.items.getParameter();
+        final String item = this.items.getSelectedParameter();
         final int currentAmount = this.amount;
 
         AbstractTask.LOGGER.info(String.format("%s: item: %s amount: %d ", this.getName(), item, currentAmount));

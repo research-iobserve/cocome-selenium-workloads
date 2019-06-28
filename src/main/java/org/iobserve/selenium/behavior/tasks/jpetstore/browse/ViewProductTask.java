@@ -22,6 +22,7 @@ import java.util.List;
 import org.iobserve.selenium.behavior.properties.parameter.ListTaskParameter;
 import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
+import org.iobserve.selenium.behavior.tasks.jpetstore.ECategory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -36,7 +37,7 @@ import org.openqa.selenium.WebElement;
  */
 public class ViewProductTask extends AbstractTask {
 
-    private final ListTaskParameter<Category> category;
+    private final ListTaskParameter<ECategory> category;
 
     /**
      * Creates a new task to visit a certain category and its products.
@@ -45,8 +46,8 @@ public class ViewProductTask extends AbstractTask {
      *            The category to visit.
      */
     @Parameters(names = { "category" })
-    public ViewProductTask(final Category category) {
-        final List<Category> categoryList = new LinkedList<>(Arrays.asList(Category.values()));
+    public ViewProductTask(final ECategory category) {
+        final List<ECategory> categoryList = new LinkedList<>(Arrays.asList(ECategory.values()));
         this.category = new ListTaskParameter<>(categoryList, categoryList.indexOf(category));
     }
 
@@ -60,9 +61,9 @@ public class ViewProductTask extends AbstractTask {
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: %s %d", baseUrl, activityDelay));
 
-        final Category curentCategory = this.category.getParameter();
+        final ECategory curentCategory = this.category.getSelectedParameter();
         final String categoryString = curentCategory.getCategoryString();
-        final String productString = curentCategory.getProducts().getParameter();
+        final String productString = curentCategory.getProducts().getSelectedParameter();
 
         AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: categoryString=%s productString=%s",
                 categoryString, productString));
@@ -109,7 +110,7 @@ public class ViewProductTask extends AbstractTask {
      */
     @Override
     public String getName() {
-        return "View category " + this.category.getParameter().toString() + " and one of its products: ";
+        return "View category " + this.category.getSelectedParameter().toString() + " and one of its products: ";
     }
 
     private void clickItemElement(final WebDriver driver, final long activityDelay) {
@@ -126,34 +127,6 @@ public class ViewProductTask extends AbstractTask {
                 return;
             }
 
-        }
-    }
-
-    /**
-     * Defines the clickable categories and information about their products.
-     *
-     * @author Marc Adolf
-     *
-     */
-    public enum Category {
-        FISH("a", "FI-SW-01", "FI-SW-02", "FI-FW-01", "FI-FW-02"), DOGS("a[2]", "K9-BD-01", "K9-PO-02", "K9-DL-01",
-                "K9-RT-01", "K9-RT-02", "K9-CW-01"), REPTILES("a[3]", "RP-SN-01",
-                        "RP-LI-02"), CATS("a[4]", "FL-DSH-01", "FL-DLH-02"), BIRDS("a[5]", "AV-CB-01", "AV-SB-02");
-
-        private String categoryString;
-        private ListTaskParameter<String> products;
-
-        private Category(final String categoryString, final String... products) {
-            this.categoryString = categoryString;
-            this.products = new ListTaskParameter<>(Arrays.asList(products), 0);
-        }
-
-        public String getCategoryString() {
-            return this.categoryString;
-        }
-
-        public ListTaskParameter<String> getProducts() {
-            return this.products;
         }
     }
 

@@ -53,7 +53,6 @@ public class CreateNewCustomerTask extends AbstractTask {
      */
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
-        // TODO maybe parameterize me
         driver.get(baseUrl + "/actions/Catalog.action");
         driver.findElement(By.linkText("Sign In")).click();
         this.sleep(activityDelay);

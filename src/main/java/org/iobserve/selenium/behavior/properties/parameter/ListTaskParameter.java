@@ -52,8 +52,16 @@ public class ListTaskParameter<T> implements ITaskParameter<T> {
     }
 
     @Override
-    public T getParameter() {
+    public T getSelectedParameter() {
         return this.items.get(this.defaultPosition);
+    }
+
+    public List<T> getAllParameters() {
+        return this.items;
+    }
+
+    public void setItemPosition(final int itemPosition) {
+        this.defaultPosition = itemPosition;
     }
 
 }

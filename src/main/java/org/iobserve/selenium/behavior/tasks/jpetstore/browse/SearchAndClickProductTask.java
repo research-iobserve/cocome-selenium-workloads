@@ -26,36 +26,41 @@ import org.openqa.selenium.WebDriver;
  * @author Marc Adolf
  *
  */
-public class SearchAndClickFishTask extends AbstractTask {
+public class SearchAndClickProductTask extends AbstractTask {
+
+    private final String searchKey;
+    private final String productToClick;
 
     /**
-     * Default constructor. Necessary to annotate parameter names.
+     * Create task.
+     *
+     * @param searchKey
+     *            search key
+     * @param productToClick
+     *            product to click
      */
-    @Parameters(names = {})
-    public SearchAndClickFishTask() {
-        // empty constructor
+    @Parameters(names = { "searchKey", "productToClick" })
+    public SearchAndClickProductTask(final String searchKey, final String productToClick) {
+        this.searchKey = searchKey;
+        this.productToClick = productToClick;
     }
 
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
-        final String searchKey = "Fish";
-        // TODO read Table and select one element.
-        final String productToClick = "Fresh Water fish from China";
-
         driver.get(baseUrl + "/actions/Catalog.action");
         driver.findElement(By.name("keyword")).click();
         this.sleep(activityDelay);
         driver.findElement(By.name("keyword")).clear();
-        driver.findElement(By.name("keyword")).sendKeys(searchKey);
+        driver.findElement(By.name("keyword")).sendKeys(this.searchKey);
         driver.findElement(By.name("searchProducts")).click();
         this.sleep(activityDelay);
-        driver.findElement(By.linkText(productToClick)).click();
+        driver.findElement(By.linkText(this.productToClick)).click();
         this.sleep(activityDelay);
     }
 
     @Override
     public String getName() {
-        return "Search for Fish and click 'Fresh Water fish from China'";
+        return String.format("Search for %s and click '%s'", this.searchKey, this.productToClick);
     }
 
 }

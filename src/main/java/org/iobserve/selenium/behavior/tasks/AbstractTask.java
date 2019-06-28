@@ -17,6 +17,7 @@
 package org.iobserve.selenium.behavior.tasks;
 
 import org.iobserve.selenium.configuration.BehaviorModel;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,8 +44,11 @@ public abstract class AbstractTask {
      *            the URL where the side is hosted.
      * @param activityDelay
      *            delay between actions in milliseconds.
+     * @throws NoSuchSessionException
+     *             when the session is missing
      */
-    public abstract void executeTask(WebDriver driver, String baseUrl, long activityDelay);
+    public abstract void executeTask(WebDriver driver, String baseUrl, long activityDelay)
+            throws NoSuchSessionException;
 
     /**
      *

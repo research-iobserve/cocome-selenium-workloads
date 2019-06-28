@@ -203,6 +203,12 @@ public final class WorkloadGenerationMain {
             }
         } while (repeat);
 
+        try {
+            Thread.sleep(10000);
+        } catch (final InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         WorkloadGenerationMain.LOGGER.debug("Run complete. Waiting for executor shutdown.");
         executor.shutdown();
         WorkloadGenerationMain.LOGGER.debug("Run complete. Waiting for web driver termination.");

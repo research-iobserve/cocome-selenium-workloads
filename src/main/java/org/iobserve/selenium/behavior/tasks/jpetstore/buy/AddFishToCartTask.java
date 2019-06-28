@@ -15,12 +15,10 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.jpetstore.buy;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.iobserve.selenium.behavior.properties.parameter.ListTaskParameter;
 import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
+import org.iobserve.selenium.behavior.tasks.jpetstore.ECategory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -29,7 +27,9 @@ import org.openqa.selenium.WebDriver;
  *
  * @author Marc Adolf
  *
+ * @deprecated 1.1.0
  */
+@Deprecated
 public class AddFishToCartTask extends AbstractTask {
 
     private final int amount;
@@ -48,14 +48,8 @@ public class AddFishToCartTask extends AbstractTask {
     public AddFishToCartTask(final int amount, final int itemPosition) {
         this.amount = amount;
 
-        final List<String> givenItems = new LinkedList<>();
-        givenItems.add("FI-SW-01");
-        givenItems.add("FI-SW-02");
-        givenItems.add("FI-FW-01");
-        givenItems.add("FI-FW-02");
-
-        this.items = new ListTaskParameter<>(givenItems, itemPosition);
-
+        this.items = ECategory.FISH.getProducts();
+        this.items.setItemPosition(itemPosition);
     }
 
     /*
@@ -67,7 +61,7 @@ public class AddFishToCartTask extends AbstractTask {
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
         driver.get(baseUrl + "/actions/Catalog.action");
-        final String item = this.items.getParameter();
+        final String item = this.items.getSelectedParameter();
         final int currentAmount = this.amount;
 
         AbstractTask.LOGGER.info(String.format("%s: item: %s amount: %d ", this.getName(), item, currentAmount));
@@ -75,8 +69,6 @@ public class AddFishToCartTask extends AbstractTask {
         for (int j = 0; j < currentAmount; j++) {
             driver.findElement(By.xpath("//div[@id='QuickLinks']/a/img")).click();
             this.sleep(activityDelay);
-            // TODO why is the following line commented out?
-            // driver.findElement(By.cssSelector("#QuickLinks > a > img")).click();
             driver.findElement(By.linkText(item)).click();
             this.sleep(activityDelay);
             driver.findElement(By.linkText("Add to Cart")).click();

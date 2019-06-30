@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.beust.jcommander.JCommander;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -151,9 +152,7 @@ public final class WorkloadGenerationMain {
             final Class<?>[] parameters = null;
             final IDriverFactory driverFactory = InstantiationFactory.create(IDriverFactory.class,
                     configuration.getWebDriverConfiguration().getType(), parameters);
-            final WebDriver driver = driverFactory.createNewDriver(configuration.getWebDriverConfiguration());
-
-            WorkloadGenerationMain.runWorkloadsWithDriver(driver, workloads, configuration);
+            WorkloadGenerationMain.runWorkloadsWithDriver(driverFactory, workloads, configuration);
         } catch (final ConfigurationException e) {
             WorkloadGenerationMain.LOGGER.error("Instanitation error for the driver {}",
                     configuration.getWebDriverConfiguration().getType());
@@ -163,30 +162,35 @@ public final class WorkloadGenerationMain {
     /**
      * run workload with the specified driver.
      *
-     * @param driver
+     * @param driverFactory
      *            the driver object
      * @param workloads
      *            the workload
      * @param configuration
      *            the configuration
      */
-    private static void runWorkloadsWithDriver(final WebDriver driver, final List<IWorkloadBalance> workloads,
-            final WorkloadConfiguration configuration) {
+    private static void runWorkloadsWithDriver(final IDriverFactory driverFactory,
+            final List<IWorkloadBalance> workloads, final WorkloadConfiguration configuration) {
         final ExecutorService executor = Executors.newFixedThreadPool(10);
+        final AtomicInteger activeUsers = new AtomicInteger(0);
 
         boolean repeat = false;
 
-        do {
+        do { /** repeat starting new workloads as long as the workload profile suggests it. */
             repeat = false;
             long trigger = Long.MAX_VALUE;
             for (final IWorkloadBalance state : workloads) {
                 final long presentTime = new Date().getTime();
                 if (!state.isWorkloadProfileComplete(presentTime)) {
                     while (state.startBehavior(presentTime)) {
+                        final WebDriver driver = driverFactory
+                                .createNewDriver(configuration.getWebDriverConfiguration());
                         executor.submit(new BehaviorModelRunnable(
                                 new ComposedBehavior(driver, configuration.getWebDriverConfiguration().getBaseUrl(),
-                                        configuration.getActivityDelay(), state.getBehaviorModel())));
+                                        configuration.getActivityDelay(), state.getBehaviorModel()),
+                                activeUsers));
                     }
+                    /** determine the lowest next trigger time for the loop. */
                     final long potentialTrigger = state.getNextTrigger(presentTime);
                     if (trigger > potentialTrigger) {
                         trigger = potentialTrigger;
@@ -204,15 +208,16 @@ public final class WorkloadGenerationMain {
         } while (repeat);
 
         try {
-            Thread.sleep(10000);
+            while (activeUsers.get() > 0) {
+                WorkloadGenerationMain.LOGGER.debug("Still running users {}", activeUsers.get());
+                Thread.sleep(1000);
+            }
         } catch (final InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
         WorkloadGenerationMain.LOGGER.debug("Run complete. Waiting for executor shutdown.");
         executor.shutdown();
-        WorkloadGenerationMain.LOGGER.debug("Run complete. Waiting for web driver termination.");
-        driver.quit();
 
         for (final IWorkloadBalance state : workloads) {
             WorkloadGenerationMain.LOGGER.info("{} had {} executions", state.getBehaviorModel().getName(),

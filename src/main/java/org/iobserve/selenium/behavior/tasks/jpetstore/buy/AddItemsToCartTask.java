@@ -82,18 +82,27 @@ public class AddItemsToCartTask extends AbstractTask {
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay)
             throws NoSuchSessionException {
-        AbstractTask.LOGGER.info(String.format("%s[%d]: item: %s amount: %d ", this.getName(),
-                Thread.currentThread().getId(), this.item, this.amount));
+        final long threadId = Thread.currentThread().getId();
+        AbstractTask.LOGGER
+                .info(String.format("%s[%d]: item: %s amount: %d ", this.getName(), threadId, this.item, this.amount));
 
         driver.get(baseUrl + "/actions/Catalog.action");
+
         for (int j = 0; j < this.amount; j++) {
+            AbstractTask.LOGGER.debug(String.format("%s[%d]: click category %d ", this.getName(), threadId, j));
             driver.findElement(By.xpath("//div[@id='QuickLinks']/" + this.category.getCategoryString() + "/img"))
                     .click();
+            AbstractTask.LOGGER.debug(String.format("%s[%d]: wait after catalog %d ", this.getName(), threadId, j));
             this.sleep(activityDelay);
+            AbstractTask.LOGGER.debug(String.format("%s[%d]: click item %d ", this.getName(), threadId, j));
             driver.findElement(By.linkText(this.item)).click();
+            AbstractTask.LOGGER.debug(String.format("%s[%d]: wait after item %d ", this.getName(), threadId, j));
             this.sleep(activityDelay);
+            AbstractTask.LOGGER.debug(String.format("%s[%d]: add to cart %d ", this.getName(), threadId, j));
             driver.findElement(By.linkText("Add to Cart")).click();
+            AbstractTask.LOGGER.debug(String.format("%s[%d]: wait after item %d ", this.getName(), threadId, j));
             this.sleep(activityDelay);
+            AbstractTask.LOGGER.debug(String.format("%s[%d]: loop end %d ", this.getName(), threadId, j));
         }
     }
 

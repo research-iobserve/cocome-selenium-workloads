@@ -55,18 +55,17 @@ public class BehaviorModelRunnable implements Runnable {
      */
     @Override
     public void run() {
-        this.activeUsers.incrementAndGet();
         BehaviorModelRunnable.LOGGER.debug("Running behavior {}", this.behavior.getName());
+        this.activeUsers.incrementAndGet();
         try {
             this.behavior.execute();
         } catch (final ConfigurationException e) {
             BehaviorModelRunnable.LOGGER.error("Behavior execution for '{}' failed. Cause: {}", this.behavior.getName(),
                     e.getMessage());
         }
-        BehaviorModelRunnable.LOGGER.debug("Finished behavior {}", this.behavior.getName());
         this.activeUsers.decrementAndGet();
-        BehaviorModelRunnable.LOGGER.debug("Run complete. Waiting for web driver termination.");
         this.behavior.getDriver().quit();
+        BehaviorModelRunnable.LOGGER.debug("Finished behavior {}", this.behavior.getName());
     }
 
 }

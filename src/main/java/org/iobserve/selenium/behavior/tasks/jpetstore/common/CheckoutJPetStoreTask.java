@@ -67,8 +67,7 @@ public class CheckoutJPetStoreTask extends AbstractTask {
      */
     @Override
     public String getName() {
-
-        return "Checkout current shopping cart";
+        return this.behaviorModel.getContainer().getName() + "/Checkout current shopping cart";
     }
 
 }

@@ -65,7 +65,7 @@ public class ViewOrderTask extends AbstractTask {
      */
     @Override
     public String getName() {
-        return "View all orders and click the first one";
+        return this.behaviorModel.getContainer().getName() + "/View all orders and click the first one";
     }
 
 }

@@ -70,7 +70,7 @@ public class LoginJPetStoreTask extends AbstractTask {
      */
     @Override
     public String getName() {
-        return "Log in " + this.username;
+        return this.behaviorModel.getContainer().getName() + "/Log in " + this.username;
     }
 
 }

@@ -60,7 +60,8 @@ public class SearchAndClickProductTask extends AbstractTask {
 
     @Override
     public String getName() {
-        return String.format("Search for %s and click '%s'", this.searchKey, this.productToClick);
+        return String.format("%s/Search for %s and click '%s'", this.behaviorModel.getContainer().getName(),
+                this.searchKey, this.productToClick);
     }
 
 }

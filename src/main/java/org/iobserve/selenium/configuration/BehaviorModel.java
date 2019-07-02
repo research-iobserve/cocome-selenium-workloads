@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 /**
  * Configuration of a behavior including the repetition of its sub-behaviors, its parameters, and
  * the configuration of the sub-behaviors.
@@ -37,7 +40,11 @@ public class BehaviorModel {
 
     private Map<String, Object> parameters = new HashMap<>();
 
+    @JsonManagedReference
     private List<BehaviorModel> subbehaviors = new ArrayList<>();
+
+    @JsonBackReference
+    private BehaviorModel container;
 
     public final String getName() {
         return this.name;
@@ -77,6 +84,14 @@ public class BehaviorModel {
 
     public Double getActivityDelay() {
         return this.activityDelay;
+    }
+
+    public void setContainer(final BehaviorModel container) {
+        this.container = container;
+    }
+
+    public BehaviorModel getContainer() {
+        return this.container;
     }
 
 }

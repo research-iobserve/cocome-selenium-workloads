@@ -16,9 +16,11 @@
 package org.iobserve.selenium.common;
 
 import java.io.File;
+import java.net.URI;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.converters.FileConverter;
+import com.beust.jcommander.converters.URIConverter;
 
 /**
  * Parse command line arguments. Uses JCommander.
@@ -36,12 +38,17 @@ public class CommandlineArguments {
     @Parameter(names = { "-u", "--url" }, description = "Base url for the selenium workloads")
     private String baseUrl;
 
-    @Parameter(names = { "-c",
-            "--workload-characterization" }, description = "Configuration file for the workload characterization.", required = true, converter = FileConverter.class)
+    @Parameter(names = { "-c", "--workload-characterization" }, //
+            description = "Configuration file for the workload characterization.", required = true, converter = FileConverter.class)
     private File configuration;
 
     @Parameter(names = { "-d", "--web-driver" }, description = "Path to the Phantom JS driver", required = false)
     private String pathWebDriver;
+
+    @Parameter(names = { "-l", "--log" }, //
+            description = "Log response times to a file or device. Default is file:/// alterante options are tcp://host:port", //
+            required = false, converter = URIConverter.class)
+    private URI logUrl;
 
     public String getBaseUrl() {
         return this.baseUrl;
@@ -57,6 +64,10 @@ public class CommandlineArguments {
 
     public String getPathWebDriver() {
         return this.pathWebDriver;
+    }
+
+    public void setLogUrl(final URI logUrl) {
+        this.logUrl = logUrl;
     }
 
 }

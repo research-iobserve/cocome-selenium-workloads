@@ -35,6 +35,8 @@ public abstract class AbstractTask {
 
     protected BehaviorModel behaviorModel;
 
+    protected final long threadId = Thread.currentThread().getId();
+
     /**
      * Executes the defined task.
      *
@@ -72,10 +74,10 @@ public abstract class AbstractTask {
      */
     protected void sleep(final long activityDelay) {
         try {
-            AbstractTask.LOGGER.debug("Sleep {} ms.", activityDelay);
+            AbstractTask.LOGGER.debug("{}[{}]: Sleep {} ms.", this.getName(), this.threadId, activityDelay);
             Thread.sleep(activityDelay);
         } catch (final InterruptedException e) {
-            AbstractTask.LOGGER.info("Thread sleep was interrupted.");
+            AbstractTask.LOGGER.info("{}[{}]: Thread sleep was interrupted.", this.getName(), this.threadId);
         }
     }
 

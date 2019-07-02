@@ -103,7 +103,8 @@ public class ChangeAccountInformationTask extends AbstractTask {
 
     @Override
     public String getName() {
-        return "Set (or toggle) account information" + this.attribute + " to: " + this.value;
+        return this.behaviorModel.getContainer().getName() + "/Set (or toggle) account information" + this.attribute
+                + " to: " + this.value;
     }
 
     /**

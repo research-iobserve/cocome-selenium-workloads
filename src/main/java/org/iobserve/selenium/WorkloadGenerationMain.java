@@ -213,8 +213,8 @@ public final class WorkloadGenerationMain {
                 Thread.sleep(1000);
             }
         } catch (final InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            WorkloadGenerationMain.LOGGER.debug("Interruptions while {} behaviors are still running",
+                    activeUsers.get());
         }
         WorkloadGenerationMain.LOGGER.debug("Run complete. Waiting for executor shutdown.");
         executor.shutdown();

@@ -47,6 +47,7 @@ public class ViewProductTask extends AbstractTask {
      */
     @Parameters(names = { "category" })
     public ViewProductTask(final ECategory category) {
+        super();
         final List<ECategory> categoryList = new LinkedList<>(Arrays.asList(ECategory.values()));
         this.category = new ListTaskParameter<>(categoryList, categoryList.indexOf(category));
     }
@@ -59,45 +60,23 @@ public class ViewProductTask extends AbstractTask {
      */
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
-        AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: %s %d", baseUrl, activityDelay));
-
         final ECategory curentCategory = this.category.getSelectedParameter();
         final String categoryString = curentCategory.getCategoryString();
         final String productString = curentCategory.getProducts().getSelectedParameter();
 
-        AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: categoryString=%s productString=%s",
-                categoryString, productString));
+        AbstractTask.LOGGER.info(String.format("%s[%d]: delay: %d category: %s product: %d ", this.getName(),
+                this.threadId, activityDelay, categoryString, productString));
 
         driver.get(baseUrl + "/actions/Catalog.action");
 
-        AbstractTask.LOGGER.debug(String.format("current url %s", driver.getCurrentUrl()));
-
         try {
-            AbstractTask.LOGGER
-                    .debug(String.format("execute ViewProductTask: findElement categoryString=%s", categoryString));
-
             driver.findElement(By.xpath("//div[@id='QuickLinks']/" + categoryString + "/img")).click();
-
-            AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: sleep %d", activityDelay));
-
             this.sleep(activityDelay);
-
-            AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: findElement productString=%d"),
-                    productString);
-
             driver.findElement(By.linkText(productString)).click();
-
-            AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: sleep %d", activityDelay));
-
             this.sleep(activityDelay);
-
-            AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: clickItemElement"));
-
             // since the item ids have a special pattern we can just iterate until we find the first
             // one
             this.clickItemElement(driver, activityDelay);
-
-            AbstractTask.LOGGER.debug(String.format("execute ViewProductTask: done"));
         } catch (final NoSuchElementException ex) {
             AbstractTask.LOGGER.error(String.format("Element could not be found: %s", ex.getLocalizedMessage()));
         }
@@ -110,17 +89,20 @@ public class ViewProductTask extends AbstractTask {
      */
     @Override
     public String getName() {
-        return "View category " + this.category.getSelectedParameter().toString() + " and one of its products: ";
+        return this.behaviorModel.getContainer().getName() + "/View category "
+                + this.category.getSelectedParameter().toString() + " and one of its products: ";
     }
 
     private void clickItemElement(final WebDriver driver, final long activityDelay) {
         final String baseString = "EST-";
         for (int i = 1; i < 30; i++) {
-            AbstractTask.LOGGER.debug(String.format("Try to find %s %d", baseString, i));
+            AbstractTask.LOGGER
+                    .debug(String.format("%s[%d]: Try to find %s %d", this.getName(), this.threadId, baseString, i));
 
             final List<WebElement> elements = driver.findElements(By.linkText(baseString + i));
             if (!elements.isEmpty()) {
-                AbstractTask.LOGGER.debug("Found element and will click on it: {}", elements);
+                AbstractTask.LOGGER.debug("%s[%d]: Found element and will click on it: {}", this.getName(),
+                        this.threadId, elements);
 
                 elements.get(0).click();
                 this.sleep(activityDelay);

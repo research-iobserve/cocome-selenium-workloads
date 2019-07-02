@@ -95,7 +95,7 @@ public class CreateNewCustomerTask extends AbstractTask {
      */
     @Override
     public String getName() {
-        return "Creates a new customer";
+        return this.behaviorModel.getContainer().getName() + "/Create a new customer";
     }
 
 }

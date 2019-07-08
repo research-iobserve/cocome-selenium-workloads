@@ -36,6 +36,8 @@ public class WorkloadConfiguration {
 
     private double activityDelay; // in seconds
 
+    private Integer threadLimit;
+
     public final double getActivityDelay() {
         return this.activityDelay;
     }
@@ -66,6 +68,14 @@ public class WorkloadConfiguration {
 
     public void setBehaviors(final Map<String, BehaviorModel> behaviors) {
         this.behaviors = behaviors;
+    }
+
+    public Integer getThreadLimit() {
+        return this.threadLimit;
+    }
+
+    public void setThreadLimit(final Integer threadLimit) {
+        this.threadLimit = threadLimit;
     }
 
 }

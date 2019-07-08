@@ -5,8 +5,18 @@ apply plugin: 'application'
 buildscript {
     repositories {
         maven {url "https://maven.eveoh.nl/content/repositories/releases"}
+        maven {url "https://plugins.gradle.org/m2/"}
+    }
+    dependencies {
+    	classpath "gradle.plugin.aspectj:gradle-aspectj:0.1.6"
     }
 }
+
+project.ext {
+    aspectjVersion = "1.8.2"
+}
+
+apply plugin: 'aspectj.gradle'
 
 version = '1.0'
 sourceCompatibility = 1.8
@@ -20,23 +30,41 @@ repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
     jcenter()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+configurations {
+    ajc
+    aspects
+    aspectCompile
+    compile{
+        extendsFrom aspects
+    }
 }
 
 dependencies {
-
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     // implementation 'com.google.guava:guava:20.0'
 
     // Use JUnit test framework
     compile 'junit:junit:4.12'
     
-    //Selenium
-    compile 'org.seleniumhq.selenium:selenium-java:3.12.0'
-
-    
-	//JCommander, command line arguments
+       
+	// JCommander, command line arguments
 	compile "com.beust:jcommander:1.71"
+    
+    // Selenium
+    compile 'org.seleniumhq.selenium:selenium-java:3.12.0'
+    compile 'org.seleniumhq.selenium:htmlunit-driver:2.35.1'
+ 
 	
+	// monitoring
+	ajc "org.aspectj:aspectjtools:1.8.2" 
+	compile "org.aspectj:aspectjrt:1.8.2"
+	compile "org.aspectj:aspectjweaver:1.8.2"	// for our custom AspectJ weaver (class: AspectJLoader)
+	
+	compile 'net.kieker-monitoring:kieker:1.14-SNAPSHOT'	
+    
     // logging
 	compile 'org.slf4j:slf4j-api:1.7.25'
 	compile 'org.slf4j:slf4j-log4j12:1.7.25'
@@ -47,18 +75,15 @@ dependencies {
 	// jackson/yaml
 	compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0'
 	compile 'com.fasterxml.jackson.core:jackson-databind:2.2.3'
-	compile 'org.apache.commons:commons-lang3:3.4'
-
-    
 }
 
 checkstyle {
-        toolVersion = 8.8
-        ignoreFailures = true
-        showViolations = false
+	toolVersion = 8.8
+	ignoreFailures = true
+	showViolations = false
         
-		int maxWarnings = 0
+	int maxWarnings = 0
     	
-    	configFile = rootProject.file('iobserve-checkstyle-rules.xml')
-    	configDir = file("${rootDir}")
-    }
+	configFile = rootProject.file('iobserve-checkstyle-rules.xml')
+	configDir = file("${rootDir}")
+}

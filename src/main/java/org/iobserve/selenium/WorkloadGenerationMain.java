@@ -31,7 +31,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import org.iobserve.selenium.behavior.BehaviorModelRunnable;
 import org.iobserve.selenium.behavior.ComposedBehavior;
-import org.iobserve.selenium.behavior.IDriverFactory;
 import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.TaskRegistry;
 import org.iobserve.selenium.common.CommandlineArguments;
@@ -41,6 +40,7 @@ import org.iobserve.selenium.configuration.ConstantWorkloadIntensity;
 import org.iobserve.selenium.configuration.IWorkloadIntensity;
 import org.iobserve.selenium.configuration.Workload;
 import org.iobserve.selenium.configuration.WorkloadConfiguration;
+import org.iobserve.selenium.driver.IDriverFactory;
 import org.iobserve.selenium.workload.intensity.ConstantWorkloadBalance;
 import org.iobserve.selenium.workload.intensity.IWorkloadBalance;
 import org.openqa.selenium.WebDriver;
@@ -171,7 +171,13 @@ public final class WorkloadGenerationMain {
      */
     private static void runWorkloadsWithDriver(final IDriverFactory driverFactory,
             final List<IWorkloadBalance> workloads, final WorkloadConfiguration configuration) {
-        final ExecutorService executor = Executors.newFixedThreadPool(10);
+        final ExecutorService executor;
+
+        if (configuration.getThreadLimit() == null) {
+            executor = Executors.newCachedThreadPool();
+        } else {
+            executor = Executors.newFixedThreadPool(configuration.getThreadLimit());
+        }
         final AtomicInteger activeUsers = new AtomicInteger(0);
 
         boolean repeat = false;

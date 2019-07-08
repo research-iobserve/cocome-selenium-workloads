@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.behavior;
+package org.iobserve.selenium.driver;
 
 import java.util.logging.Level;
 
@@ -48,18 +48,36 @@ public final class ChromeDriverFactory implements IDriverFactory {
      */
     @Override
     public WebDriver createNewDriver(final WebDriverConfiguration configuration) {
+        return this.createNewDriver(configuration, 0);
+    }
+
+    private WebDriver createNewDriver(final WebDriverConfiguration configuration, final int level) {
         System.setProperty("webdriver.chrome.driver", configuration.getDriver());
 
         ChromeDriverFactory.LOGGER.debug("driver location {}", configuration.getDriver());
 
         final ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
+        options.setCapability("detach", false);
 
-        final RemoteWebDriver driver = new ChromeDriver(options);
+        try {
+            final RemoteWebDriver driver = new ChromeDriver(options);
+            driver.setLogLevel(Level.ALL);
 
-        driver.setLogLevel(Level.ALL);
-
-        return driver;
+            return driver;
+        } catch (final org.openqa.selenium.WebDriverException ex) {
+            if (level < 10) {
+                try {
+                    Thread.sleep(1000);
+                    return this.createNewDriver(configuration, level + 1);
+                } catch (final InterruptedException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        }
     }
 
 }

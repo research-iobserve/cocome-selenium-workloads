@@ -158,6 +158,12 @@ public final class TaskRegistry {
         } else {
             if (parameterType.isAssignableFrom(value.getClass())) {
                 parameterValues.add(value);
+            } else if (parameterType.isPrimitive()) {
+                if ("int".equals(parameterType.getName()) && Integer.class.isAssignableFrom(value.getClass())) {
+                    parameterValues.add(value);
+                } else {
+                    TaskRegistry.LOGGER.error("Primitive Value type {} cannot be handled.", parameterType.getName());
+                }
             } else if (Map.class.isAssignableFrom(value.getClass())) {
                 /** this indicates a specified range. */
                 @SuppressWarnings("unchecked")

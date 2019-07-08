@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package org.iobserve.selenium.behavior;
+package org.iobserve.selenium.driver;
 
 import org.iobserve.selenium.configuration.WebDriverConfiguration;
 import org.openqa.selenium.WebDriver;
@@ -43,13 +43,30 @@ public final class FirefoxDriverFactory implements IDriverFactory {
 
     @Override
     public WebDriver createNewDriver(final WebDriverConfiguration configuration) {
+        return this.createNewDriver(configuration, 0);
+    }
+
+    private WebDriver createNewDriver(final WebDriverConfiguration configuration, final int level) {
         System.setProperty("webdriver.gecko.driver", configuration.getDriver());
+        System.setProperty(FirefoxDriver.SystemProperty.BROWSER_LOGFILE, "/dev/null");
 
-        final FirefoxOptions options = new FirefoxOptions().setProfile(new FirefoxProfile());
-        options.setLogLevel(FirefoxDriverLogLevel.DEBUG);
+        final FirefoxOptions options = new FirefoxOptions();
+        options.setProfile(new FirefoxProfile());
+        options.setLogLevel(FirefoxDriverLogLevel.ERROR);
+        options.setProfile(new FirefoxProfile());
         options.setCapability("binary", configuration.getDriver());
+        options.addArguments("-headless");
+        options.addArguments("-marionette");
 
-        return new FirefoxDriver(options);
-
+        try {
+            return new FirefoxDriver(options);
+        } catch (final org.openqa.selenium.WebDriverException e) {
+            e.printStackTrace();
+            if (level < 10) {
+                return this.createNewDriver(configuration, level + 1);
+            } else {
+                return null;
+            }
+        }
     }
 }

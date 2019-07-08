@@ -20,6 +20,7 @@
     <allow pkg="org.slf4j"/>
     <allow pkg="org.reflections"/>
     <allow class="java.util.logging.Level"/>
+    <allow pkg="org.aspectj.lang.annotation"/>
         
     <!--  own application -->
     <allow pkg="org.iobserve"/>

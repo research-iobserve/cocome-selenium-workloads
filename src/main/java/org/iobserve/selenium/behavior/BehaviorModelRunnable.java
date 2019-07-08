@@ -55,7 +55,7 @@ public class BehaviorModelRunnable implements Runnable {
      */
     @Override
     public void run() {
-        BehaviorModelRunnable.LOGGER.debug("Running behavior {}", this.behavior.getName());
+        BehaviorModelRunnable.LOGGER.info("Running behavior {}", this.behavior.getName());
         this.activeUsers.incrementAndGet();
         try {
             this.behavior.execute();
@@ -64,6 +64,7 @@ public class BehaviorModelRunnable implements Runnable {
                     e.getMessage());
         }
         this.activeUsers.decrementAndGet();
+        this.behavior.getDriver().manage().deleteAllCookies();
         this.behavior.getDriver().quit();
         BehaviorModelRunnable.LOGGER.debug("Finished behavior {}", this.behavior.getName());
     }

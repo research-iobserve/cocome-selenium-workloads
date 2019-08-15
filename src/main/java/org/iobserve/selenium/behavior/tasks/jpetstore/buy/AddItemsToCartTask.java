@@ -83,8 +83,8 @@ public class AddItemsToCartTask extends AbstractTask {
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay)
             throws NoSuchSessionException {
-        AbstractTask.LOGGER.info(String.format("%s[%d]: delay: %d item: %s amount: %d ", this.getName(), this.threadId,
-                activityDelay, this.item, this.amount));
+        AbstractTask.LOGGER.info(String.format("%s[%d]: delay: %d  item: %s  amount: %d ", this.getName(),
+                this.threadId, activityDelay, this.item, this.amount));
 
         driver.get(baseUrl + "/actions/Catalog.action");
 

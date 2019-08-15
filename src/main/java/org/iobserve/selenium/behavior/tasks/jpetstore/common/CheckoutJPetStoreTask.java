@@ -45,6 +45,8 @@ public class CheckoutJPetStoreTask extends AbstractTask {
      */
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
+        AbstractTask.LOGGER.info(String.format("%s[%d]: delay: %d", this.getName(), this.threadId, activityDelay));
+
         driver.get(baseUrl + "/actions/Catalog.action");
 
         driver.findElement(By.cssSelector("img[name=\"img_cart\"]")).click();

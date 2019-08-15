@@ -64,7 +64,7 @@ public class ViewProductTask extends AbstractTask {
         final String categoryString = curentCategory.getCategoryString();
         final String productString = curentCategory.getProducts().getSelectedParameter();
 
-        AbstractTask.LOGGER.info(String.format("%s[%d]: delay: %d category: %s product: %s ", this.getName(),
+        AbstractTask.LOGGER.info(String.format("%s[%d]: delay: %d  categoryLink: %s  product: %s", this.getName(),
                 this.threadId, activityDelay, categoryString, productString));
 
         driver.get(baseUrl + "/actions/Catalog.action");
@@ -89,8 +89,8 @@ public class ViewProductTask extends AbstractTask {
      */
     @Override
     public String getName() {
-        return this.behaviorModel.getContainer().getName() + "/View category "
-                + this.category.getSelectedParameter().toString() + " and one of its products: ";
+        return String.format("%s/View category '%s'", this.behaviorModel.getContainer().getName(),
+                this.category.getSelectedParameter().toString());
     }
 
     private void clickItemElement(final WebDriver driver, final long activityDelay) {

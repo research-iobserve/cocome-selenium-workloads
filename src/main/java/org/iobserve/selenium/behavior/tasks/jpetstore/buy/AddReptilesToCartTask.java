@@ -64,7 +64,8 @@ public class AddReptilesToCartTask extends AbstractTask {
         final String item = this.items.getSelectedParameter();
         final int currentAmount = this.amount;
 
-        AbstractTask.LOGGER.info(String.format("%s: item: %s amount: %d ", this.getName(), item, currentAmount));
+        AbstractTask.LOGGER.info(String.format("DEPRECATED use AddItemToCartTask  %s: item: %s amount: %d ",
+                this.getName(), item, currentAmount));
 
         for (int j = 0; j < currentAmount; j++) {
             driver.findElement(By.xpath("//div[@id='QuickLinks']/a[3]/img")).click();
@@ -83,7 +84,6 @@ public class AddReptilesToCartTask extends AbstractTask {
      */
     @Override
     public String getName() {
-
         return "Adding reptile to cart task";
     }
 

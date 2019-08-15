@@ -53,6 +53,9 @@ public class CreateNewCustomerTask extends AbstractTask {
      */
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
+        AbstractTask.LOGGER.info(String.format("%s[%d]: delay: %d  username: %s  password: %s ", this.getName(),
+                this.threadId, activityDelay, this.username, this.password));
+
         driver.get(baseUrl + "/actions/Catalog.action");
         driver.findElement(By.linkText("Sign In")).click();
         this.sleep(activityDelay);
@@ -95,7 +98,7 @@ public class CreateNewCustomerTask extends AbstractTask {
      */
     @Override
     public String getName() {
-        return this.behaviorModel.getContainer().getName() + "/Create a new customer";
+        return String.format("%s/Create a new customer", this.behaviorModel.getContainer().getName());
     }
 
 }

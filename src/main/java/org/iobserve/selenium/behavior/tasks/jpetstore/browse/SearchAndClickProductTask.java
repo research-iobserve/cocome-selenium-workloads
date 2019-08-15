@@ -47,6 +47,9 @@ public class SearchAndClickProductTask extends AbstractTask {
 
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
+        AbstractTask.LOGGER.info(String.format("%s[%d]: delay: %d  key: %s  product: %s", this.getName(), this.threadId,
+                activityDelay, this.searchKey, this.productToClick));
+
         driver.get(baseUrl + "/actions/Catalog.action");
         driver.findElement(By.name("keyword")).click();
         this.sleep(activityDelay);
@@ -60,8 +63,7 @@ public class SearchAndClickProductTask extends AbstractTask {
 
     @Override
     public String getName() {
-        return String.format("%s/Search for %s and click '%s'", this.behaviorModel.getContainer().getName(),
-                this.searchKey, this.productToClick);
+        return String.format("%s/Search", this.behaviorModel.getContainer().getName());
     }
 
 }

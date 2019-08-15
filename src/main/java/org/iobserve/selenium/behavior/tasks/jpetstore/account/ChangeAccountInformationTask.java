@@ -15,12 +15,9 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior.tasks.jpetstore.account;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
+import org.iobserve.selenium.behavior.tasks.jpetstore.ECategory;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -31,8 +28,6 @@ import org.openqa.selenium.WebDriver;
  *
  */
 public class ChangeAccountInformationTask extends AbstractTask {
-    private static Set<String> allowedFavoriteCategories = new HashSet<>(
-            Arrays.asList("DOGS", "CATS", "REPTILES", "BIRDS", "FISH"));
     private final Attribute attribute;
     private String value;
     private final String buttonToClick;
@@ -54,8 +49,11 @@ public class ChangeAccountInformationTask extends AbstractTask {
 
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
-
         final String attributeString = this.attribute.getAttributeName();
+
+        AbstractTask.LOGGER.info(String.format("%s[%d]: delay: %d  attribute: %s  value: %s", this.getName(),
+                this.threadId, activityDelay, attributeString, this.value));
+
         driver.get(baseUrl + "/actions/Account.action?editAccountForm");
 
         if (this.attribute.equals(Attribute.LANGUAGE) || this.attribute.equals(Attribute.CATEGORY)) {
@@ -78,10 +76,13 @@ public class ChangeAccountInformationTask extends AbstractTask {
     private String getDropDownOption() {
         String localValue = this.value;
 
-        if (this.attribute.equals(Attribute.CATEGORY)
-                && !ChangeAccountInformationTask.allowedFavoriteCategories.contains(localValue)) {
-            // default is cats.. maybe change in the future
-            localValue = "CATS";
+        if (this.attribute.equals(Attribute.CATEGORY)) {
+            try {
+                localValue = ECategory.valueOf(localValue).name();
+            } catch (final IllegalArgumentException ex) {
+                // default is cats.. maybe change in the future
+                localValue = "CATS";
+            }
         } else if (this.attribute.equals(Attribute.LANGUAGE) && !"english".equals(this.value)) {
             // default is japanese
             localValue = "japanese";
@@ -103,8 +104,7 @@ public class ChangeAccountInformationTask extends AbstractTask {
 
     @Override
     public String getName() {
-        return this.behaviorModel.getContainer().getName() + "/Set (or toggle) account information" + this.attribute
-                + " to: " + this.value;
+        return String.format("%s/Set or toggle account information", this.behaviorModel.getContainer().getName());
     }
 
     /**
@@ -114,12 +114,20 @@ public class ChangeAccountInformationTask extends AbstractTask {
      *
      */
     public enum Attribute {
-        FIRSTNAME("account.firstname"), LASTNAME("account.lastName"), EMAIL("account.email"), PHONE(
-                "account.phone"), ADDRESS1("account.address1"), ADDRESS2("account.address2"), CITY(
-                        "account.city"), STATE("account.state"), ZIP("account.zip"), COUNTRY(
-                                "account.country"), LANGUAGE("account.languagePreference"), CATEGORY(
-                                        "account.favouriteCategoryId"), LIST_OPTION(
-                                                "account.listOption"), BANNER_OPTION("account.bannerOption");
+        FIRSTNAME("account.firstname"), //
+        LASTNAME("account.lastName"), //
+        EMAIL("account.email"), //
+        PHONE("account.phone"), //
+        ADDRESS1("account.address1"), //
+        ADDRESS2("account.address2"), //
+        CITY("account.city"), //
+        STATE("account.state"), //
+        ZIP("account.zip"), //
+        COUNTRY("account.country"), //
+        LANGUAGE("account.languagePreference"), //
+        CATEGORY("account.favouriteCategoryId"), //
+        LIST_OPTION("account.listOption"), //
+        BANNER_OPTION("account.bannerOption");
 
         private String attributeName;
 

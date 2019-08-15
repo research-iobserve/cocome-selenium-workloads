@@ -27,10 +27,16 @@ import org.aspectj.lang.annotation.Pointcut;
 @Aspect
 public class SeleniumMonitoringProbe extends AbstractAspect {
 
+    /**
+     * Default constructor probe.
+     */
     public SeleniumMonitoringProbe() {
         // empty default constructor
     }
 
+    /**
+     * pointcut definition.
+     */
     // @Override
     @Pointcut("call(* org.openqa.selenium.WebElement.*(..)) && noGetterAndSetter()")
     public void monitoredOperation() {

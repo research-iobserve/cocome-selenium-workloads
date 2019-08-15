@@ -64,7 +64,7 @@ public class ViewProductTask extends AbstractTask {
         final String categoryString = curentCategory.getCategoryString();
         final String productString = curentCategory.getProducts().getSelectedParameter();
 
-        AbstractTask.LOGGER.info(String.format("%s[%d]: delay: %d category: %s product: %d ", this.getName(),
+        AbstractTask.LOGGER.info(String.format("%s[%d]: delay: %d category: %s product: %s ", this.getName(),
                 this.threadId, activityDelay, categoryString, productString));
 
         driver.get(baseUrl + "/actions/Catalog.action");

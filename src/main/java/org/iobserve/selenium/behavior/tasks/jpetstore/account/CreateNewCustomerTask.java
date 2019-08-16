@@ -78,7 +78,7 @@ public class CreateNewCustomerTask extends AbstractTask {
         driver.findElement(By.name("account.address1")).clear();
         driver.findElement(By.name("account.address1")).sendKeys("Wohnort");
         driver.findElement(By.name("account.address2")).clear();
-        driver.findElement(By.name("account.address2")).sendKeys("Geschäftssitz 3");
+        driver.findElement(By.name("account.address2")).sendKeys("Geschaeftssitz 3");
         driver.findElement(By.name("account.city")).clear();
         driver.findElement(By.name("account.city")).sendKeys("Kiel");
         driver.findElement(By.name("account.state")).clear();

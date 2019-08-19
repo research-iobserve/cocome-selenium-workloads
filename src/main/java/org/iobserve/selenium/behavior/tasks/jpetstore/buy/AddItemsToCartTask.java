@@ -17,11 +17,11 @@ package org.iobserve.selenium.behavior.tasks.jpetstore.buy;
 
 import java.util.List;
 
+import org.apache.http.conn.ConnectTimeoutException;
 import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.iobserve.selenium.behavior.tasks.jpetstore.ECategory;
 import org.iobserve.selenium.common.ConfigurationException;
-import org.iobserve.selenium.common.RandomGenerator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
@@ -35,7 +35,7 @@ import org.openqa.selenium.WebDriver;
 public class AddItemsToCartTask extends AbstractTask {
 
     private final int amount;
-    private final String item;
+    private final IItemProvider itemProvider;
     private final ECategory category;
 
     /**
@@ -52,7 +52,7 @@ public class AddItemsToCartTask extends AbstractTask {
      *             on configuration error
      */
     @Parameters(names = { "amount", "item", "category" })
-    public AddItemsToCartTask(final int amount, final String item, final ECategory category)
+    public AddItemsToCartTask(final Integer amount, final String item, final ECategory category)
             throws ConfigurationException {
         super();
         this.amount = amount;
@@ -63,15 +63,36 @@ public class AddItemsToCartTask extends AbstractTask {
         final int itemPosition = parameters.indexOf(item);
         if (itemPosition == -1) {
             if ("random".equals(item)) {
-                this.item = category.getProducts().getAllParameters()
-                        .get(RandomGenerator.getRandomNumber(0, parameters.size() - 1));
+                this.itemProvider = new RandomItemProvider(category.getProducts().getAllParameters());
             } else {
                 throw new ConfigurationException(String.format(
                         "Item %s is not a valid item in %s and it is not the special value", item, category.name()));
             }
         } else {
-            this.item = category.getProducts().getAllParameters().get(itemPosition);
+            this.itemProvider = new SingleItemProvider(category.getProducts().getAllParameters().get(itemPosition));
         }
+    }
+
+    /**
+     * One task to add a certain amount of one sort of item to the shopping cart.
+     *
+     * @param amount
+     *            The amount of cat added in one task
+     * @param items
+     *            The position of the sort of item in the list. Is set to the last position if the
+     *            itemPosition exceeds the size of the list.
+     * @param category
+     *            product category
+     * @throws ConfigurationException
+     *             on configuration error
+     */
+    @Parameters(names = { "amount", "item", "category" })
+    public AddItemsToCartTask(final Integer amount, final List<String> items, final ECategory category)
+            throws ConfigurationException {
+        super();
+        this.amount = amount;
+        this.category = category;
+        this.itemProvider = new RandomItemProvider(items);
     }
 
     /*
@@ -82,9 +103,9 @@ public class AddItemsToCartTask extends AbstractTask {
      */
     @Override
     public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay)
-            throws NoSuchSessionException {
+            throws NoSuchSessionException, ConnectTimeoutException {
         AbstractTask.LOGGER.info(String.format("%s[%d]: delay: %d  item: %s  amount: %d ", this.getName(),
-                this.threadId, activityDelay, this.item, this.amount));
+                this.threadId, activityDelay, this.itemProvider.getItem(), this.amount));
 
         driver.get(baseUrl + "/actions/Catalog.action");
 
@@ -92,7 +113,7 @@ public class AddItemsToCartTask extends AbstractTask {
             driver.findElement(By.xpath("//div[@id='QuickLinks']/" + this.category.getCategoryString() + "/img"))
                     .click();
             this.sleep(activityDelay);
-            driver.findElement(By.linkText(this.item)).click();
+            driver.findElement(By.linkText(this.itemProvider.getItem())).click();
             this.sleep(activityDelay);
             driver.findElement(By.linkText("Add to Cart")).click();
             this.sleep(activityDelay);

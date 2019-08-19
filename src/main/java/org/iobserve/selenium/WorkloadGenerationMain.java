@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import com.beust.jcommander.JCommander;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -123,15 +123,16 @@ public final class WorkloadGenerationMain {
             final IWorkloadIntensity intensity = workload.getIntensity();
             if (intensity instanceof ConstantWorkloadIntensity) {
                 try {
-                    final IWorkloadBalance state = new ConstantWorkloadBalance((ConstantWorkloadIntensity) intensity);
-                    state.startWorkloadProfile(presentTime);
+                    final IWorkloadBalance workloadBalance = new ConstantWorkloadBalance(
+                            (ConstantWorkloadIntensity) intensity);
+                    workloadBalance.startWorkloadProfile(presentTime);
 
                     final BehaviorModel behaviorModel = configuration.getBehaviors().get(workload.getName());
                     if (behaviorModel == null) {
                         WorkloadGenerationMain.LOGGER.error("Behavior {} cannot be found.", workload.getName());
                     }
-                    state.setBehaviorModel(behaviorModel);
-                    workloads.add(state);
+                    workloadBalance.setBehaviorModel(behaviorModel);
+                    workloads.add(workloadBalance);
                 } catch (final ConfigurationException e) {
                     WorkloadGenerationMain.LOGGER.error("Configuration error in workload intensity for Behavior {}.",
                             workload.getName(), e);
@@ -178,26 +179,23 @@ public final class WorkloadGenerationMain {
         } else {
             executor = Executors.newFixedThreadPool(configuration.getThreadLimit());
         }
-        final AtomicInteger activeUsers = new AtomicInteger(0);
-
         boolean repeat = false;
 
         do { /** repeat starting new workloads as long as the workload profile suggests it. */
             repeat = false;
             long trigger = Long.MAX_VALUE;
-            for (final IWorkloadBalance state : workloads) {
+            for (final IWorkloadBalance workload : workloads) {
                 final long presentTime = new Date().getTime();
-                if (!state.isWorkloadProfileComplete(presentTime)) {
-                    while (state.startBehavior(presentTime)) {
+                if (!workload.isWorkloadProfileComplete(presentTime)) {
+                    while (workload.startBehavior(presentTime)) {
                         final WebDriver driver = driverFactory
                                 .createNewDriver(configuration.getWebDriverConfiguration());
                         executor.submit(new BehaviorModelRunnable(
                                 new ComposedBehavior(driver, configuration.getWebDriverConfiguration().getBaseUrl(),
-                                        configuration.getActivityDelay(), state.getBehaviorModel()),
-                                activeUsers));
+                                        configuration.getActivityDelay(), workload.getBehaviorModel())));
                     }
                     /** determine the lowest next trigger time for the loop. */
-                    final long potentialTrigger = state.getNextTrigger(presentTime);
+                    final long potentialTrigger = workload.getNextTrigger(presentTime);
                     if (trigger > potentialTrigger) {
                         trigger = potentialTrigger;
                     }
@@ -214,13 +212,14 @@ public final class WorkloadGenerationMain {
         } while (repeat);
 
         try {
-            while (activeUsers.get() > 0) {
-                WorkloadGenerationMain.LOGGER.debug("Still running users {}", activeUsers.get());
+            while (((ThreadPoolExecutor) executor).getActiveCount() > 0) {
+                WorkloadGenerationMain.LOGGER.debug("Still running users {}",
+                        ((ThreadPoolExecutor) executor).getActiveCount());
                 Thread.sleep(1000);
             }
         } catch (final InterruptedException e) {
             WorkloadGenerationMain.LOGGER.debug("Interruptions while {} behaviors are still running",
-                    activeUsers.get());
+                    ((ThreadPoolExecutor) executor).getActiveCount());
         }
         WorkloadGenerationMain.LOGGER.debug("Run complete. Waiting for executor shutdown.");
         executor.shutdown();

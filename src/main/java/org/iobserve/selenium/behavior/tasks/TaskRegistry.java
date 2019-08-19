@@ -92,31 +92,14 @@ public final class TaskRegistry {
             throw new ConfigurationException("Workload '" + name + "' was not found in the registry.");
         } else {
             try {
-                final List<Class<?>> parameterTypes = new ArrayList<>();
                 final List<Object> parameterValues = new ArrayList<>();
 
                 for (final Constructor<?> constructor : searchedWorkload.getConstructors()) {
                     if (constructor.getParameterCount() == parameters.size()) {
                         if (constructor.getAnnotationsByType(Parameters.class).length == 1) {
-                            final Parameters annotation = constructor.getAnnotationsByType(Parameters.class)[0];
-
-                            for (int i = 0; i < constructor.getParameterCount(); i++) {
-                                final String parameterName = annotation.names()[i];
-                                final Class<?> parameterType = constructor.getParameters()[i].getType();
-                                final Object value = parameters.get(parameterName);
-                                if (value == null) {
-                                    TaskRegistry.LOGGER.error(
-                                            "No parameter with the name '{}' found in the list of specified parameters.",
-                                            parameterName);
-                                } else {
-                                    parameterTypes.add(parameterType);
-                                    TaskRegistry.addParameterValues(parameterType, parameterValues, value);
-                                }
-                            }
-                            if (parameterTypes.size() == parameters.size()) {
+                            if (TaskRegistry.checkConstructor(parameterValues, constructor, parameters)) {
                                 return (AbstractTask) constructor.newInstance(parameterValues.toArray());
                             } else {
-                                parameterTypes.clear();
                                 parameterValues.clear();
                             }
                         }
@@ -137,53 +120,147 @@ public final class TaskRegistry {
     }
 
     /**
+     * Check if a constructor exists which matches the defined parameters.
+     *
+     * @param parameterValues
+     *            result value
+     * @param constructor
+     *            constructor to check
+     * @param parameters
+     *            input parameters
+     * @return returns true on success else false
+     */
+    private static boolean checkConstructor(final List<Object> parameterValues, final Constructor<?> constructor,
+            final Map<String, Object> parameters) {
+        final Parameters annotation = constructor.getAnnotationsByType(Parameters.class)[0];
+        if (constructor.getParameterCount() == parameters.size()) {
+            for (int i = 0; i < constructor.getParameterCount(); i++) {
+                final String parameterName = annotation.names()[i];
+                final Class<?> parameterType = constructor.getParameters()[i].getType();
+                final Object value = parameters.get(parameterName);
+                if (value == null) {
+                    TaskRegistry.LOGGER.debug("Task {}  Missing parameter {}:{}", constructor.getName(), parameterName,
+                            parameterType.getName());
+                    return false;
+                } else {
+                    if (!TaskRegistry.addParameterValues(parameterValues, parameterType, parameterName, value)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } else {
+            TaskRegistry.LOGGER.debug("Task {}  Expected parameter sequence {} received {}", constructor.getName(),
+                    constructor.getParameters().toString(), parameters.keySet().toString());
+            return false;
+        }
+    }
+
+    /**
      * Add a value of defined type to the parameterValues.
      *
-     * @param parameterType
-     *            type
      * @param parameterValues
-     *            list of values
+     *            result list of parameter values for the constructor
+     * @param type
+     *            type of the parameter to add
+     * @param name
+     *            name of the parameter to be processed, used for error output only
      * @param value
      *            value to be added
      */
-    private static void addParameterValues(final Class<?> parameterType, final List<Object> parameterValues,
-            final Object value) {
-        if (parameterType.isEnum()) {
-            final Object[] items = parameterType.getEnumConstants();
+    @SuppressWarnings("unchecked")
+    private static boolean addParameterValues(final List<Object> parameterValues, final Class<?> type,
+            final String name, final Object value) {
+        if (type.isEnum()) {
+            final Object[] items = type.getEnumConstants();
             for (final Object item : items) {
                 if (item.toString().equals(value)) {
                     parameterValues.add(item);
+                    return true;
                 }
             }
+            return false;
+        } else if (type.isPrimitive()) {
+            TaskRegistry.LOGGER.error("Parameter {}:{}  Primitive value type cannot be handled.", name, type.getName());
+            return false;
+        } else if (Map.class.isAssignableFrom(value.getClass())) {
+            /** this indicates key value pairs. */
+            return TaskRegistry.addMapParameterValue(parameterValues, type, name, (Map<String, ?>) value);
+        } else if (List.class.isAssignableFrom(value.getClass())) {
+            /** this indicates a list. */
+            return TaskRegistry.addListParameterValue(parameterValues, type, name, (List<?>) value);
+        } else if (type.isAssignableFrom(value.getClass())) {
+            parameterValues.add(value);
+            return true;
         } else {
-            if (parameterType.isAssignableFrom(value.getClass())) {
-                parameterValues.add(value);
-            } else if (parameterType.isPrimitive()) {
-                if ("int".equals(parameterType.getName()) && Integer.class.isAssignableFrom(value.getClass())) {
-                    parameterValues.add(value);
+            TaskRegistry.LOGGER.debug("Parameter {}:{}  Value type {} cannot be handled.", name, type.getName(),
+                    value.getClass().getCanonicalName());
+            return false;
+        }
+    }
+
+    /**
+     * Handle list parameter sets. Especially, sequence of names.
+     *
+     * @param parameterValues
+     *            sequence of parameters
+     * @param type
+     *            type of the parameter
+     * @param name
+     *            name of the parameter
+     * @param map
+     *            value of the parameter
+     * @return returns true when value can be added, else false
+     */
+    private static boolean addListParameterValue(final List<Object> parameterValues, final Class<?> type,
+            final String name, final List<?> value) {
+        // unfortunately, we cannot check the list element type
+        parameterValues.add(value);
+        return true;
+    }
+
+    /**
+     * Handle map parameter sets. Especially, min max for ranges.
+     *
+     * @param parameterValues
+     *            sequence of parameters
+     * @param type
+     *            type of the parameter
+     * @param name
+     *            name of the parameter
+     * @param map
+     *            value of the parameter
+     *
+     * @return returns true when the map parameter spec can be applied, elfes false
+     */
+    private static boolean addMapParameterValue(final List<Object> parameterValues, final Class<?> type,
+            final String name, final Map<String, ?> map) {
+        if (map.containsKey("min") && map.containsKey("max")) {
+            /** this indicates a specified range. */
+            @SuppressWarnings("unchecked")
+            final Map<String, Integer> minMaxMap = (Map<String, Integer>) map;
+
+            final Integer lower = minMaxMap.get("min");
+            final Integer upper = minMaxMap.get("max");
+
+            if (lower != null && upper != null) {
+                if (lower < upper) {
+                    parameterValues.add(RandomGenerator.getRandomNumber(lower, upper));
+                    return true;
                 } else {
-                    TaskRegistry.LOGGER.error("Primitive Value type {} cannot be handled.", parameterType.getName());
-                }
-            } else if (Map.class.isAssignableFrom(value.getClass())) {
-                /** this indicates a specified range. */
-                @SuppressWarnings("unchecked")
-                final Map<String, Integer> map = (Map<String, Integer>) value;
-                final Integer lower = map.get("min");
-                final Integer upper = map.get("max");
-                if (lower != null && upper != null) {
-                    if (lower < upper) {
-                        parameterValues.add(RandomGenerator.getRandomNumber(lower, upper));
-                    } else {
-                        TaskRegistry.LOGGER.error("Min value must be lower than max value, but found min: {} max: {}",
-                                lower, upper);
-                    }
-                } else {
-                    TaskRegistry.LOGGER.error("Need one min and one max value.");
+                    TaskRegistry.LOGGER.error(
+                            "Parameter {}:{}  Min value must be lower than max value, but found min: {} max: {}", name,
+                            type.getName(), lower, upper);
+                    return false;
                 }
             } else {
-                TaskRegistry.LOGGER.error("Value type {} cannot be handled.", value.getClass().getCanonicalName());
+                TaskRegistry.LOGGER.error("Parameter {}:{}  Need one min and one max value.", name, type.getName());
+                return false;
             }
+        } else {
+            TaskRegistry.LOGGER.error("Parameter {}:{}  Unknown set of keys: {}", name, type.getName(),
+                    map.keySet().toString());
+            return false;
         }
-
     }
 }

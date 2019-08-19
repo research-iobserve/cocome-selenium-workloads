@@ -18,10 +18,12 @@ package org.iobserve.selenium.behavior.tasks.jpetstore.buy;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.http.conn.ConnectTimeoutException;
 import org.iobserve.selenium.behavior.properties.parameter.ListTaskParameter;
 import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.Parameters;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
 
 /**
@@ -47,7 +49,7 @@ public class AddCatsToCartTask extends AbstractTask {
      *            itemPosition exceeds the size of the list.
      */
     @Parameters(names = { "amount", "itemPosition" })
-    public AddCatsToCartTask(final int amount, final int itemPosition) {
+    public AddCatsToCartTask(final Integer amount, final Integer itemPosition) {
         this.amount = amount;
 
         final List<String> givenItems = new LinkedList<>();
@@ -65,7 +67,8 @@ public class AddCatsToCartTask extends AbstractTask {
      * java.lang.String)
      */
     @Override
-    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay) {
+    public void executeTask(final WebDriver driver, final String baseUrl, final long activityDelay)
+            throws NoSuchSessionException, ConnectTimeoutException {
         driver.get(baseUrl + "/actions/Catalog.action");
         final String item = this.items.getSelectedParameter();
         final int currentAmount = this.amount;

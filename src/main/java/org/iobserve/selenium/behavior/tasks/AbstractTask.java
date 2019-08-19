@@ -16,6 +16,7 @@
 
 package org.iobserve.selenium.behavior.tasks;
 
+import org.apache.http.conn.ConnectTimeoutException;
 import org.iobserve.selenium.configuration.BehaviorModel;
 import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.WebDriver;
@@ -48,9 +49,11 @@ public abstract class AbstractTask {
      *            delay between actions in milliseconds.
      * @throws NoSuchSessionException
      *             when the session is missing
+     * @throws ConnectTimeoutException
+     *             on timeouts
      */
     public abstract void executeTask(WebDriver driver, String baseUrl, long activityDelay)
-            throws NoSuchSessionException;
+            throws NoSuchSessionException, ConnectTimeoutException;
 
     /**
      *

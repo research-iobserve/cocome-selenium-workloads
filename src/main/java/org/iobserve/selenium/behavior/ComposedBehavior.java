@@ -15,6 +15,7 @@
  ***************************************************************************/
 package org.iobserve.selenium.behavior;
 
+import org.apache.http.conn.ConnectTimeoutException;
 import org.iobserve.selenium.behavior.tasks.AbstractTask;
 import org.iobserve.selenium.behavior.tasks.TaskRegistry;
 import org.iobserve.selenium.common.ConfigurationException;
@@ -126,6 +127,17 @@ public class ComposedBehavior {
         ComposedBehavior.LOGGER.debug("{}[{}]: end iterating", this.getName(), Thread.currentThread().getId());
     }
 
+    /**
+     * Execute behavior model.
+     *
+     * @param behavior
+     *            behavior model
+     * @param localActivityDelay
+     *            activity delay
+     *
+     * @throws ConfigurationException
+     *             on configuration errors
+     */
     private void executeBehavior(final BehaviorModel behavior, final double localActivityDelay)
             throws ConfigurationException {
         if (behavior.getSubbehaviors().isEmpty()) {
@@ -142,6 +154,9 @@ public class ComposedBehavior {
             } catch (final NoSuchSessionException ex) {
                 ComposedBehavior.LOGGER.error("{}[{}]: Session is missing in task {}.", this.getName(),
                         Thread.currentThread().getId(), type.getName());
+            } catch (final ConnectTimeoutException ex) {
+                ComposedBehavior.LOGGER.error("{}[{}]: Connection timeout in {}: {}", this.getName(),
+                        Thread.currentThread().getId(), type.getName(), ex.getMessage());
             }
         } else {
             this.iterateBehavior(behavior, localActivityDelay);

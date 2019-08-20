@@ -121,6 +121,8 @@ public class ComposedBehavior {
                     this.executeBehavior(behavior, localActivityDelay);
                 }
             } else {
+                ComposedBehavior.LOGGER.debug("{}[{}]: sub {} once", this.getName(), Thread.currentThread().getId(),
+                        behavior.getName());
                 this.executeBehavior(behavior, localActivityDelay);
             }
         }
